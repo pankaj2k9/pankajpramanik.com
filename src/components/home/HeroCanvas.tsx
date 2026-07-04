@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 /**
  * Client wrapper that lazy-loads the Three.js hero only on the homepage,
@@ -14,13 +14,21 @@ const Hero3D = dynamic(() => import("./Hero3D"), {
   loading: () => null,
 });
 
-export default function HeroCanvas() {
-  const [enabled, setEnabled] = useState(false);
+const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
 
-  useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (!reduced.matches) setEnabled(true);
-  }, []);
+function subscribeReducedMotion(onChange: () => void) {
+  const mql = window.matchMedia(reducedMotionQuery);
+  mql.addEventListener("change", onChange);
+  return () => mql.removeEventListener("change", onChange);
+}
+
+export default function HeroCanvas() {
+  // false during SSR, real preference on the client
+  const enabled = useSyncExternalStore(
+    subscribeReducedMotion,
+    () => !window.matchMedia(reducedMotionQuery).matches,
+    () => false
+  );
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">

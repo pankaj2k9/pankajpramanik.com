@@ -1,23 +1,59 @@
 @import "tailwindcss";
 
 /*
- * Design tokens — dark, premium portfolio theme.
+ * Design tokens — premium portfolio theme with dark (default) and
+ * light modes. Runtime values live on :root / [data-theme="light"];
+ * Tailwind maps them via @theme inline so utilities switch live.
  * Accent gradient (indigo → violet → pink) carried over from the
  * previous site's brand.
  */
-@theme {
-  --color-background: #07080f;
-  --color-surface: #0d0f1a;
-  --color-surface-raised: #131627;
-  --color-border: #1f2337;
-  --color-border-strong: #2c3150;
+:root {
+  --background: #07080f;
+  --surface: #0d0f1a;
+  --surface-raised: #131627;
+  --border: #1f2337;
+  --border-strong: #2c3150;
 
-  --color-foreground: #e6e8f2;
-  --color-muted: #9aa1c0;
-  --color-faint: #6b7194;
+  --foreground: #e6e8f2;
+  --muted: #9aa1c0;
+  --faint: #6b7194;
 
-  --color-accent: #818cf8;
-  --color-accent-strong: #6366f1;
+  --accent: #818cf8;
+  --accent-strong: #6366f1;
+
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --surface-raised: #f1f5f9;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+
+  --foreground: #0f172a;
+  --muted: #475569;
+  --faint: #94a3b8;
+
+  --accent: #6366f1;
+  --accent-strong: #6366f1;
+
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
   --color-violet: #8b5cf6;
   --color-pink: #ec4899;
   --color-emerald: #10b981;
@@ -27,15 +63,35 @@
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
 }
 
+/* Sections that stay dark in both themes (e.g. the 3D hero). */
+.force-dark {
+  --background: #07080f;
+  --surface: #0d0f1a;
+  --surface-raised: #131627;
+  --border: #1f2337;
+  --border-strong: #2c3150;
+  --foreground: #e6e8f2;
+  --muted: #9aa1c0;
+  --faint: #6b7194;
+  --accent: #818cf8;
+  --accent-strong: #6366f1;
+  color-scheme: dark;
+}
+
+@keyframes eq {
+  0%, 100% { height: 30%; }
+  50% { height: 100%; }
+}
+
 body {
-  background: var(--color-background);
-  color: var(--color-foreground);
-  font-family: var(--font-sans);
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--color-accent-strong) 40%, transparent);
+  background: color-mix(in srgb, var(--accent-strong) 40%, transparent);
 }
 
 /* --- reusable utilities --- */
@@ -47,15 +103,15 @@ body {
 }
 
 @utility card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 1rem;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
 @utility card-hover {
   &:hover {
-    border-color: var(--color-border-strong);
+    border-color: var(--border-strong);
     transform: translateY(-2px);
   }
 }
@@ -70,14 +126,14 @@ body {
 .prose-content {
   font-size: 1.0625rem;
   line-height: 1.8;
-  color: var(--color-muted);
+  color: var(--muted);
 }
 .prose-content h1,
 .prose-content h2,
 .prose-content h3,
 .prose-content h4 {
-  color: var(--color-foreground);
-  font-family: var(--font-display);
+  color: var(--foreground);
+  font-family: var(--font-space-grotesk), var(--font-inter), ui-sans-serif, sans-serif;
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 2.25rem 0 0.875rem;
@@ -89,42 +145,42 @@ body {
 .prose-content h4 { font-size: 1.125rem; }
 .prose-content p { margin: 1.125rem 0; }
 .prose-content a {
-  color: var(--color-accent);
+  color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
 }
-.prose-content a:hover { text-decoration-color: var(--color-accent); }
-.prose-content strong { color: var(--color-foreground); font-weight: 600; }
+.prose-content a:hover { text-decoration-color: var(--accent); }
+.prose-content strong { color: var(--foreground); font-weight: 600; }
 .prose-content ul, .prose-content ol { margin: 1.125rem 0; padding-left: 1.5rem; }
 .prose-content ul { list-style: disc; }
 .prose-content ol { list-style: decimal; }
 .prose-content li { margin: 0.4rem 0; }
-.prose-content li::marker { color: var(--color-accent); }
+.prose-content li::marker { color: var(--accent); }
 .prose-content blockquote {
-  border-left: 3px solid var(--color-accent-strong);
+  border-left: 3px solid var(--accent-strong);
   padding-left: 1.25rem;
   margin: 1.5rem 0;
   font-style: italic;
-  color: var(--color-faint);
+  color: var(--faint);
 }
 .prose-content img {
   border-radius: 0.75rem;
   margin: 1.75rem auto;
   max-width: 100%;
   height: auto;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border);
 }
 .prose-content figure { margin: 1.75rem 0; }
 .prose-content figcaption {
   text-align: center;
   font-size: 0.875rem;
-  color: var(--color-faint);
+  color: var(--faint);
   margin-top: 0.5rem;
 }
 .prose-content pre {
-  background: #0a0c16;
-  border: 1px solid var(--color-border);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
   border-radius: 0.75rem;
   padding: 1.25rem;
   overflow-x: auto;
@@ -133,19 +189,19 @@ body {
   margin: 1.5rem 0;
 }
 .prose-content code {
-  font-family: var(--font-mono);
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
   font-size: 0.9em;
-  background: color-mix(in srgb, var(--color-surface-raised) 80%, transparent);
-  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--surface-raised) 80%, transparent);
+  border: 1px solid var(--border);
   border-radius: 0.375rem;
   padding: 0.125rem 0.375rem;
-  color: #c4b5fd;
+  color: var(--accent);
 }
 .prose-content pre code {
   background: none;
   border: none;
   padding: 0;
-  color: #dbe2f4;
+  color: var(--foreground);
 }
 .prose-content table {
   width: 100%;
@@ -156,10 +212,10 @@ body {
   overflow-x: auto;
 }
 .prose-content th, .prose-content td {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border);
   padding: 0.625rem 0.875rem;
   text-align: left;
 }
-.prose-content th { color: var(--color-foreground); background: var(--color-surface-raised); }
-.prose-content hr { border-color: var(--color-border); margin: 2.5rem 0; }
+.prose-content th { color: var(--foreground); background: var(--surface-raised); }
+.prose-content hr { border-color: var(--border); margin: 2.5rem 0; }
 .prose-content iframe { max-width: 100%; border-radius: 0.75rem; margin: 1.75rem 0; }

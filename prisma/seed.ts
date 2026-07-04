@@ -220,6 +220,9 @@ async function seedTestimonials() {
 async function seedPages() {
   type WpPage = {
     slug: string;
+    kind: "GENERIC" | "SERVICE";
+    label: string;
+    summary: string;
     title: string;
     contentHtml: string;
     seoTitle: string | null;
@@ -227,17 +230,20 @@ async function seedPages() {
   };
   const pages = readJson<WpPage[]>("pages.json");
   for (const p of pages) {
+    const data = {
+      kind: p.kind,
+      label: p.label,
+      summary: p.summary,
+      title: p.title,
+      content: p.contentHtml,
+      contentFormat: ContentFormat.HTML,
+      seoTitle: p.seoTitle,
+      seoDescription: p.seoDescription,
+    };
     await prisma.page.upsert({
       where: { slug: p.slug },
-      update: {},
-      create: {
-        slug: p.slug,
-        title: p.title,
-        content: p.contentHtml,
-        contentFormat: ContentFormat.HTML,
-        seoTitle: p.seoTitle,
-        seoDescription: p.seoDescription,
-      },
+      update: { kind: p.kind, label: p.label, summary: p.summary },
+      create: { slug: p.slug, ...data },
     });
   }
   console.log(`✓ pages: ${pages.length}`);

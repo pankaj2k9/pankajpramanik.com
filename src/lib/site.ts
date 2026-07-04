@@ -7,7 +7,10 @@ export const site = {
   email: "pkp2.me2k9@gmail.com",
   github: "https://github.com/pankaj2k9",
   githubUsername: "pankaj2k9",
+  linkedin: "https://www.linkedin.com/in/pankaj-pramanik/",
+  facebook: "https://www.facebook.com/pankaj.pramanikk",
   headline: "AI & Data Engineer — Agentic AI · MLOps · GenAI",
+  photo: "/uploads/2026/06/1762445201199.jpg",
   keywords: [
     "AI Engineer",
     "Data Engineer",

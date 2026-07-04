@@ -153,13 +153,23 @@ model ContactMessage {
   createdAt DateTime @default(now())
 }
 
+enum PageKind {
+  GENERIC
+  SERVICE
+}
+
 model Page {
   id             String        @id @default(cuid())
   slug           String        @unique
+  kind           PageKind      @default(GENERIC)
+  label          String        @default("") // short display name (service cards)
+  summary        String        @default("") // one-line card description
   title          String
   content        String        @default("")
   contentFormat  ContentFormat @default(HTML)
   seoTitle       String?
   seoDescription String?
   updatedAt      DateTime      @updatedAt
+
+  @@index([kind])
 }

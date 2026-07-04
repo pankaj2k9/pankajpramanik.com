@@ -29,7 +29,6 @@ function wordpressRedirects() {
     { source: "/about-me", destination: "/about", permanent: true },
     { source: "/resume", destination: "/experience", permanent: true },
     { source: "/latest-from-the-blog", destination: "/blog", permanent: true },
-    { source: "/services", destination: "/skills", permanent: true },
   ];
 
   return [...postRedirects, ...pageRedirects];
@@ -42,6 +41,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       // during transition some content may still reference the old host
       { protocol: "https", hostname: "pankajpramanik.com" },
+      { protocol: "https", hostname: "github.com" },
       { protocol: "https", hostname: "avatars.githubusercontent.com" },
     ],
   },

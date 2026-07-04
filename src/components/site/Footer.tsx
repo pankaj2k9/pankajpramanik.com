@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { site } from "@/lib/site";
+import SocialLinks from "./SocialLinks";
 
 export default function Footer() {
   return (
@@ -13,11 +14,13 @@ export default function Footer() {
             AI &amp; Data Engineer — building agentic systems, LLM/RAG
             applications, and production data platforms.
           </p>
+          <SocialLinks className="mt-5" />
         </div>
 
         <div>
           <p className="text-sm font-semibold text-foreground">Explore</p>
           <ul className="mt-3 space-y-2 text-sm text-muted">
+            <li><Link className="hover:text-foreground" href="/services">Services</Link></li>
             <li><Link className="hover:text-foreground" href="/portfolio">Portfolio</Link></li>
             <li><Link className="hover:text-foreground" href="/experience">Experience</Link></li>
             <li><Link className="hover:text-foreground" href="/skills">Skills</Link></li>
@@ -45,6 +48,26 @@ export default function Footer() {
                 rel="noopener noreferrer"
               >
                 GitHub
+              </a>
+            </li>
+            <li>
+              <a
+                className="hover:text-foreground"
+                href={site.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a
+                className="hover:text-foreground"
+                href={site.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Facebook
               </a>
             </li>
             <li>

@@ -88,3 +88,11 @@ export const getTestimonials = cache(async () =>
 export const getPageBySlug = cache(async (slug: string) =>
   prisma.page.findUnique({ where: { slug } })
 );
+
+export const getServices = cache(async () =>
+  prisma.page.findMany({
+    where: { kind: "SERVICE" },
+    orderBy: { label: "asc" },
+    select: { id: true, slug: true, label: true, summary: true },
+  })
+);
