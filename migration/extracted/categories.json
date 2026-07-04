@@ -1,0 +1,104 @@
+[
+  {
+    "wpId": 52,
+    "name": "Angular",
+    "slug": "angular",
+    "description": ""
+  },
+  {
+    "wpId": 21,
+    "name": "Artificial Intelligence",
+    "slug": "artificial-intelligence",
+    "description": ""
+  },
+  {
+    "wpId": 60,
+    "name": "Blog",
+    "slug": "blog",
+    "description": ""
+  },
+  {
+    "wpId": 59,
+    "name": "Data Science",
+    "slug": "data-science",
+    "description": ""
+  },
+  {
+    "wpId": 130,
+    "name": "Deep Learning",
+    "slug": "deep-learning",
+    "description": ""
+  },
+  {
+    "wpId": 34,
+    "name": "DevOps",
+    "slug": "devops",
+    "description": ""
+  },
+  {
+    "wpId": 35,
+    "name": "Docker",
+    "slug": "docker",
+    "description": ""
+  },
+  {
+    "wpId": 16,
+    "name": "JavaScript",
+    "slug": "javascript",
+    "description": ""
+  },
+  {
+    "wpId": 191,
+    "name": "Machine Learning",
+    "slug": "machine-learning",
+    "description": ""
+  },
+  {
+    "wpId": 23,
+    "name": "Mobile App Development",
+    "slug": "mobile-app-development",
+    "description": ""
+  },
+  {
+    "wpId": 17,
+    "name": "Node",
+    "slug": "node",
+    "description": ""
+  },
+  {
+    "wpId": 38,
+    "name": "Python",
+    "slug": "python",
+    "description": ""
+  },
+  {
+    "wpId": 19,
+    "name": "React",
+    "slug": "react",
+    "description": ""
+  },
+  {
+    "wpId": 27,
+    "name": "React Native",
+    "slug": "react-native",
+    "description": ""
+  },
+  {
+    "wpId": 50,
+    "name": "Serverless",
+    "slug": "serverless",
+    "description": ""
+  },
+  {
+    "wpId": 18,
+    "name": "TypeScript",
+    "slug": "typescript",
+    "description": ""
+  },
+  {
+    "wpId": 39,
+    "name": "Web Application Development",
+    "slug": "web-app-development",
+    "description": ""
+  }
+]

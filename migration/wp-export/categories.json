@@ -1,0 +1,3204 @@
+[
+ {
+  "id": 52,
+  "count": 2,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/angular/",
+  "name": "Angular",
+  "slug": "angular",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Angular Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/angular/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Angular Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/angular/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/angular/\",\"url\":\"https://pankajpramanik.com/category/angular/\",\"name\":\"Angular Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/angular/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/angular/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Angular\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Angular Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/angular/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Angular Archives",
+   "og_url": "https://pankajpramanik.com/category/angular/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/angular/",
+      "url": "https://pankajpramanik.com/category/angular/",
+      "name": "Angular Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/angular/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/angular/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Angular"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/52",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=52"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 21,
+  "count": 7,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/artificial-intelligence/",
+  "name": "Artificial Intelligence",
+  "slug": "artificial-intelligence",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Artificial Intelligence Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/artificial-intelligence/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Artificial Intelligence Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/artificial-intelligence/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/artificial-intelligence/\",\"url\":\"https://pankajpramanik.com/category/artificial-intelligence/\",\"name\":\"Artificial Intelligence Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/artificial-intelligence/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/artificial-intelligence/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Artificial Intelligence\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Artificial Intelligence Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/artificial-intelligence/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Artificial Intelligence Archives",
+   "og_url": "https://pankajpramanik.com/category/artificial-intelligence/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/artificial-intelligence/",
+      "url": "https://pankajpramanik.com/category/artificial-intelligence/",
+      "name": "Artificial Intelligence Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/artificial-intelligence/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/artificial-intelligence/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Artificial Intelligence"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/21",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=21"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 60,
+  "count": 6,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/blog/",
+  "name": "Blog",
+  "slug": "blog",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Blog Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/blog/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Blog Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/blog/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/blog/\",\"url\":\"https://pankajpramanik.com/category/blog/\",\"name\":\"Blog Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/blog/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/blog/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Blog\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Blog Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/blog/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Blog Archives",
+   "og_url": "https://pankajpramanik.com/category/blog/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/blog/",
+      "url": "https://pankajpramanik.com/category/blog/",
+      "name": "Blog Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/blog/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/blog/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/60",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=60"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 59,
+  "count": 6,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/python/data-science/",
+  "name": "Data Science",
+  "slug": "data-science",
+  "taxonomy": "category",
+  "parent": 38,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Data Science Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/python/data-science/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Data Science Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/python/data-science/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/python/data-science/\",\"url\":\"https://pankajpramanik.com/category/python/data-science/\",\"name\":\"Data Science Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/python/data-science/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/python/data-science/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Python\",\"item\":\"https://pankajpramanik.com/category/python/\"},{\"@type\":\"ListItem\",\"position\":3,\"name\":\"Data Science\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Data Science Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/python/data-science/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Data Science Archives",
+   "og_url": "https://pankajpramanik.com/category/python/data-science/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/python/data-science/",
+      "url": "https://pankajpramanik.com/category/python/data-science/",
+      "name": "Data Science Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/python/data-science/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/python/data-science/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Python",
+        "item": "https://pankajpramanik.com/category/python/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Data Science"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/59",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "up": [
+    {
+     "embeddable": true,
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/38"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=59"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 130,
+  "count": 1,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/deep-learning/",
+  "name": "Deep Learning",
+  "slug": "deep-learning",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Deep Learning Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/deep-learning/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Deep Learning Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/deep-learning/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/deep-learning/\",\"url\":\"https://pankajpramanik.com/category/deep-learning/\",\"name\":\"Deep Learning Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/deep-learning/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/deep-learning/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Deep Learning\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Deep Learning Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/deep-learning/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Deep Learning Archives",
+   "og_url": "https://pankajpramanik.com/category/deep-learning/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/deep-learning/",
+      "url": "https://pankajpramanik.com/category/deep-learning/",
+      "name": "Deep Learning Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/deep-learning/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/deep-learning/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Deep Learning"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/130",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=130"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 34,
+  "count": 2,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/devops/",
+  "name": "DevOps",
+  "slug": "devops",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>DevOps Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/devops/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"DevOps Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/devops/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/devops/\",\"url\":\"https://pankajpramanik.com/category/devops/\",\"name\":\"DevOps Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/devops/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/devops/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"DevOps\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "DevOps Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/devops/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "DevOps Archives",
+   "og_url": "https://pankajpramanik.com/category/devops/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/devops/",
+      "url": "https://pankajpramanik.com/category/devops/",
+      "name": "DevOps Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/devops/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/devops/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "DevOps"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/34",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=34"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 35,
+  "count": 2,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/docker/",
+  "name": "Docker",
+  "slug": "docker",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Docker Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/docker/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Docker Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/docker/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/docker/\",\"url\":\"https://pankajpramanik.com/category/docker/\",\"name\":\"Docker Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/docker/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/docker/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Docker\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Docker Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/docker/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Docker Archives",
+   "og_url": "https://pankajpramanik.com/category/docker/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/docker/",
+      "url": "https://pankajpramanik.com/category/docker/",
+      "name": "Docker Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/docker/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/docker/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Docker"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/35",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=35"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 16,
+  "count": 5,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/javascript/",
+  "name": "JavaScript",
+  "slug": "javascript",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>JavaScript Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/javascript/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"JavaScript Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/javascript/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/javascript/\",\"url\":\"https://pankajpramanik.com/category/javascript/\",\"name\":\"JavaScript Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/javascript/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/javascript/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"JavaScript\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "JavaScript Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/javascript/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "JavaScript Archives",
+   "og_url": "https://pankajpramanik.com/category/javascript/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/javascript/",
+      "url": "https://pankajpramanik.com/category/javascript/",
+      "name": "JavaScript Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/javascript/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/javascript/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "JavaScript"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/16",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=16"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 2,
+  "count": 0,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/life-hacks/",
+  "name": "Life Hacks",
+  "slug": "life-hacks",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Life Hacks Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/life-hacks/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Life Hacks Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/life-hacks/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/life-hacks/\",\"url\":\"https://pankajpramanik.com/category/life-hacks/\",\"name\":\"Life Hacks Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/life-hacks/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/life-hacks/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Life Hacks\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Life Hacks Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/life-hacks/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Life Hacks Archives",
+   "og_url": "https://pankajpramanik.com/category/life-hacks/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/life-hacks/",
+      "url": "https://pankajpramanik.com/category/life-hacks/",
+      "name": "Life Hacks Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/life-hacks/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/life-hacks/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Life Hacks"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/2",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=2"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 191,
+  "count": 1,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/machine-learning/",
+  "name": "Machine Learning",
+  "slug": "machine-learning",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Machine Learning Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/machine-learning/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Machine Learning Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/machine-learning/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/machine-learning/\",\"url\":\"https://pankajpramanik.com/category/machine-learning/\",\"name\":\"Machine Learning Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/machine-learning/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/machine-learning/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Machine Learning\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Machine Learning Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/machine-learning/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Machine Learning Archives",
+   "og_url": "https://pankajpramanik.com/category/machine-learning/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/machine-learning/",
+      "url": "https://pankajpramanik.com/category/machine-learning/",
+      "name": "Machine Learning Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/machine-learning/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/machine-learning/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Machine Learning"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/191",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=191"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 23,
+  "count": 4,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/mobile-app-development/",
+  "name": "Mobile App Development",
+  "slug": "mobile-app-development",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Mobile App Development Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/mobile-app-development/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Mobile App Development Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/mobile-app-development/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/mobile-app-development/\",\"url\":\"https://pankajpramanik.com/category/mobile-app-development/\",\"name\":\"Mobile App Development Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/mobile-app-development/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/mobile-app-development/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Mobile App Development\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Mobile App Development Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/mobile-app-development/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Mobile App Development Archives",
+   "og_url": "https://pankajpramanik.com/category/mobile-app-development/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/mobile-app-development/",
+      "url": "https://pankajpramanik.com/category/mobile-app-development/",
+      "name": "Mobile App Development Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/mobile-app-development/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/mobile-app-development/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Mobile App Development"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/23",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=23"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 17,
+  "count": 6,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/node/",
+  "name": "Node",
+  "slug": "node",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Node Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/node/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Node Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/node/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/node/\",\"url\":\"https://pankajpramanik.com/category/node/\",\"name\":\"Node Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/node/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/node/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Node\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Node Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/node/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Node Archives",
+   "og_url": "https://pankajpramanik.com/category/node/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/node/",
+      "url": "https://pankajpramanik.com/category/node/",
+      "name": "Node Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/node/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/node/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Node"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/17",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=17"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 38,
+  "count": 6,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/python/",
+  "name": "Python",
+  "slug": "python",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Python Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/python/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Python Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/python/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/python/\",\"url\":\"https://pankajpramanik.com/category/python/\",\"name\":\"Python Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/python/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/python/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Python\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Python Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/python/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Python Archives",
+   "og_url": "https://pankajpramanik.com/category/python/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/python/",
+      "url": "https://pankajpramanik.com/category/python/",
+      "name": "Python Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/python/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/python/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Python"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/38",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=38"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 19,
+  "count": 4,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/react/",
+  "name": "React",
+  "slug": "react",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>React Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/react/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"React Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/react/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/react/\",\"url\":\"https://pankajpramanik.com/category/react/\",\"name\":\"React Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/react/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/react/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"React\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "React Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/react/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "React Archives",
+   "og_url": "https://pankajpramanik.com/category/react/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/react/",
+      "url": "https://pankajpramanik.com/category/react/",
+      "name": "React Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/react/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/react/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "React"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/19",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=19"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 27,
+  "count": 2,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/react-native/",
+  "name": "React Native",
+  "slug": "react-native",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>React Native Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/react-native/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"React Native Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/react-native/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/react-native/\",\"url\":\"https://pankajpramanik.com/category/react-native/\",\"name\":\"React Native Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/react-native/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/react-native/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"React Native\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "React Native Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/react-native/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "React Native Archives",
+   "og_url": "https://pankajpramanik.com/category/react-native/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/react-native/",
+      "url": "https://pankajpramanik.com/category/react-native/",
+      "name": "React Native Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/react-native/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/react-native/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "React Native"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/27",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=27"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 50,
+  "count": 1,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/serverless/",
+  "name": "Serverless",
+  "slug": "serverless",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Serverless Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/serverless/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Serverless Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/serverless/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/serverless/\",\"url\":\"https://pankajpramanik.com/category/serverless/\",\"name\":\"Serverless Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/serverless/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/serverless/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Serverless\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Serverless Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/serverless/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Serverless Archives",
+   "og_url": "https://pankajpramanik.com/category/serverless/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/serverless/",
+      "url": "https://pankajpramanik.com/category/serverless/",
+      "name": "Serverless Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/serverless/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/serverless/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Serverless"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/50",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=50"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 3,
+  "count": 0,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/sports/",
+  "name": "Sports",
+  "slug": "sports",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Sports Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/sports/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Sports Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/sports/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/sports/\",\"url\":\"https://pankajpramanik.com/category/sports/\",\"name\":\"Sports Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/sports/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/sports/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Sports\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Sports Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/sports/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Sports Archives",
+   "og_url": "https://pankajpramanik.com/category/sports/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/sports/",
+      "url": "https://pankajpramanik.com/category/sports/",
+      "name": "Sports Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/sports/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/sports/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Sports"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/3",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=3"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 4,
+  "count": 0,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/tech/",
+  "name": "Tech",
+  "slug": "tech",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Tech Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/tech/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Tech Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/tech/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/tech/\",\"url\":\"https://pankajpramanik.com/category/tech/\",\"name\":\"Tech Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/tech/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/tech/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Tech\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Tech Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/tech/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Tech Archives",
+   "og_url": "https://pankajpramanik.com/category/tech/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/tech/",
+      "url": "https://pankajpramanik.com/category/tech/",
+      "name": "Tech Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/tech/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/tech/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Tech"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/4",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=4"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 5,
+  "count": 0,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/travel/",
+  "name": "Travel",
+  "slug": "travel",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Travel Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/travel/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Travel Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/travel/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/travel/\",\"url\":\"https://pankajpramanik.com/category/travel/\",\"name\":\"Travel Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/travel/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/travel/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Travel\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Travel Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/travel/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Travel Archives",
+   "og_url": "https://pankajpramanik.com/category/travel/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/travel/",
+      "url": "https://pankajpramanik.com/category/travel/",
+      "name": "Travel Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/travel/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/travel/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Travel"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/5",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=5"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 18,
+  "count": 7,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/typescript/",
+  "name": "TypeScript",
+  "slug": "typescript",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>TypeScript Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/typescript/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"TypeScript Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/typescript/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/typescript/\",\"url\":\"https://pankajpramanik.com/category/typescript/\",\"name\":\"TypeScript Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/typescript/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/typescript/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"TypeScript\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "TypeScript Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/typescript/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "TypeScript Archives",
+   "og_url": "https://pankajpramanik.com/category/typescript/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/typescript/",
+      "url": "https://pankajpramanik.com/category/typescript/",
+      "name": "TypeScript Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/typescript/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/typescript/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "TypeScript"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/18",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=18"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 1,
+  "count": 0,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/uncategorized/",
+  "name": "Uncategorized",
+  "slug": "uncategorized",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Uncategorized Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/uncategorized/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Uncategorized Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/uncategorized/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/uncategorized/\",\"url\":\"https://pankajpramanik.com/category/uncategorized/\",\"name\":\"Uncategorized Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/uncategorized/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/uncategorized/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Uncategorized\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Uncategorized Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/uncategorized/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Uncategorized Archives",
+   "og_url": "https://pankajpramanik.com/category/uncategorized/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/uncategorized/",
+      "url": "https://pankajpramanik.com/category/uncategorized/",
+      "name": "Uncategorized Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/uncategorized/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/uncategorized/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Uncategorized"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/1",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=1"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ },
+ {
+  "id": 39,
+  "count": 8,
+  "description": "",
+  "link": "https://pankajpramanik.com/category/web-app-development/",
+  "name": "Web Application Development",
+  "slug": "web-app-development",
+  "taxonomy": "category",
+  "parent": 0,
+  "meta": [],
+  "yoast_head": "<!-- This site is optimized with the Yoast SEO Premium plugin v26.0 (Yoast SEO v26.0) - https://yoast.com/wordpress/plugins/seo/ -->\n<title>Web Application Development Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps</title>\n<meta name=\"robots\" content=\"index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1\" />\n<link rel=\"canonical\" href=\"https://pankajpramanik.com/category/web-app-development/\" />\n<meta property=\"og:locale\" content=\"en_US\" />\n<meta property=\"og:type\" content=\"article\" />\n<meta property=\"og:title\" content=\"Web Application Development Archives\" />\n<meta property=\"og:url\" content=\"https://pankajpramanik.com/category/web-app-development/\" />\n<meta property=\"og:site_name\" content=\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\" />\n<meta name=\"twitter:card\" content=\"summary_large_image\" />\n<script type=\"application/ld+json\" class=\"yoast-schema-graph\">{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"CollectionPage\",\"@id\":\"https://pankajpramanik.com/category/web-app-development/\",\"url\":\"https://pankajpramanik.com/category/web-app-development/\",\"name\":\"Web Application Development Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"isPartOf\":{\"@id\":\"https://pankajpramanik.com/#website\"},\"breadcrumb\":{\"@id\":\"https://pankajpramanik.com/category/web-app-development/#breadcrumb\"},\"inLanguage\":\"en-US\"},{\"@type\":\"BreadcrumbList\",\"@id\":\"https://pankajpramanik.com/category/web-app-development/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://pankajpramanik.com/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Web Application Development\"}]},{\"@type\":\"WebSite\",\"@id\":\"https://pankajpramanik.com/#website\",\"url\":\"https://pankajpramanik.com/\",\"name\":\"Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps\",\"description\":\"Building Scalable AI, Data, and Automation Solutions\",\"publisher\":{\"@id\":\"https://pankajpramanik.com/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"https://pankajpramanik.com/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"https://pankajpramanik.com/#organization\",\"name\":\"pankajpramanik.com\",\"url\":\"https://pankajpramanik.com/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\",\"url\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"contentUrl\":\"https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg\",\"width\":295,\"height\":295,\"caption\":\"pankajpramanik.com\"},\"image\":{\"@id\":\"https://pankajpramanik.com/#/schema/logo/image/\"},\"sameAs\":[\"https://www.facebook.com/pankaj.pramanikk\"]}]}</script>\n<!-- / Yoast SEO Premium plugin. -->",
+  "yoast_head_json": {
+   "title": "Web Application Development Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "robots": {
+    "index": "index",
+    "follow": "follow",
+    "max-snippet": "max-snippet:-1",
+    "max-image-preview": "max-image-preview:large",
+    "max-video-preview": "max-video-preview:-1"
+   },
+   "canonical": "https://pankajpramanik.com/category/web-app-development/",
+   "og_locale": "en_US",
+   "og_type": "article",
+   "og_title": "Web Application Development Archives",
+   "og_url": "https://pankajpramanik.com/category/web-app-development/",
+   "og_site_name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+   "twitter_card": "summary_large_image",
+   "schema": {
+    "@context": "https://schema.org",
+    "@graph": [
+     {
+      "@type": "CollectionPage",
+      "@id": "https://pankajpramanik.com/category/web-app-development/",
+      "url": "https://pankajpramanik.com/category/web-app-development/",
+      "name": "Web Application Development Archives - Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "isPartOf": {
+       "@id": "https://pankajpramanik.com/#website"
+      },
+      "breadcrumb": {
+       "@id": "https://pankajpramanik.com/category/web-app-development/#breadcrumb"
+      },
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "BreadcrumbList",
+      "@id": "https://pankajpramanik.com/category/web-app-development/#breadcrumb",
+      "itemListElement": [
+       {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://pankajpramanik.com/"
+       },
+       {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Web Application Development"
+       }
+      ]
+     },
+     {
+      "@type": "WebSite",
+      "@id": "https://pankajpramanik.com/#website",
+      "url": "https://pankajpramanik.com/",
+      "name": "Pankaj | AI &amp; Data Engineer | Agentic AI, MLOps",
+      "description": "Building Scalable AI, Data, and Automation Solutions",
+      "publisher": {
+       "@id": "https://pankajpramanik.com/#organization"
+      },
+      "potentialAction": [
+       {
+        "@type": "SearchAction",
+        "target": {
+         "@type": "EntryPoint",
+         "urlTemplate": "https://pankajpramanik.com/?s={search_term_string}"
+        },
+        "query-input": {
+         "@type": "PropertyValueSpecification",
+         "valueRequired": true,
+         "valueName": "search_term_string"
+        }
+       }
+      ],
+      "inLanguage": "en-US"
+     },
+     {
+      "@type": "Organization",
+      "@id": "https://pankajpramanik.com/#organization",
+      "name": "pankajpramanik.com",
+      "url": "https://pankajpramanik.com/",
+      "logo": {
+       "@type": "ImageObject",
+       "inLanguage": "en-US",
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/",
+       "url": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "contentUrl": "https://pankajpramanik.com/wp-content/uploads/2019/08/icon.svg",
+       "width": 295,
+       "height": 295,
+       "caption": "pankajpramanik.com"
+      },
+      "image": {
+       "@id": "https://pankajpramanik.com/#/schema/logo/image/"
+      },
+      "sameAs": [
+       "https://www.facebook.com/pankaj.pramanikk"
+      ]
+     }
+    ]
+   }
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories/39",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/categories"
+    }
+   ],
+   "about": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/taxonomies/category"
+    }
+   ],
+   "wp:post_type": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/posts?categories=39"
+    }
+   ],
+   "curies": [
+    {
+     "name": "wp",
+     "href": "https://api.w.org/{rel}",
+     "templated": true
+    }
+   ]
+  }
+ }
+]

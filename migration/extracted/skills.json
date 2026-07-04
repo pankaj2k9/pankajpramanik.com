@@ -1,0 +1,27 @@
+[
+  {
+    "category": "Data Science & Machine Learning",
+    "order": 1,
+    "items": ["Python", "NumPy", "Pandas", "Matplotlib", "Seaborn", "scikit-learn", "TensorFlow", "SQL", "ANN / CNN / RNN", "Linear / Logistic Regression", "Decision Trees", "SVM", "k-NN", "Naive Bayes", "PCA", "k-Means", "Tokenization & Stemming", "Jupyter"]
+  },
+  {
+    "category": "Generative AI · LLM · Agentic AI",
+    "order": 2,
+    "items": ["LLM (GPT-4, Claude)", "LangChain", "LangGraph", "RAG Systems", "Pinecone / FAISS", "OpenAI API", "n8n", "Retell AI", "GoHighLevel", "Chatbot Development", "Agent Development", "Workflow Automation"]
+  },
+  {
+    "category": "Frontend",
+    "order": 3,
+    "items": ["JavaScript", "TypeScript", "React", "Next.js", "React Native", "Three.js", "Redux"]
+  },
+  {
+    "category": "Backend",
+    "order": 4,
+    "items": ["Node.js", "FastAPI", "Flask", "Django", "Serverless Framework", "PostgreSQL", "Supabase"]
+  },
+  {
+    "category": "Cloud & DevOps",
+    "order": 5,
+    "items": ["AWS", "GCP", "Azure", "Docker", "Kubernetes", "CI/CD", "AWS Lambda", "EC2 / S3 / RDS"]
+  }
+]

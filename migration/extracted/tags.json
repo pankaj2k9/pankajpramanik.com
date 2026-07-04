@@ -1,0 +1,747 @@
+[
+  {
+    "wpId": 159,
+    "name": "AI app",
+    "slug": "ai-app"
+  },
+  {
+    "wpId": 158,
+    "name": "AI app idea",
+    "slug": "ai-app-idea"
+  },
+  {
+    "wpId": 179,
+    "name": "AI development",
+    "slug": "ai-development"
+  },
+  {
+    "wpId": 178,
+    "name": "AI ethics committee",
+    "slug": "ai-ethics-committee"
+  },
+  {
+    "wpId": 125,
+    "name": "AI for Cybersecurity",
+    "slug": "ai-for-cybersecurity"
+  },
+  {
+    "wpId": 126,
+    "name": "AI in Automobiles",
+    "slug": "ai-in-automobiles"
+  },
+  {
+    "wpId": 128,
+    "name": "AI in E-Commerce",
+    "slug": "ai-in-e-commerce"
+  },
+  {
+    "wpId": 129,
+    "name": "AI in Manufacturing",
+    "slug": "ai-in-manufacturing"
+  },
+  {
+    "wpId": 113,
+    "name": "AI services",
+    "slug": "ai-services"
+  },
+  {
+    "wpId": 177,
+    "name": "AI systems",
+    "slug": "ai-systems"
+  },
+  {
+    "wpId": 180,
+    "name": "AI technologies",
+    "slug": "ai-technologies"
+  },
+  {
+    "wpId": 122,
+    "name": "AI technology",
+    "slug": "ai-technology"
+  },
+  {
+    "wpId": 151,
+    "name": "AI-driven apps",
+    "slug": "ai-driven-apps"
+  },
+  {
+    "wpId": 141,
+    "name": "AI-Powered Apps",
+    "slug": "ai-powered-apps"
+  },
+  {
+    "wpId": 123,
+    "name": "AI-powered smartphone application",
+    "slug": "ai-powered-smartphone-application"
+  },
+  {
+    "wpId": 188,
+    "name": "Amazon Web Services",
+    "slug": "amazon-web-services"
+  },
+  {
+    "wpId": 53,
+    "name": "angular coding",
+    "slug": "angular-coding"
+  },
+  {
+    "wpId": 54,
+    "name": "angular coding tips",
+    "slug": "angular-coding-tips"
+  },
+  {
+    "wpId": 20,
+    "name": "API",
+    "slug": "api"
+  },
+  {
+    "wpId": 74,
+    "name": "API integration",
+    "slug": "api-integration"
+  },
+  {
+    "wpId": 101,
+    "name": "API route",
+    "slug": "api-route"
+  },
+  {
+    "wpId": 99,
+    "name": "API routes",
+    "slug": "api-routes"
+  },
+  {
+    "wpId": 149,
+    "name": "App Development",
+    "slug": "app-development"
+  },
+  {
+    "wpId": 107,
+    "name": "App Development Strategies",
+    "slug": "app-development-strategies"
+  },
+  {
+    "wpId": 119,
+    "name": "application of AI",
+    "slug": "application-of-ai"
+  },
+  {
+    "wpId": 71,
+    "name": "Application Programming Interfaces",
+    "slug": "application-programming-interfaces"
+  },
+  {
+    "wpId": 92,
+    "name": "Application Security",
+    "slug": "application-security"
+  },
+  {
+    "wpId": 142,
+    "name": "Applications of OpenAI Models",
+    "slug": "applications-of-openai-models"
+  },
+  {
+    "wpId": 118,
+    "name": "Artificial Intelligence",
+    "slug": "artificial-intelligence"
+  },
+  {
+    "wpId": 174,
+    "name": "Artificial Intelligence in Business",
+    "slug": "artificial-intelligence-in-business"
+  },
+  {
+    "wpId": 117,
+    "name": "Artificial Intelligence Innovator",
+    "slug": "artificial-intelligence-innovator"
+  },
+  {
+    "wpId": 65,
+    "name": "Artificial Intelligence Innovators",
+    "slug": "artificial-intelligence-innovators"
+  },
+  {
+    "wpId": 134,
+    "name": "artificial neural networks",
+    "slug": "artificial-neural-networks"
+  },
+  {
+    "wpId": 186,
+    "name": "AWS",
+    "slug": "aws"
+  },
+  {
+    "wpId": 48,
+    "name": "AWS Lambda",
+    "slug": "aws-lambda"
+  },
+  {
+    "wpId": 49,
+    "name": "AWS Lambda with Node.js",
+    "slug": "aws-lambda-with-node-js"
+  },
+  {
+    "wpId": 64,
+    "name": "Banking and Finance",
+    "slug": "banking-and-finance"
+  },
+  {
+    "wpId": 115,
+    "name": "Benefits of Cloud-Native Development",
+    "slug": "benefits-of-cloud-native-development"
+  },
+  {
+    "wpId": 32,
+    "name": "best practices",
+    "slug": "best-practices"
+  },
+  {
+    "wpId": 170,
+    "name": "Big Data",
+    "slug": "big-data"
+  },
+  {
+    "wpId": 167,
+    "name": "Big Data Solutions",
+    "slug": "big-data-solutions"
+  },
+  {
+    "wpId": 104,
+    "name": "Bootstrap",
+    "slug": "bootstrap"
+  },
+  {
+    "wpId": 183,
+    "name": "Chakra UI",
+    "slug": "chakra-ui"
+  },
+  {
+    "wpId": 106,
+    "name": "Cloud App Development",
+    "slug": "cloud-app-development"
+  },
+  {
+    "wpId": 108,
+    "name": "Cloud Development",
+    "slug": "cloud-development"
+  },
+  {
+    "wpId": 114,
+    "name": "Cloud-Based Application",
+    "slug": "cloud-based-application"
+  },
+  {
+    "wpId": 187,
+    "name": "CloudFront",
+    "slug": "cloudfront"
+  },
+  {
+    "wpId": 146,
+    "name": "Codex",
+    "slug": "codex"
+  },
+  {
+    "wpId": 33,
+    "name": "container security",
+    "slug": "container-security"
+  },
+  {
+    "wpId": 192,
+    "name": "Custom Machine Learning Models",
+    "slug": "custom-machine-learning-models"
+  },
+  {
+    "wpId": 89,
+    "name": "cyber threats",
+    "slug": "cyber-threats"
+  },
+  {
+    "wpId": 147,
+    "name": "DALL-E",
+    "slug": "dall-e"
+  },
+  {
+    "wpId": 72,
+    "name": "Data Consolidation Techniques",
+    "slug": "data-consolidation-techniques"
+  },
+  {
+    "wpId": 171,
+    "name": "data processing",
+    "slug": "data-processing"
+  },
+  {
+    "wpId": 169,
+    "name": "data processing applications",
+    "slug": "data-processing-applications"
+  },
+  {
+    "wpId": 62,
+    "name": "Data Science",
+    "slug": "data-science"
+  },
+  {
+    "wpId": 67,
+    "name": "data science algorithms",
+    "slug": "data-science-algorithms"
+  },
+  {
+    "wpId": 61,
+    "name": "Data Science Case Studies",
+    "slug": "data-science-case-studies"
+  },
+  {
+    "wpId": 66,
+    "name": "data science techniques",
+    "slug": "data-science-techniques"
+  },
+  {
+    "wpId": 76,
+    "name": "data scientists",
+    "slug": "data-scientists"
+  },
+  {
+    "wpId": 73,
+    "name": "Data Virtualization",
+    "slug": "data-virtualization"
+  },
+  {
+    "wpId": 138,
+    "name": "Data-driven",
+    "slug": "data-driven"
+  },
+  {
+    "wpId": 96,
+    "name": "data-driven decision-making",
+    "slug": "data-driven-decision-making"
+  },
+  {
+    "wpId": 90,
+    "name": "Data-Driven Security",
+    "slug": "data-driven-security"
+  },
+  {
+    "wpId": 94,
+    "name": "data-driven world",
+    "slug": "data-driven-world"
+  },
+  {
+    "wpId": 69,
+    "name": "Database Integration Solutions",
+    "slug": "database-integration-solutions"
+  },
+  {
+    "wpId": 70,
+    "name": "database management",
+    "slug": "database-management"
+  },
+  {
+    "wpId": 137,
+    "name": "DDDM",
+    "slug": "dddm"
+  },
+  {
+    "wpId": 139,
+    "name": "decision-making",
+    "slug": "decision-making"
+  },
+  {
+    "wpId": 140,
+    "name": "decision-making processes",
+    "slug": "decision-making-processes"
+  },
+  {
+    "wpId": 133,
+    "name": "Deep Learning",
+    "slug": "deep-learning"
+  },
+  {
+    "wpId": 135,
+    "name": "Deep learning models",
+    "slug": "deep-learning-models"
+  },
+  {
+    "wpId": 136,
+    "name": "deep learning optimization strategies",
+    "slug": "deep-learning-optimization-strategies"
+  },
+  {
+    "wpId": 132,
+    "name": "Deep Learning Techniques",
+    "slug": "deep-learning-techniques"
+  },
+  {
+    "wpId": 116,
+    "name": "DevOps",
+    "slug": "devops"
+  },
+  {
+    "wpId": 103,
+    "name": "Django",
+    "slug": "django"
+  },
+  {
+    "wpId": 36,
+    "name": "dockers",
+    "slug": "dockers"
+  },
+  {
+    "wpId": 168,
+    "name": "drives decision-making",
+    "slug": "drives-decision-making"
+  },
+  {
+    "wpId": 175,
+    "name": "Ethical Risks of AI",
+    "slug": "ethical-risks-of-ai"
+  },
+  {
+    "wpId": 173,
+    "name": "Ethical Risks of Artificial Intelligence",
+    "slug": "ethical-risks-of-artificial-intelligence"
+  },
+  {
+    "wpId": 172,
+    "name": "Ethical Risks of Artificial Intelligence in Business",
+    "slug": "ethical-risks-of-artificial-intelligence-in-business"
+  },
+  {
+    "wpId": 105,
+    "name": "Express.js installation",
+    "slug": "express-js-installation"
+  },
+  {
+    "wpId": 46,
+    "name": "Flask Applications",
+    "slug": "flask-applications"
+  },
+  {
+    "wpId": 154,
+    "name": "Freelance data scientists",
+    "slug": "freelance-data-scientists"
+  },
+  {
+    "wpId": 152,
+    "name": "freelance Python data scientists",
+    "slug": "freelance-python-data-scientists"
+  },
+  {
+    "wpId": 85,
+    "name": "Front-End Development",
+    "slug": "front-end-development"
+  },
+  {
+    "wpId": 98,
+    "name": "frontend React framework",
+    "slug": "frontend-react-framework"
+  },
+  {
+    "wpId": 155,
+    "name": "GPT",
+    "slug": "gpt"
+  },
+  {
+    "wpId": 145,
+    "name": "GPT-3",
+    "slug": "gpt-3"
+  },
+  {
+    "wpId": 22,
+    "name": "graphQL",
+    "slug": "graphql"
+  },
+  {
+    "wpId": 100,
+    "name": "GraphQL Server",
+    "slug": "graphql-server"
+  },
+  {
+    "wpId": 55,
+    "name": "Improve Anguar code",
+    "slug": "improve-anguar-code"
+  },
+  {
+    "wpId": 143,
+    "name": "Integrating OpenAI into Applications",
+    "slug": "integrating-openai-into-applications"
+  },
+  {
+    "wpId": 80,
+    "name": "iOS and Android development",
+    "slug": "ios-and-android-development"
+  },
+  {
+    "wpId": 120,
+    "name": "IPA streamlines processes",
+    "slug": "ipa-streamlines-processes"
+  },
+  {
+    "wpId": 28,
+    "name": "javascript",
+    "slug": "javascript"
+  },
+  {
+    "wpId": 189,
+    "name": "JavaScript functions",
+    "slug": "javascript-functions"
+  },
+  {
+    "wpId": 30,
+    "name": "jest",
+    "slug": "jest"
+  },
+  {
+    "wpId": 40,
+    "name": "Kibana",
+    "slug": "kibana"
+  },
+  {
+    "wpId": 37,
+    "name": "kubernets",
+    "slug": "kubernets"
+  },
+  {
+    "wpId": 121,
+    "name": "Machine Learning",
+    "slug": "machine-learning"
+  },
+  {
+    "wpId": 112,
+    "name": "machine learning algorithms",
+    "slug": "machine-learning-algorithms"
+  },
+  {
+    "wpId": 157,
+    "name": "machine learning models",
+    "slug": "machine-learning-models"
+  },
+  {
+    "wpId": 41,
+    "name": "metrices",
+    "slug": "metrices"
+  },
+  {
+    "wpId": 77,
+    "name": "mobile app architecture",
+    "slug": "mobile-app-architecture"
+  },
+  {
+    "wpId": 79,
+    "name": "Mobile Application Architecture",
+    "slug": "mobile-application-architecture"
+  },
+  {
+    "wpId": 87,
+    "name": "Model-View-Controller",
+    "slug": "model-view-controller"
+  },
+  {
+    "wpId": 83,
+    "name": "MVP",
+    "slug": "mvp"
+  },
+  {
+    "wpId": 84,
+    "name": "MVVM",
+    "slug": "mvvm"
+  },
+  {
+    "wpId": 42,
+    "name": "mysql",
+    "slug": "mysql"
+  },
+  {
+    "wpId": 86,
+    "name": "Native developers",
+    "slug": "native-developers"
+  },
+  {
+    "wpId": 124,
+    "name": "Natural Language Processing",
+    "slug": "natural-language-processing"
+  },
+  {
+    "wpId": 109,
+    "name": "Navigating the Technological Horizons",
+    "slug": "navigating-the-technological-horizons"
+  },
+  {
+    "wpId": 29,
+    "name": "next.js",
+    "slug": "next-js"
+  },
+  {
+    "wpId": 43,
+    "name": "nigix",
+    "slug": "nigix"
+  },
+  {
+    "wpId": 44,
+    "name": "observability",
+    "slug": "observability"
+  },
+  {
+    "wpId": 144,
+    "name": "OpenAI",
+    "slug": "openai"
+  },
+  {
+    "wpId": 160,
+    "name": "OpenAI's AI models",
+    "slug": "openais-ai-models"
+  },
+  {
+    "wpId": 148,
+    "name": "OpenAI's models",
+    "slug": "openais-models"
+  },
+  {
+    "wpId": 24,
+    "name": "postgreSQL",
+    "slug": "postgresql"
+  },
+  {
+    "wpId": 184,
+    "name": "Prisma ORM",
+    "slug": "prisma-orm"
+  },
+  {
+    "wpId": 111,
+    "name": "Progressive Web Applications",
+    "slug": "progressive-web-applications"
+  },
+  {
+    "wpId": 45,
+    "name": "Prometheus",
+    "slug": "prometheus"
+  },
+  {
+    "wpId": 47,
+    "name": "Python",
+    "slug": "python"
+  },
+  {
+    "wpId": 153,
+    "name": "Python data scientists",
+    "slug": "python-data-scientists"
+  },
+  {
+    "wpId": 127,
+    "name": "Quantum AI",
+    "slug": "quantum-ai"
+  },
+  {
+    "wpId": 26,
+    "name": "react",
+    "slug": "react"
+  },
+  {
+    "wpId": 81,
+    "name": "React Native",
+    "slug": "react-native"
+  },
+  {
+    "wpId": 78,
+    "name": "React Native vs. Native",
+    "slug": "react-native-vs-native"
+  },
+  {
+    "wpId": 131,
+    "name": "real-time applications",
+    "slug": "real-time-applications"
+  },
+  {
+    "wpId": 185,
+    "name": "Real-Time Web applications",
+    "slug": "real-time-web-applications"
+  },
+  {
+    "wpId": 181,
+    "name": "real-time web apps",
+    "slug": "real-time-web-apps"
+  },
+  {
+    "wpId": 91,
+    "name": "Real-World Applications",
+    "slug": "real-world-applications"
+  },
+  {
+    "wpId": 63,
+    "name": "Real-World Data Analysis Cases",
+    "slug": "real-world-data-analysis-cases"
+  },
+  {
+    "wpId": 102,
+    "name": "Remote Python Developer",
+    "slug": "remote-python-developer"
+  },
+  {
+    "wpId": 88,
+    "name": "robust web security",
+    "slug": "robust-web-security"
+  },
+  {
+    "wpId": 110,
+    "name": "Serverless Architectures",
+    "slug": "serverless-architectures"
+  },
+  {
+    "wpId": 68,
+    "name": "software engineering",
+    "slug": "software-engineering"
+  },
+  {
+    "wpId": 176,
+    "name": "Sources of Bias in AI",
+    "slug": "sources-of-bias-in-ai"
+  },
+  {
+    "wpId": 51,
+    "name": "starter guide Node.js AWS Lambda",
+    "slug": "starter-guide-node-js-aws-lambda"
+  },
+  {
+    "wpId": 56,
+    "name": "tips to improve angular code",
+    "slug": "tips-to-improve-angular-code"
+  },
+  {
+    "wpId": 182,
+    "name": "tRPC",
+    "slug": "trpc"
+  },
+  {
+    "wpId": 25,
+    "name": "Typescript",
+    "slug": "typescript"
+  },
+  {
+    "wpId": 31,
+    "name": "unit test",
+    "slug": "unit-test"
+  },
+  {
+    "wpId": 75,
+    "name": "Web Application Security",
+    "slug": "web-application-security"
+  },
+  {
+    "wpId": 150,
+    "name": "web applications",
+    "slug": "web-applications"
+  },
+  {
+    "wpId": 190,
+    "name": "Web Applications with CloudFront",
+    "slug": "web-applications-with-cloudfront"
+  },
+  {
+    "wpId": 82,
+    "name": "web developer",
+    "slug": "web-developer"
+  },
+  {
+    "wpId": 156,
+    "name": "Whisper",
+    "slug": "whisper"
+  }
+]

@@ -1,0 +1,121 @@
+[
+  {
+    "role": "LLM & RAG Specialist",
+    "company": "Upwork",
+    "companyUrl": "https://www.upwork.com",
+    "location": "Remote",
+    "startDate": "2025-01-01",
+    "endDate": null,
+    "current": true,
+    "techStack": ["LangChain", "n8n", "RAG", "Pinecone", "FAISS", "OpenAI GPT-4", "Retell AI", "Next.js", "Supabase", "PostgreSQL"],
+    "summary": "LangChain · AI Workflow Automation (n8n) · RAG · Voice & Chat Agents",
+    "highlights": [
+      "Built Retrieval-Augmented Generation (RAG) systems using LangChain, vector databases (Pinecone, FAISS), and OpenAI GPT-4",
+      "Automated business processes using n8n, Retell AI, and Google Workspace integrations",
+      "Developed end-to-end GenAI apps for legal intake, customer support, and lead qualification with voice & chat agents",
+      "Architected data pipelines for analytics, reporting, and AI training using Python, PostgreSQL, and Google Sheets",
+      "Integrated full-stack systems with Next.js, Node.js, Supabase, and REST APIs for production-ready AI tools"
+    ]
+  },
+  {
+    "role": "Generative AI & Full Stack Developer",
+    "company": "Subhub",
+    "companyUrl": null,
+    "location": "Remote",
+    "startDate": "2024-05-01",
+    "endDate": "2025-01-31",
+    "current": false,
+    "techStack": ["LangChain", "Pinecone", "LangFlow", "Supabase", "PostgreSQL", "Twilio", "Eleven Labs", "Python", "Next.js"],
+    "summary": "LangChain · PineconeDB · Supabase · Twilio · Eleven Labs",
+    "highlights": [
+      "Developed AI-driven solutions using LangChain, PineconeDB, and LangFlow for advanced NLP workflows and RAG systems",
+      "Built real-time applications with Supabase and PostgreSQL Realtime for seamless data sync",
+      "Integrated Twilio for SMS notifications and Eleven Labs for voice capabilities to enhance user engagement",
+      "Designed scalable solutions with Python, Next.js, and Supabase — translating business needs into robust APIs"
+    ]
+  },
+  {
+    "role": "Machine Learning Engineer",
+    "company": "Most Loved Workplace",
+    "companyUrl": "https://mostlovedworkplace.com",
+    "location": "Remote",
+    "startDate": "2023-05-01",
+    "endDate": "2023-12-31",
+    "current": false,
+    "techStack": ["Python", "scikit-learn", "Text Analytics", "Statistical ML", "Data Mining"],
+    "summary": "Text Analytics · Statistical ML · Data Mining · Python",
+    "highlights": [
+      "Developed statistical machine learning and data mining solutions for text analytics and business problems",
+      "Transformed business requirements into analytical models, algorithms, and reporting solutions at scale",
+      "Implemented ML algorithms on large structured and unstructured datasets to surface hidden patterns and insights"
+    ]
+  },
+  {
+    "role": "Full Stack Engineer",
+    "company": "Crewfare.com",
+    "companyUrl": "https://crewfare.com",
+    "location": "Remote",
+    "startDate": "2022-08-01",
+    "endDate": "2023-04-30",
+    "current": false,
+    "techStack": ["Node.js", "AWS Lambda", "Serverless Framework", "React", "Storybook", "AWS EC2", "RDS", "S3", "CloudFront"],
+    "summary": "Node.js · AWS Lambda · Serverless · React · Storybook",
+    "highlights": [
+      "Built APIs and web services in Node.js using MVC architecture and AWS Serverless Framework",
+      "Refactored Redux actions to Promises and lifecycle methods to async/await, cutting container dev time by 80%",
+      "Built features for 100,000+ users using CSS3, Flexbox, Storybook, React Navigation, and Animated APIs",
+      "Deployed in-house applications to AWS using EC2, RDS, S3, CloudFront, ELB, and CloudSearch"
+    ]
+  },
+  {
+    "role": "3D Web Graphics & Blockchain Developer",
+    "company": "Vircadia",
+    "companyUrl": "https://vircadia.com",
+    "location": "Remote",
+    "startDate": "2021-11-01",
+    "endDate": "2022-08-31",
+    "current": false,
+    "techStack": ["Solidity", "Web3.js", "Three.js", "Babylon.js", "WebGL", "Blender"],
+    "summary": "Solidity · Web3.js · Three.js · Babylon.js · WebGL",
+    "highlights": [
+      "Created Ethereum smart contracts in Solidity and built DApps with HTML, JavaScript, Node.js, and Web3.js",
+      "Developed accurate, simultaneous rendering of heterogeneous and multi-resolution meshes (Biva Visibility Test — patent pending)",
+      "Worked on Mindbenders WebGL engine — optimized Virtual Texturing and rendering passes",
+      "Built 2D/3D rendering with Three.js, Babylon.js, Fabric.js; handled OBJ/3DS to CTM/FBX conversions via Blender"
+    ]
+  },
+  {
+    "role": "Full Stack Engineer",
+    "company": "Breaker Nation",
+    "companyUrl": null,
+    "location": "Remote",
+    "startDate": "2020-11-01",
+    "endDate": "2022-02-28",
+    "current": false,
+    "techStack": ["React Native", "Redux Saga", "Push Notifications", "REST APIs"],
+    "summary": "React Native · Redux Saga · Push Notifications · App Store Deployment",
+    "highlights": [
+      "Built static UI and dynamic attributes for large automotive applications with custom push notifications and REST APIs",
+      "Refactored error handling with React Native alert dialogs — reduced user input errors by ~44%",
+      "Deployed apps to Google Play Store and Apple App Store; led adoption of React Native best practices",
+      "Authored UML-compliant high-level designs (Class, Sequence, Activity diagrams, Use Cases)"
+    ]
+  },
+  {
+    "role": "Full Stack Developer",
+    "company": "Anekonnect Incorporated",
+    "companyUrl": "https://www.anekonnect.io",
+    "location": "Remote",
+    "startDate": "2019-08-01",
+    "endDate": "2021-02-28",
+    "current": false,
+    "techStack": ["React", "Next.js", "Node.js", "Redux-Saga", "Ant Design", "SQL", "React Native"],
+    "summary": "React · Next.js · Node.js · Redux-Saga · Ant Design · SQL",
+    "highlights": [
+      "Built RESTful web services and SPAs with React, React Native, Next.js, and Node.js",
+      "Implemented middleware with Redux-Thunk, Redux-Saga, Redux-Logger, and Universal React Redux",
+      "Followed Agile/Scrum methodology with Rally for sprint tracking",
+      "Wrote complex SQL queries, stored procedures, functions, and packages — DDL and DML operations"
+    ]
+  }
+]

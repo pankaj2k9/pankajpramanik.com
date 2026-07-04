@@ -1,0 +1,65 @@
+[
+  {
+    "quote": "Pankaj was a great to work with on a complex automation project involving n8n, GoHighLevel, Retell AI, Google Calendar, Twilio, and several connected systems. He brings strong skills in AI automation, API integrations, LLM applications, RAG, agentic AI, multi-agent systems, and MCP server integration. Throughout the project, he was responsive, professional, and reliable, delivering consistently quality work on time. What stood out most was his proactive approach — he pointed out issues early, suggested practical solutions, and helped make the overall workflow more effective.",
+    "author": "Bruce Robinson",
+    "authorTitle": "Founder & Managing Partner, Robinson & Associates, LLC",
+    "featured": true,
+    "order": 1
+  },
+  {
+    "quote": "Pankaj has a very positive and professional approach to work. His dedication has guided Anekonnect from a wiring diagram application to a full-blown drawing and design application. His unwavering commitment to project timelines and excellent communication ensured the team delivered on time.",
+    "author": "Bhabin Shah",
+    "authorTitle": "Co-Founder, Anekonnect Incorporated",
+    "featured": false,
+    "order": 2
+  },
+  {
+    "quote": "I highly recommend Pankaj as a skilled JavaScript, TypeScript, and React developer. He consistently develops complex applications with efficiency and precision. Having pair-coded with him, he collaborates effectively with developers and stakeholders.",
+    "author": "Sami Kallinen",
+    "authorTitle": "Founder, 8-bit-sheep",
+    "featured": false,
+    "order": 3
+  },
+  {
+    "quote": "Pankaj is a super contractor. Very professional with great communication. His skills are astounding — he always went above and beyond, encouraging and pushing the team to stick to deadlines.",
+    "author": "Marcelo Perezverdia",
+    "authorTitle": "Upwork Client",
+    "featured": false,
+    "order": 4
+  },
+  {
+    "quote": "Pankaj was a great co-worker and a friend. He has always provided not only skilled work but also an excellent communicator. He translates complex technical concepts into simple terms. His strong work ethic, technical ability, and collaborative approach make him an excellent addition to any team.",
+    "author": "Ankit Kumar",
+    "authorTitle": "Partner, Dhmics Technologies · Engineering, Crewfare",
+    "featured": false,
+    "order": 5
+  },
+  {
+    "quote": "Pankaj has been a great help to the projects and has contributed many successful feature releases. He's very patient and easy to work with - able to jump on multiple JS projects and learn new skills as needed.",
+    "author": "Charles Markovich",
+    "authorTitle": "Starscraper.io",
+    "featured": false,
+    "order": 6
+  },
+  {
+    "quote": "Pankaj was really patient and understanding of our needs - we felt very safe working with him. He's knowledgeable, skilled, and great at communication. Looking forward to working with him again.",
+    "author": "Ahmad Matyana",
+    "authorTitle": "Co-Founder, Alethea AI",
+    "featured": false,
+    "order": 7
+  },
+  {
+    "quote": "Pankaj helped us develop React-based web pages in a very short time. He also put in additional effort to resolve some issues happening only on our end to ensure our deadlines were met. He's one of the best rising talents on Upwork - very happy to work with him on future tasks.",
+    "author": "Sujith Vellat",
+    "authorTitle": "Upwork Client",
+    "featured": false,
+    "order": 8
+  },
+  {
+    "quote": "Pankaj Kumar Pramanik was a pleasure to work with. He asked all the right questions to get the job completed in a timely manner.",
+    "author": "Chris Thomas",
+    "authorTitle": "Upwork Client",
+    "featured": false,
+    "order": 9
+  }
+]

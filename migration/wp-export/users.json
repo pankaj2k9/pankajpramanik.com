@@ -1,0 +1,43 @@
+[
+ {
+  "id": 1,
+  "name": "pankaj",
+  "url": "https://pankajpramanik.com",
+  "description": "Hello, My name is Pankaj Pramanik and  My professional journey has been characterized by a relentless pursuit of excellence in Software Engineering. Throughout my career, I have immersed myself in the intricacies of Machine Learning, cultivating a deep expertise that enables me to engineer innovative solutions that push boundaries and harness the power of data-driven insights.",
+  "link": "https://pankajpramanik.com/author/pankaj/",
+  "slug": "pankaj",
+  "avatar_urls": {
+   "24": "https://pankajpramanik.com/wp-content/litespeed/avatar/ce04fd7f7c1d8b37eb8554a3ab0cfa3d.jpg?ver=1782968397",
+   "48": "https://pankajpramanik.com/wp-content/litespeed/avatar/1a2842f69f910f4f418b13aebbb24d61.jpg?ver=1782968396",
+   "96": "https://pankajpramanik.com/wp-content/litespeed/avatar/d68d61c486ec2cf95b037736c5d7a360.jpg?ver=1782896737"
+  },
+  "meta": [],
+  "yoast_head": null,
+  "yoast_head_json": null,
+  "elementor_introduction": {
+   "ai-get-started-announcement": true,
+   "ai_get_started": true,
+   "e-apps": true,
+   "globals_introduction": true,
+   "yoast-introduction-editor-v2": true,
+   "upload_json_warning_generic_message": true
+  },
+  "_links": {
+   "self": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/users/1",
+     "targetHints": {
+      "allow": [
+       "GET"
+      ]
+     }
+    }
+   ],
+   "collection": [
+    {
+     "href": "https://pankajpramanik.com/wp-json/wp/v2/users"
+    }
+   ]
+  }
+ }
+]
