@@ -9,8 +9,12 @@ export const site = {
   githubUsername: "pankaj2k9",
   linkedin: "https://www.linkedin.com/in/pankaj-pramanik/",
   facebook: "https://www.facebook.com/pankaj.pramanikk",
+  leetcode: "https://leetcode.com/pankajpramanik/",
+  kaggle: "https://www.kaggle.com/pankajpramanik",
+  huggingface: "https://huggingface.co/pankajpramanik",
   headline: "AI & Data Engineer — Agentic AI · MLOps · GenAI",
   photo: "/uploads/2026/06/1762445201199.jpg",
+  cv: "/Pankaj_Kumar_Pramanik_AI_Data_Engineer_CV.pdf",
   keywords: [
     "AI Engineer",
     "Data Engineer",

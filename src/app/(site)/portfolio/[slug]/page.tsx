@@ -24,13 +24,16 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
   if (!project || project.status !== "PUBLISHED") return {};
+  const title = project.seoTitle ?? `${project.title} — Project`;
+  const description =
+    project.seoDescription ?? project.description.slice(0, 160);
   return {
-    title: `${project.title} — Project`,
-    description: project.description.slice(0, 160),
+    title,
+    description,
     alternates: { canonical: `/portfolio/${project.slug}` },
     openGraph: {
-      title: project.title,
-      description: project.tagline,
+      title,
+      description: project.seoDescription ?? project.tagline,
       url: absoluteUrl(`/portfolio/${project.slug}`),
     },
   };

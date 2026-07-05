@@ -30,6 +30,36 @@ const socials = [
     ),
   },
   {
+    label: "LeetCode",
+    href: site.leetcode,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M13.48 3.65a1.37 1.37 0 0 1 1.94 0 1.4 1.4 0 0 1 0 1.96l-6.4 6.47a2.6 2.6 0 0 0 0 3.64l3.61 3.65c.5.5 1.15.76 1.85.76h.02c.7 0 1.35-.27 1.83-.76l2.35-2.36a1.37 1.37 0 0 1 1.94 0 1.4 1.4 0 0 1 0 1.96l-2.35 2.36A5.24 5.24 0 0 1 14.5 23h-.03a5.2 5.2 0 0 1-3.78-1.59L7.08 17.7a5.4 5.4 0 0 1 0-7.56l6.4-6.48Zm1.35 4.05a1.37 1.37 0 0 1 1.94 0l3.6 3.66a1.4 1.4 0 0 1 0 1.96 1.37 1.37 0 0 1-1.95 0l-3.6-3.65a1.4 1.4 0 0 1 0-1.97Zm-4.36 5.5c0-.77.61-1.39 1.37-1.39h9.79c.76 0 1.37.62 1.37 1.39 0 .76-.61 1.38-1.37 1.38h-9.79c-.76 0-1.37-.62-1.37-1.38Z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Kaggle",
+    href: site.kaggle,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M6.5 1.5h3.1v12.06l5.94-6.06h4.06l-6.75 6.75L20 22.5h-4.06l-5.06-6.19-1.28 1.28v4.91H6.5V1.5Z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Hugging Face",
+    href: site.huggingface,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
+        <circle cx="12" cy="12" r="9.2" />
+        <circle cx="8.6" cy="9.6" r="0.9" fill="currentColor" stroke="none" />
+        <circle cx="15.4" cy="9.6" r="0.9" fill="currentColor" stroke="none" />
+        <path d="M7.8 13.4c1 2 2.5 3 4.2 3s3.2-1 4.2-3" strokeLinecap="round" />
+      </svg>
+    ),
+  },
+  {
     label: "Email",
     href: `mailto:${site.email}`,
     icon: (
@@ -49,7 +79,7 @@ export default function SocialLinks({
   size?: "md" | "lg";
 }) {
   return (
-    <ul className={cn("flex items-center gap-2", className)}>
+    <ul className={cn("flex flex-wrap items-center gap-2", className)}>
       {socials.map((s) => (
         <li key={s.label}>
           <a

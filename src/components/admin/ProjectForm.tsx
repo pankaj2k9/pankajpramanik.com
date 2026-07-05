@@ -22,6 +22,8 @@ type ProjectData = {
   featured: boolean;
   order: number;
   status: "DRAFT" | "PUBLISHED";
+  seoTitle: string | null;
+  seoDescription: string | null;
 };
 
 export default function ProjectForm({ project }: { project?: ProjectData }) {
@@ -180,6 +182,37 @@ export default function ProjectForm({ project }: { project?: ProjectData }) {
           <option value="DRAFT">Draft</option>
         </select>
       </div>
+
+      <details className="card p-5">
+        <summary className="cursor-pointer text-sm font-medium">
+          SEO settings
+        </summary>
+        <div className="mt-4 space-y-4">
+          <div>
+            <label htmlFor="seoTitle" className={labelCls}>
+              SEO title
+            </label>
+            <input
+              id="seoTitle"
+              name="seoTitle"
+              defaultValue={project?.seoTitle ?? ""}
+              className={inputCls}
+            />
+          </div>
+          <div>
+            <label htmlFor="seoDescription" className={labelCls}>
+              SEO description
+            </label>
+            <textarea
+              id="seoDescription"
+              name="seoDescription"
+              rows={2}
+              defaultValue={project?.seoDescription ?? ""}
+              className={inputCls}
+            />
+          </div>
+        </div>
+      </details>
 
       <FormError error={state?.error} />
       <SubmitButton pending={pending}>

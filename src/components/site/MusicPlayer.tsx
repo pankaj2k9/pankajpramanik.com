@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Floating background-music toggle (bottom-right). Starts paused —
- * browsers block autoplay with sound, and visitors should opt in.
- * Remembers the choice in localStorage and resumes on the next visit
- * after the first interaction anywhere on the page.
+ * Floating background-music toggle (bottom-right). Music is ON by
+ * default (looping), like the original WordPress site — visitors click
+ * to pause. Browsers block unmuted autoplay, so we try immediately and
+ * fall back to starting on the first interaction anywhere on the page.
+ * An explicit pause is remembered in localStorage and respected on
+ * later visits.
  */
 export default function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -16,23 +18,40 @@ export default function MusicPlayer() {
     const audio = new Audio("/audio/bg.mp3");
     audio.loop = true;
     audio.volume = 0.35;
-    audio.preload = "none";
+    audio.preload = "auto";
     audioRef.current = audio;
 
-    // resume on first user gesture if music was on during the last visit
-    const resume = () => {
-      if (localStorage.getItem("bg-music") === "on") {
-        audio.play().then(() => setPlaying(true)).catch(() => {});
-      }
-      window.removeEventListener("pointerdown", resume);
-      window.removeEventListener("keydown", resume);
+    const wantsMusic = localStorage.getItem("bg-music") !== "off";
+
+    const start = () => {
+      audio.play().then(() => setPlaying(true)).catch(() => {});
     };
-    window.addEventListener("pointerdown", resume);
-    window.addEventListener("keydown", resume);
+
+    const startOnGesture = () => {
+      if (localStorage.getItem("bg-music") !== "off" && audio.paused) start();
+      cleanupGesture();
+    };
+    const cleanupGesture = () => {
+      window.removeEventListener("pointerdown", startOnGesture);
+      window.removeEventListener("keydown", startOnGesture);
+      window.removeEventListener("scroll", startOnGesture);
+    };
+
+    if (wantsMusic) {
+      // attempt real autoplay; if the browser blocks it, wait for the
+      // first gesture (click, key, or scroll) and start then
+      audio
+        .play()
+        .then(() => setPlaying(true))
+        .catch(() => {
+          window.addEventListener("pointerdown", startOnGesture);
+          window.addEventListener("keydown", startOnGesture);
+          window.addEventListener("scroll", startOnGesture, { passive: true });
+        });
+    }
 
     return () => {
-      window.removeEventListener("pointerdown", resume);
-      window.removeEventListener("keydown", resume);
+      cleanupGesture();
       audio.pause();
       audioRef.current = null;
     };

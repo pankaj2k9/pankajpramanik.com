@@ -13,6 +13,9 @@ const nav = [
   { href: "/admin/posts", label: "Blog Posts" },
   { href: "/admin/projects", label: "Projects" },
   { href: "/admin/experience", label: "Experience" },
+  { href: "/admin/certifications", label: "Certifications" },
+  { href: "/admin/skills", label: "Skills" },
+  { href: "/admin/pages", label: "Pages & Services" },
   { href: "/admin/messages", label: "Messages" },
 ];
 

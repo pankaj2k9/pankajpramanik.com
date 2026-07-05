@@ -81,12 +81,14 @@ model Project {
   repoUrl     String?
   liveUrl     String?
   coverImage  String?
-  category    String        @default("General")
-  featured    Boolean       @default(false)
-  order       Int           @default(0)
-  status      ContentStatus @default(PUBLISHED)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  category       String        @default("General")
+  featured       Boolean       @default(false)
+  order          Int           @default(0)
+  status         ContentStatus @default(PUBLISHED)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   @@index([status, featured, order])
 }
@@ -128,10 +130,11 @@ model Education {
 }
 
 model Certification {
-  id     String @id @default(cuid())
+  id     String  @id @default(cuid())
   title  String
   issuer String
-  order  Int    @default(0)
+  url    String?
+  order  Int     @default(0)
 }
 
 model Testimonial {

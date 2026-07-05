@@ -189,7 +189,7 @@ async function seedEducationAndCerts() {
   }
   console.log(`✓ education: ${education.length}`);
 
-  const certs = readJson<{ issuer: string; title: string }[]>(
+  const certs = readJson<{ issuer: string; title: string; url?: string }[]>(
     "certifications.json"
   );
   await prisma.certification.deleteMany();
@@ -242,7 +242,8 @@ async function seedPages() {
     };
     await prisma.page.upsert({
       where: { slug: p.slug },
-      update: { kind: p.kind, label: p.label, summary: p.summary },
+      // keep page content in sync with the latest extraction
+      update: data,
       create: { slug: p.slug, ...data },
     });
   }

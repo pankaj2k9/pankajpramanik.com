@@ -1,25 +1,117 @@
 [
-  { "issuer": "Coursera · IBM", "title": "Generative AI Essentials: A Comprehensive Introduction" },
-  { "issuer": "Coursera · IBM", "title": "Hands-on Introduction to Linux Commands & Shell Scripting" },
-  { "issuer": "Coursera · IBM", "title": "Introduction to Software Engineering" },
-  { "issuer": "Coursera · IBM", "title": "Developing AI Applications with Python and Flask" },
-  { "issuer": "Coursera · IBM", "title": "Introduction to DevOps" },
-  { "issuer": "Coursera · HKUST", "title": "Multiplatform Mobile App Development with React Native" },
-  { "issuer": "Coursera · HKUST", "title": "Front-End Web UI Frameworks & Tools: Bootstrap 4" },
-  { "issuer": "Coursera · HKUST", "title": "Server-side Development with NodeJS, Express & MongoDB" },
-  { "issuer": "Coursera · HKUST", "title": "Front-End Web Development with React" },
-  { "issuer": "Coursera · HKUST", "title": "Front-End JavaScript Frameworks: Angular" },
-  { "issuer": "Coursera · Michigan", "title": "Using Databases with Python" },
-  { "issuer": "Coursera · Michigan", "title": "Programming for Everybody (Python)" },
-  { "issuer": "Coursera · Michigan", "title": "Using Python to Access Web Data" },
-  { "issuer": "Coursera · Michigan", "title": "Python Data Structures" },
-  { "issuer": "Coursera · Georgia Tech", "title": "Write Professional Emails in English" },
-  { "issuer": "Coursera · Georgia Tech", "title": "Speak English Professionally: In Person, Online & On the Phone" },
-  { "issuer": "Udemy", "title": "The Complete Guide to Becoming a Software Architect" },
-  { "issuer": "Udemy", "title": "Solana Blockchain Developer Bootcamp (Rust + JavaScript)" },
-  { "issuer": "Udemy", "title": "Three.js with React.js Course" },
-  { "issuer": "Udemy", "title": "TypeScript: The Complete Developer's Guide" },
-  { "issuer": "Udemy", "title": "Advanced Solidity: Understanding & Optimizing Gas Costs" },
-  { "issuer": "Udemy", "title": "Node.js Microservices for Beginners" },
-  { "issuer": "Ostad.app", "title": "Data Science Certificate Program" }
+  {
+    "url": "https://www.coursera.org/account/accomplishments/certificate/AA1JDCGD2ZN2",
+    "issuer": "COURSERA · IBM",
+    "title": "Generative AI Essentials: A Comprehensive Introduction"
+  },
+  {
+    "url": "https://www.coursera.org/account/accomplishments/certificate/AJDB58VNVSW6",
+    "issuer": "COURSERA · IBM",
+    "title": "Hands-on Introduction to Linux Commands & Shell Scripting"
+  },
+  {
+    "url": "https://www.coursera.org/account/accomplishments/certificate/4TGP93HYJG7V",
+    "issuer": "COURSERA · HKUST",
+    "title": "Multiplatform Mobile App Development with React Native"
+  },
+  {
+    "url": "https://www.coursera.org/account/accomplishments/certificate/ZN5DYKPHSGNZ",
+    "issuer": "COURSERA · HKUST",
+    "title": "Front-End Web UI Frameworks & Tools: Bootstrap 4"
+  },
+  {
+    "url": "https://coursera.org/share/7e18d6be9baaa4fd8aa192abb3bbf7f9",
+    "issuer": "COURSERA · MICHIGAN",
+    "title": "Using Databases with Python"
+  },
+  {
+    "url": "https://www.udemy.com/certificate/UC-6e23330d-2f37-42d5-88ee-a0658b99304a/",
+    "issuer": "UDEMY",
+    "title": "The Complete Guide to Becoming a Software Architect"
+  },
+  {
+    "url": "https://www.udemy.com/certificate/UC-79217275-948b-4ddf-ad98-ad218d25b701/",
+    "issuer": "UDEMY",
+    "title": "Solana Blockchain Developer Bootcamp (Rust + JavaScript)"
+  },
+  {
+    "url": "https://www.coursera.org/account/accomplishments/certificate/PKPVECCDADKN",
+    "issuer": "COURSERA · GEORGIA TECH",
+    "title": "Write Professional Emails in English"
+  },
+  {
+    "url": "https://www.coursera.org/account/accomplishments/certificate/JWVNKVQKUE3R",
+    "issuer": "COURSERA · IBM",
+    "title": "Introduction to Software Engineering"
+  },
+  {
+    "url": "https://coursera.org/share/acfa2d10c5a748a7d14b84aa50a49667",
+    "issuer": "COURSERA · IBM",
+    "title": "Developing AI Applications with Python and Flask"
+  },
+  {
+    "url": "https://www.coursera.org/account/accomplishments/certificate/MUF4HDWWKSY5",
+    "issuer": "COURSERA · HKUST",
+    "title": "Server-side Development with NodeJS, Express & MongoDB"
+  },
+  {
+    "url": "https://coursera.org/share/82c86225c559a5fd9eff86d390f6fe85",
+    "issuer": "COURSERA · MICHIGAN",
+    "title": "Programming for Everybody (Python)"
+  },
+  {
+    "url": "https://coursera.org/share/40ec8742bedfcc31b8937f260b498181",
+    "issuer": "COURSERA · MICHIGAN",
+    "title": "Using Python to Access Web Data"
+  },
+  {
+    "url": "https://www.udemy.com/certificate/UC-0b47901a-60a6-44ac-b23b-34bf771a1c01/",
+    "issuer": "UDEMY",
+    "title": "Three.js with React.js Course"
+  },
+  {
+    "url": "https://www.udemy.com/certificate/UC-0Y1L77J5/",
+    "issuer": "UDEMY",
+    "title": "TypeScript: The Complete Developer's Guide"
+  },
+  {
+    "url": "https://www.coursera.org/account/accomplishments/certificate/8KY3XFCMWJ64",
+    "issuer": "COURSERA · GEORGIA TECH",
+    "title": "Speak English Professionally: In Person, Online & On the Phone"
+  },
+  {
+    "url": "https://www.coursera.org/account/accomplishments/certificate/2YABHRSDDJMX",
+    "issuer": "COURSERA · IBM",
+    "title": "Introduction to DevOps"
+  },
+  {
+    "url": "https://www.coursera.org/account/accomplishments/certificate/DV3NZPF5UYYB",
+    "issuer": "COURSERA · HKUST",
+    "title": "Front-End Web Development with React"
+  },
+  {
+    "url": "https://www.coursera.org/account/accomplishments/certificate/42EZVBW67PA5",
+    "issuer": "COURSERA · HKUST",
+    "title": "Front-End JavaScript Frameworks: Angular"
+  },
+  {
+    "url": "https://coursera.org/share/6eff7e9e72b3f10e1072c45cef2a1729",
+    "issuer": "COURSERA · MICHIGAN",
+    "title": "Python Data Structures"
+  },
+  {
+    "url": "https://ostad.app/share/certificate/a7031-pankaj-kumar-pramanik",
+    "issuer": "OSTAD.APP",
+    "title": "Data Science Certificate Program"
+  },
+  {
+    "url": "https://www.udemy.com/certificate/UC-4c25d204-7c9b-46f1-8fbd-c7471da2dec5/",
+    "issuer": "UDEMY",
+    "title": "Advanced Solidity: Understanding & Optimizing Gas Costs"
+  },
+  {
+    "url": "https://www.udemy.com/certificate/UC-B7AWPE0H/",
+    "issuer": "UDEMY",
+    "title": "Node.js Microservices for Beginners"
+  }
 ]

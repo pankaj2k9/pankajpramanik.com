@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import HeroCanvas from "@/components/home/HeroCanvas";
 import SocialLinks from "@/components/site/SocialLinks";
+import Reveal from "@/components/site/Reveal";
 import { PostCard, ProjectCard, SectionHeading } from "@/components/site/cards";
 import {
   getFeaturedProjects,
@@ -87,6 +88,16 @@ export default async function HomePage() {
               >
                 Get in Touch
               </Link>
+              <a
+                href="/Pankaj_Kumar_Pramanik_AI_Data_Engineer_CV.pdf"
+                download
+                className="inline-flex items-center gap-2 rounded-xl border border-border px-7 py-3.5 font-semibold text-muted transition hover:border-accent hover:text-accent"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                </svg>
+                CV
+              </a>
             </div>
 
             <div className="mt-9 flex items-center gap-5">
@@ -97,7 +108,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* portrait */}
+          {/* portrait with floating tech chips */}
           <div className="relative mx-auto w-64 sm:w-72 lg:w-full lg:max-w-sm">
             <div
               className="absolute -inset-4 rounded-[2rem] opacity-40 blur-2xl"
@@ -124,6 +135,24 @@ export default async function HomePage() {
                 <p className="text-xs text-white/70">{site.headline}</p>
               </div>
             </div>
+            <span
+              className="absolute -left-6 top-8 rounded-xl border border-border bg-surface/90 px-3 py-1.5 text-xs font-semibold text-accent backdrop-blur [animation:float-y_5s_ease-in-out_infinite]"
+              aria-hidden
+            >
+              🤖 Agentic AI
+            </span>
+            <span
+              className="absolute -right-5 top-1/3 rounded-xl border border-border bg-surface/90 px-3 py-1.5 text-xs font-semibold text-accent backdrop-blur [animation:float-y_6s_ease-in-out_0.8s_infinite]"
+              aria-hidden
+            >
+              ⚡ LLM &amp; RAG
+            </span>
+            <span
+              className="absolute -bottom-4 left-8 rounded-xl border border-border bg-surface/90 px-3 py-1.5 text-xs font-semibold text-accent backdrop-blur [animation:float-y_5.5s_ease-in-out_1.6s_infinite]"
+              aria-hidden
+            >
+              🚀 MLOps
+            </span>
           </div>
         </div>
 
@@ -144,30 +173,56 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ---------- Tech marquee ---------- */}
+      <div className="overflow-hidden border-b border-border py-5" aria-hidden>
+        <div className="marquee-track gap-10">
+          {[0, 1].map((copy) => (
+            <ul key={copy} className="flex shrink-0 items-center gap-10 pr-10">
+              {[
+                "LangChain", "LangGraph", "OpenAI", "Claude", "RAG Systems",
+                "Pinecone", "n8n", "Python", "TensorFlow", "FastAPI",
+                "Next.js", "TypeScript", "PostgreSQL", "AWS", "GCP",
+                "Docker", "Kubernetes", "Three.js", "MLOps", "Supabase",
+              ].map((t) => (
+                <li
+                  key={t}
+                  className="whitespace-nowrap font-display text-sm font-semibold uppercase tracking-widest text-faint"
+                >
+                  {t} <span className="ml-8 text-accent">·</span>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </div>
+
       {/* ---------- Services ---------- */}
       <section className="container-site py-20">
-        <SectionHeading
-          eyebrow="Services"
-          title="What I can do for you"
-          action={{ href: "/services", label: "All services" }}
-        />
+        <Reveal>
+          <SectionHeading
+            eyebrow="Services"
+            title="What I can do for you"
+            action={{ href: "/services", label: "All services" }}
+          />
+        </Reveal>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {services.slice(0, 6).map((s) => (
-            <Link
-              key={s.id}
-              href={`/services/${s.slug}`}
-              className="card card-hover group p-6"
-            >
-              <h3 className="font-display text-lg font-semibold group-hover:text-accent">
-                {s.label}
-              </h3>
-              <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted">
-                {s.summary}
-              </p>
-              <span className="mt-3 inline-block text-sm font-medium text-accent">
-                Learn more →
-              </span>
-            </Link>
+          {services.slice(0, 6).map((s, i) => (
+            <Reveal key={s.id} delay={i * 70}>
+              <Link
+                href={`/services/${s.slug}`}
+                className="card card-hover group block h-full p-6"
+              >
+                <h3 className="font-display text-lg font-semibold group-hover:text-accent">
+                  {s.label}
+                </h3>
+                <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted">
+                  {s.summary}
+                </p>
+                <span className="mt-3 inline-block text-sm font-medium text-accent">
+                  Learn more →
+                </span>
+              </Link>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -175,14 +230,18 @@ export default async function HomePage() {
       {/* ---------- Featured projects ---------- */}
       <section className="border-y border-border bg-surface/50 py-20">
         <div className="container-site">
-          <SectionHeading
-            eyebrow="Portfolio"
-            title="Featured work"
-            action={{ href: "/portfolio", label: "All projects" }}
-          />
+          <Reveal>
+            <SectionHeading
+              eyebrow="Portfolio"
+              title="Featured work"
+              action={{ href: "/portfolio", label: "All projects" }}
+            />
+          </Reveal>
           <div className="grid gap-6 sm:grid-cols-2">
-            {projects.map((p) => (
-              <ProjectCard key={p.id} project={p} />
+            {projects.map((p, i) => (
+              <Reveal key={p.id} delay={i * 70}>
+                <ProjectCard project={p} />
+              </Reveal>
             ))}
           </div>
         </div>
@@ -190,14 +249,16 @@ export default async function HomePage() {
 
       {/* ---------- Skills strip ---------- */}
       <section className="container-site py-20">
-        <SectionHeading
-          eyebrow="Capabilities"
-          title="What I work with"
-          action={{ href: "/skills", label: "Full tech stack" }}
-        />
+        <Reveal>
+          <SectionHeading
+            eyebrow="Capabilities"
+            title="What I work with"
+            action={{ href: "/skills", label: "Full tech stack" }}
+          />
+        </Reveal>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {skillGroups.slice(0, 6).map((g) => (
-            <div key={g.id} className="card p-6">
+            <div key={g.id} className="card card-hover p-6">
               <h3 className="font-display text-base font-semibold">
                 {g.category}
               </h3>
@@ -224,14 +285,18 @@ export default async function HomePage() {
       {/* ---------- Latest posts ---------- */}
       <section className="border-y border-border bg-surface/50 py-20">
         <div className="container-site">
-          <SectionHeading
-            eyebrow="Blog"
-            title="Latest writing"
-            action={{ href: "/blog", label: "All posts" }}
-          />
+          <Reveal>
+            <SectionHeading
+              eyebrow="Blog"
+              title="Latest writing"
+              action={{ href: "/blog", label: "All posts" }}
+            />
+          </Reveal>
           <div className="grid gap-6 md:grid-cols-3">
-            {posts.map((p) => (
-              <PostCard key={p.id} post={p} />
+            {posts.map((p, i) => (
+              <Reveal key={p.id} delay={i * 70}>
+                <PostCard post={p} />
+              </Reveal>
             ))}
           </div>
         </div>
@@ -240,10 +305,12 @@ export default async function HomePage() {
       {/* ---------- Testimonials ---------- */}
       {testimonials.length > 0 && (
         <section className="container-site py-20">
-          <SectionHeading eyebrow="Testimonials" title="What clients say" />
+          <Reveal>
+            <SectionHeading eyebrow="Testimonials" title="What clients say" />
+          </Reveal>
           <div className="grid gap-6 md:grid-cols-2">
             {testimonials.map((t) => (
-              <figure key={t.id} className="card p-7">
+              <figure key={t.id} className="card card-hover p-7">
                 <div className="text-sm text-amber-400" aria-label="5 stars">
                   ★★★★★
                 </div>

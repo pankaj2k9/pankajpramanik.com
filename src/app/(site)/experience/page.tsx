@@ -39,6 +39,16 @@ export default async function ExperiencePage() {
           8+ years across AI engineering, data platforms, 3D graphics, and
           full-stack development — remote-first with teams worldwide.
         </p>
+        <a
+          href="/Pankaj_Kumar_Pramanik_AI_Data_Engineer_CV.pdf"
+          download
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent-strong px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+          </svg>
+          Download CV
+        </a>
       </header>
 
       {/* ---------- Timeline ---------- */}
@@ -139,14 +149,39 @@ export default async function ExperiencePage() {
           technologies.
         </p>
         <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {certifications.map((c) => (
-            <li key={c.id} className="card p-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-faint">
-                {c.issuer}
-              </p>
-              <p className="mt-1 text-sm font-medium leading-snug">{c.title}</p>
-            </li>
-          ))}
+          {certifications.map((c) => {
+            const inner = (
+              <>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-faint">
+                  {c.issuer}
+                </p>
+                <p className="mt-1 text-sm font-medium leading-snug">
+                  {c.title}
+                </p>
+                {c.url && (
+                  <p className="mt-2 text-xs font-medium text-accent">
+                    View certificate ↗
+                  </p>
+                )}
+              </>
+            );
+            return (
+              <li key={c.id}>
+                {c.url ? (
+                  <a
+                    href={c.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="card card-hover block h-full p-4"
+                  >
+                    {inner}
+                  </a>
+                ) : (
+                  <div className="card h-full p-4">{inner}</div>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </section>
 

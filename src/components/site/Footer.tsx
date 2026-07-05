@@ -71,6 +71,36 @@ export default function Footer() {
               </a>
             </li>
             <li>
+              <a
+                className="hover:text-foreground"
+                href={site.leetcode}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                LeetCode
+              </a>
+            </li>
+            <li>
+              <a
+                className="hover:text-foreground"
+                href={site.kaggle}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Kaggle
+              </a>
+            </li>
+            <li>
+              <a
+                className="hover:text-foreground"
+                href={site.huggingface}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Hugging Face
+              </a>
+            </li>
+            <li>
               <a className="hover:text-foreground" href={`mailto:${site.email}`}>
                 {site.email}
               </a>

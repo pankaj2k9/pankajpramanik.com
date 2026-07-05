@@ -53,6 +53,16 @@ export default function Header() {
           })}
           <div className="ml-2 flex items-center gap-2">
             <ThemeToggle />
+            <a
+              href="/Pankaj_Kumar_Pramanik_AI_Data_Engineer_CV.pdf"
+              download
+              className="flex items-center gap-1.5 rounded-lg border border-border-strong px-3.5 py-2 text-sm font-semibold transition hover:border-accent hover:text-accent"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+              </svg>
+              CV
+            </a>
             <Link
               href="/contact"
               className="rounded-lg bg-accent-strong px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
@@ -98,6 +108,15 @@ export default function Header() {
                 </Link>
               </li>
             ))}
+            <li>
+              <a
+                href="/Pankaj_Kumar_Pramanik_AI_Data_Engineer_CV.pdf"
+                download
+                className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-accent hover:bg-surface-raised"
+              >
+                ↓ Download CV
+              </a>
+            </li>
           </ul>
         </nav>
       )}

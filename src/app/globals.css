@@ -83,6 +83,47 @@
   50% { height: 100%; }
 }
 
+/* --- scroll reveal --- */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* --- floating chips (hero portrait) --- */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* --- tech marquee --- */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -111,8 +152,9 @@ body {
 
 @utility card-hover {
   &:hover {
-    border-color: var(--border-strong);
-    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px -12px color-mix(in srgb, var(--accent-strong) 35%, transparent);
   }
 }
 

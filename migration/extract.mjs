@@ -12,6 +12,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import sanitizeHtml from "sanitize-html";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const EXPORT_DIR = path.join(__dirname, "wp-export");
@@ -77,6 +78,7 @@ function decode(s = "") {
     .replace(/&#8212;/g, "—")
     .replace(/&amp;|&#038;/g, "&")
     .replace(/&hellip;/g, "…")
+    .replace(/&middot;/g, "·")
     .replace(/&nbsp;/g, " ");
 }
 
@@ -156,12 +158,40 @@ const SERVICE_LABELS = {
 
 const SERVICES_PARENT_ID = 2511;
 
+/**
+ * Service pages are Elementor exports — dozens of nested layout divs
+ * around otherwise clean h1/h2/p/ul content. Strip the layout shell at
+ * extraction time so the stored HTML is a clean linear article.
+ */
+function cleanServiceHtml(html) {
+  const cleaned = sanitizeHtml(html, {
+    allowedTags: [
+      "h2", "h3", "h4", "p", "ul", "ol", "li",
+      "strong", "em", "b", "i", "a", "img",
+      "figure", "figcaption", "blockquote",
+    ],
+    allowedAttributes: {
+      a: ["href", "title"],
+      img: ["src", "alt", "width", "height"],
+    },
+    transformTags: {
+      h1: "h2", // page template renders its own h1
+    },
+  });
+  return cleaned
+    // drop paragraphs that are empty or whitespace/nbsp only
+    .replace(/<p>(\s|&nbsp;)*<\/p>/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 const pageOut = pages
   .filter(
     (p) => KEEP_PAGES.includes(p.slug) || p.parent === SERVICES_PARENT_ID
   )
   .map((p) => {
     const isService = p.parent === SERVICES_PARENT_ID;
+    const rewritten = rewriteContent(p.content.rendered);
     return {
       wpId: p.id,
       slug: p.slug,
@@ -169,11 +199,33 @@ const pageOut = pages
       label: isService ? (SERVICE_LABELS[p.slug] ?? decode(p.title.rendered)) : "",
       summary: isService ? (p.yoast_head_json?.description ?? "") : "",
       title: decode(p.title.rendered),
-      contentHtml: rewriteContent(p.content.rendered),
+      contentHtml: isService ? cleanServiceHtml(rewritten) : rewritten,
       seoTitle: p.yoast_head_json?.title ?? null,
       seoDescription: p.yoast_head_json?.description ?? null,
     };
   });
+
+// ---- certifications with links (parsed from the Resume page cards:
+//      <a href="URL"><span>ISSUER</span><h4>TITLE</h4></a>) ----
+const resumePage = pages.find((p) => p.slug === "resume");
+const certOut = [];
+if (resumePage) {
+  const certRe =
+    /<a[^>]+href="(https?:\/\/(?:www\.)?(?:coursera|udemy|ostad)[^"]+)"[^>]*>[\s\S]*?<span[^>]*>([\s\S]*?)<\/span>[\s\S]*?<h4[^>]*>([\s\S]*?)<\/h4>[\s\S]*?<\/a>/g;
+  for (const m of resumePage.content.rendered.matchAll(certRe)) {
+    certOut.push({
+      url: m[1],
+      issuer: stripTags(m[2]).replace(/\s+/g, " ").trim(),
+      title: stripTags(m[3]).replace(/\s+/g, " ").trim(),
+    });
+  }
+  if (certOut.length) {
+    fs.writeFileSync(
+      path.join(OUT_DIR, "certifications.json"),
+      JSON.stringify(certOut, null, 2)
+    );
+  }
+}
 
 fs.writeFileSync(path.join(OUT_DIR, "posts.json"), JSON.stringify(postOut, null, 2));
 fs.writeFileSync(path.join(OUT_DIR, "categories.json"), JSON.stringify(catOut, null, 2));
@@ -185,5 +237,5 @@ fs.writeFileSync(
 );
 
 console.log(
-  `posts: ${postOut.length}, categories: ${catOut.length}, tags: ${tagOut.length}, pages: ${pageOut.length}, media referenced: ${mediaManifest.size}`
+  `posts: ${postOut.length}, categories: ${catOut.length}, tags: ${tagOut.length}, pages: ${pageOut.length}, certifications: ${certOut.length}, media referenced: ${mediaManifest.size}`
 );

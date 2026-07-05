@@ -20,6 +20,8 @@ const projectSchema = z.object({
   featured: z.coerce.boolean().default(false),
   order: z.coerce.number().int().default(0),
   status: z.enum(["DRAFT", "PUBLISHED"]).default("PUBLISHED"),
+  seoTitle: z.string().trim().max(200).optional().default(""),
+  seoDescription: z.string().trim().max(300).optional().default(""),
 });
 
 export type ProjectFormState = { error?: string } | undefined;
@@ -38,6 +40,8 @@ function parseForm(formData: FormData) {
     featured: formData.get("featured") === "on",
     order: formData.get("order") || 0,
     status: formData.get("status"),
+    seoTitle: formData.get("seoTitle"),
+    seoDescription: formData.get("seoDescription"),
   });
 }
 
@@ -55,6 +59,8 @@ function toData(d: z.infer<typeof projectSchema>, slug: string) {
     featured: d.featured,
     order: d.order,
     status: d.status,
+    seoTitle: d.seoTitle || null,
+    seoDescription: d.seoDescription || null,
   };
 }
 
