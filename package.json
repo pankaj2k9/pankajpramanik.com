@@ -13,7 +13,9 @@
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
     "wp:extract": "node migration/extract.mjs",
-    "wp:media": "node migration/download-media.mjs"
+    "wp:media": "node migration/download-media.mjs",
+    "services:art": "node migration/optimize-service-art.mjs",
+    "services:svg": "node migration/generate-service-art.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
@@ -36,6 +38,7 @@
     "react-dom": "19.2.4",
     "resend": "^6.17.1",
     "sanitize-html": "^2.17.5",
+    "sharp": "^0.35.3",
     "three": "^0.185.1",
     "zod": "^4.4.3"
   },

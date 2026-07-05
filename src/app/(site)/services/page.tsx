@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getServices } from "@/lib/queries";
+import { serviceArt } from "@/lib/service-art";
 
 export const revalidate = 300;
 
@@ -40,7 +41,7 @@ export default async function ServicesPage() {
             <div className="relative aspect-[8/5] overflow-hidden border-b border-border bg-surface-raised">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={`/services-art/${s.slug}.svg`}
+                src={serviceArt(s.slug)}
                 alt=""
                 loading="lazy"
                 width={800}

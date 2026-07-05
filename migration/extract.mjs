@@ -158,6 +158,13 @@ const SERVICE_LABELS = {
 
 const SERVICES_PARENT_ID = 2511;
 
+// WP service pages retired in favour of AI-focused custom services
+// (see migration/extracted/custom-services.json)
+const REMOVE_SERVICE_SLUGS = new Set([
+  "remote-angular-app-developer",
+  "full-stack-javascript-app-developer",
+]);
+
 /**
  * Service pages are Elementor exports — dozens of nested layout divs
  * around otherwise clean h1/h2/p/ul content. Strip the layout shell at
@@ -222,7 +229,9 @@ function cleanServiceHtml(html) {
 
 const pageOut = pages
   .filter(
-    (p) => KEEP_PAGES.includes(p.slug) || p.parent === SERVICES_PARENT_ID
+    (p) =>
+      (KEEP_PAGES.includes(p.slug) || p.parent === SERVICES_PARENT_ID) &&
+      !REMOVE_SERVICE_SLUGS.has(p.slug)
   )
   .map((p) => {
     const isService = p.parent === SERVICES_PARENT_ID;

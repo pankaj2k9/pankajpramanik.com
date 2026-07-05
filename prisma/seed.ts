@@ -274,7 +274,33 @@ async function seedPages() {
       create: { slug: p.slug, ...data },
     });
   }
-  console.log(`✓ pages: ${pages.length}`);
+
+  // custom AI-focused services (not from WordPress)
+  type CustomPage = WpPage;
+  const custom = readJson<CustomPage[]>("custom-services.json");
+  for (const p of custom) {
+    const data = {
+      kind: p.kind,
+      label: p.label,
+      summary: p.summary,
+      title: p.title,
+      content: p.contentHtml,
+      contentFormat: ContentFormat.HTML,
+      seoTitle: p.seoTitle,
+      seoDescription: p.seoDescription,
+    };
+    await prisma.page.upsert({
+      where: { slug: p.slug },
+      update: data,
+      create: { slug: p.slug, ...data },
+    });
+  }
+
+  // remove retired WP service pages
+  const retired = ["remote-angular-app-developer", "full-stack-javascript-app-developer"];
+  await prisma.page.deleteMany({ where: { slug: { in: retired } } });
+
+  console.log(`✓ pages: ${pages.length} + ${custom.length} custom, retired ${retired.length}`);
 }
 
 async function main() {

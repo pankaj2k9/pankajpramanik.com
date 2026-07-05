@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getPageBySlug, getServices } from "@/lib/queries";
 import { renderContent, upgradeCtaLinks } from "@/lib/content";
 import { absoluteUrl, site } from "@/lib/site";
+import { serviceArt } from "@/lib/service-art";
 import { cn } from "@/lib/utils";
 
 export const revalidate = 3600;
@@ -257,7 +258,7 @@ export default async function ServicePage({
               <div className="overflow-hidden rounded-3xl border border-border-strong shadow-2xl shadow-black/40">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={`/services-art/${page.slug}.svg`}
+                  src={serviceArt(page.slug)}
                   alt=""
                   width={800}
                   height={500}

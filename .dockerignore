@@ -13,6 +13,9 @@ out
 # next.config redirects + the seed)
 migration/wp-export
 
+# Raw service-thumbnail sources — only the optimized .webp outputs are served
+public/services-art/source
+
 # VCS / tooling / editor
 .git
 .github

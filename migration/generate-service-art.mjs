@@ -17,7 +17,13 @@ fs.mkdirSync(OUT, { recursive: true });
 const pages = JSON.parse(
   fs.readFileSync(path.join(__dirname, "extracted", "pages.json"), "utf8")
 );
-const services = pages.filter((p) => p.kind === "SERVICE");
+let custom = [];
+try {
+  custom = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "extracted", "custom-services.json"), "utf8")
+  );
+} catch {}
+const services = [...pages, ...custom].filter((p) => p.kind === "SERVICE");
 
 function hashCode(str) {
   let h = 0;

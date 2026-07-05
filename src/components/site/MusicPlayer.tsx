@@ -28,6 +28,21 @@ function getAudio(): HTMLAudioElement {
     for (const ev of ["play", "pause"] as const) {
       audio.addEventListener(ev, () => listeners.forEach((l) => l()));
     }
+    // resume where the visitor left off on the previous visit
+    const saved = Number(localStorage.getItem("bg-music-pos"));
+    if (saved > 0) {
+      audio.addEventListener(
+        "loadedmetadata",
+        () => {
+          if (audio && saved < audio.duration) audio.currentTime = saved;
+        },
+        { once: true }
+      );
+    }
+    // persist position so a reload resumes instead of restarting
+    audio.addEventListener("timeupdate", () => {
+      if (audio) localStorage.setItem("bg-music-pos", String(audio.currentTime));
+    });
   }
   return audio;
 }
