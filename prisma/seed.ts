@@ -109,38 +109,47 @@ async function seedProjects() {
     slug: string;
     title: string;
     tagline: string;
-    description: string;
+    description: string; // Overview tab
+    content: string; // Case Study tab (HTML)
+    contentFormat: "HTML" | "MARKDOWN";
+    coverImage: string | null;
     techStack: string[];
     repoUrl: string | null;
     liveUrl: string | null;
     category: string;
     featured: boolean;
+    seoTitle: string | null;
+    seoDescription: string | null;
     order: number;
   };
-  const projects = readJson<Proj[]>("projects.json");
-  // GitHub-scraped README content + OpenGraph cover images (optional file,
-  // produced by migration/github-projects.mjs)
-  let enriched: Record<string, { content: string; coverImage: string }> = {};
-  try {
-    enriched = readJson("project-content.json");
-  } catch {
-    console.log("  (no project-content.json — run migration/github-projects.mjs to enrich)");
-  }
+  // Migrated from the WordPress `portfolio` custom post type
+  // (migration/extract-portfolio.mjs) — rich Overview + Case Study content
+  // with the original WP slugs preserved.
+  const projects = readJson<Proj[]>("portfolio-projects.json");
+  // full replace keeps the set in sync with the live portfolio
+  await prisma.project.deleteMany();
   for (const p of projects) {
-    const extra = enriched[p.slug];
-    const data = {
-      ...p,
-      status: ContentStatus.PUBLISHED,
-      ...(extra?.content ? { content: extra.content } : {}),
-      ...(extra?.coverImage ? { coverImage: extra.coverImage } : {}),
-    };
-    await prisma.project.upsert({
-      where: { slug: p.slug },
-      update: {
-        ...(extra?.content ? { content: extra.content } : {}),
-        ...(extra?.coverImage ? { coverImage: extra.coverImage } : {}),
+    await prisma.project.create({
+      data: {
+        slug: p.slug,
+        title: p.title,
+        tagline: p.tagline,
+        description: p.description,
+        content: p.content,
+        contentFormat: p.contentFormat === "MARKDOWN"
+          ? ContentFormat.MARKDOWN
+          : ContentFormat.HTML,
+        coverImage: p.coverImage,
+        techStack: p.techStack,
+        repoUrl: p.repoUrl,
+        liveUrl: p.liveUrl,
+        category: p.category,
+        featured: p.featured,
+        seoTitle: p.seoTitle,
+        seoDescription: p.seoDescription,
+        order: p.order,
+        status: ContentStatus.PUBLISHED,
       },
-      create: data,
     });
   }
   console.log(`✓ projects: ${projects.length}`);

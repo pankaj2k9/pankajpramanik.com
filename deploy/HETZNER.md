@@ -1,10 +1,65 @@
 # Deploying on Hetzner Cloud (CX23 / CPX-series)
 
-The stack is provider-agnostic: any Ubuntu VPS + SSH works. The same
-`deploy/server-setup.sh`, Nginx config, PM2 setup, and GitHub Actions
-workflow used for DigitalOcean run unchanged on Hetzner. GitHub Actions
-deploys over plain SSH, so there is no provider lock-in — Hetzner has
-exactly the same CI/CD integration story as DigitalOcean here.
+The stack is provider-agnostic: any Ubuntu VPS + SSH works. There are two
+supported deployment styles — pick one:
+
+- **Docker Compose (recommended)** — app + Postgres + Redis + Caddy (auto
+  HTTPS) in containers. See **"Docker deployment"** below. This matches
+  `docker-compose.prod.yml`.
+- **Bare-metal (PM2 + Nginx)** — the original path using
+  `deploy/server-setup.sh`, `deploy/nginx.conf`, and PM2. See the sections
+  after that.
+
+GitHub Actions deploys over plain SSH either way, so there is no provider
+lock-in — Hetzner has the same CI/CD story as DigitalOcean.
+
+---
+
+## Docker deployment (recommended)
+
+**On the server (one-time):**
+
+```bash
+# install Docker Engine + compose plugin
+curl -fsSL https://get.docker.com | sh
+
+mkdir -p /opt/pankajpramanik && cd /opt/pankajpramanik
+# copy these three files from the repo to the server:
+#   docker-compose.prod.yml, Caddyfile, and a filled-in .env
+cp .env.production.example .env && nano .env   # set real secrets + DOMAIN
+
+# point DNS (A records @ and www) at the server IP first, then:
+docker login ghcr.io -u <github-user>          # to pull the private image
+docker compose -f docker-compose.prod.yml up -d
+```
+
+The app container runs `prisma migrate deploy` automatically on start.
+**Seed the database once** (the slim runtime image can't seed itself):
+
+```bash
+# from a repo checkout (server or laptop) pointed at the prod DB:
+DATABASE_URL="postgresql://appuser:PASS@<server-ip>:5432/pankajpramanik" \
+  npm ci && npm run db:seed
+```
+
+(Or temporarily expose the `db` port, seed, then remove the port mapping.)
+
+**Image builds** happen in CI: `.github/workflows/docker.yml` spins up a
+throwaway Postgres, migrates + seeds it, builds the image against it
+(`next build` needs a DB), and pushes to
+`ghcr.io/pankaj2k9/pankajpramanik`. On push to `main` it then SSHes to the
+server and runs `docker compose pull && up -d`.
+
+Required repo secrets: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`
+(the `GITHUB_TOKEN` for GHCR is automatic). Make the GHCR package readable
+by the server, or `docker login` on the server as above.
+
+**TLS**: Caddy obtains and renews Let's Encrypt certs automatically for
+`DOMAIN` and `www.DOMAIN` from the `.env` — nothing else to configure.
+
+---
+
+## Bare-metal (PM2 + Nginx) alternative
 
 ## 1. Create the server
 

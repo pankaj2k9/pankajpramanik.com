@@ -4,18 +4,23 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getProjectBySlug, getPublishedProjects } from "@/lib/queries";
-import { renderContent } from "@/lib/content";
+import { renderContent, upgradeCtaLinks } from "@/lib/content";
 import { absoluteUrl } from "@/lib/site";
 import Tabs from "@/components/site/Tabs";
 
 export const revalidate = 300;
 
 export async function generateStaticParams() {
-  const projects = await prisma.project.findMany({
-    where: { status: "PUBLISHED" },
-    select: { slug: true },
-  });
-  return projects.map((p) => ({ slug: p.slug }));
+  try {
+    const projects = await prisma.project.findMany({
+      where: { status: "PUBLISHED" },
+      select: { slug: true },
+    });
+    return projects.map((p) => ({ slug: p.slug }));
+  } catch {
+    // DB unreachable at build time — pages render on demand (ISR)
+    return [];
+  }
 }
 
 export async function generateMetadata({
@@ -133,7 +138,9 @@ export default async function ProjectPage({
               <div
                 className="prose-content"
                 dangerouslySetInnerHTML={{
-                  __html: renderContent(project.content, project.contentFormat),
+                  __html: upgradeCtaLinks(
+                    renderContent(project.content, project.contentFormat)
+                  ),
                 }}
               />
             ),

@@ -12,11 +12,16 @@ import { PostCard } from "@/components/site/cards";
 export const revalidate = 300;
 
 export async function generateStaticParams() {
-  const posts = await prisma.post.findMany({
-    where: { status: "PUBLISHED" },
-    select: { slug: true },
-  });
-  return posts.map((p) => ({ slug: p.slug }));
+  try {
+    const posts = await prisma.post.findMany({
+      where: { status: "PUBLISHED" },
+      select: { slug: true },
+    });
+    return posts.map((p) => ({ slug: p.slug }));
+  } catch {
+    // DB unreachable at build time — pages render on demand (ISR)
+    return [];
+  }
 }
 
 export async function generateMetadata({

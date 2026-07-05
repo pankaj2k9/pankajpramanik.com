@@ -3,18 +3,23 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getPageBySlug, getServices } from "@/lib/queries";
-import { renderContent } from "@/lib/content";
+import { renderContent, upgradeCtaLinks } from "@/lib/content";
 import { absoluteUrl, site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const services = await prisma.page.findMany({
-    where: { kind: "SERVICE" },
-    select: { slug: true },
-  });
-  return services.map((s) => ({ slug: s.slug }));
+  try {
+    const services = await prisma.page.findMany({
+      where: { kind: "SERVICE" },
+      select: { slug: true },
+    });
+    return services.map((s) => ({ slug: s.slug }));
+  } catch {
+    // DB unreachable at build time — pages render on demand (ISR)
+    return [];
+  }
 }
 
 export async function generateMetadata({
@@ -56,16 +61,6 @@ const stripTags = (s: string) =>
     .replace(/\s+/g, " ")
     .trim();
 
-const CTA_PHRASES =
-  /^(hire me|book (a )?free consultation|view portfolio|contact me|get in touch|start a project|explore project( click here)?)$/i;
-
-/**
- * Turn bare CTA text-links inside migrated copy ("Hire Me",
- * "Book Free Consultation", "View Portfolio"…) into styled buttons.
- * Elementor anchors wrap the label in whitespace + empty <i> icons and
- * use "/#/contact"-style hrefs, so match on the stripped inner text and
- * normalise the href.
- */
 /**
  * A few decorative stock images were reused on every one of the 20
  * service pages. Swap them for this service's own generated artwork
@@ -83,19 +78,6 @@ function swapSharedImages(html: string, slug: string): string {
     )
     // cartoon "find me here" footer illustration — pure noise, drop it
     .replace(/<img[^>]*contact-footer[^>]*\/?>/g, "");
-}
-
-function styleCtaLinks(html: string): string {
-  return html
-    .replace(/href="\/#\//g, 'href="/')
-    .replace(
-      /<a\b([^>]*)>([\s\S]{0,160}?)<\/a>/gi,
-      (full, attrs: string, inner: string) => {
-        const text = stripTags(inner);
-        if (!CTA_PHRASES.test(text)) return full;
-        return `<a${attrs} class="btn-inline">${text}</a>`;
-      }
-    );
 }
 
 /**
@@ -350,7 +332,7 @@ export default async function ServicePage({
             >
               <div
                 className="prose-content text-lg"
-                dangerouslySetInnerHTML={{ __html: swapSharedImages(styleCtaLinks(intro), page.slug) }}
+                dangerouslySetInnerHTML={{ __html: swapSharedImages(upgradeCtaLinks(intro), page.slug) }}
               />
             </section>
           )}
@@ -369,7 +351,7 @@ export default async function ServicePage({
                   </h2>
                   <div
                     className="prose-content min-w-0 [&>:first-child]:mt-0"
-                    dangerouslySetInnerHTML={{ __html: swapSharedImages(styleCtaLinks(s.body), page.slug) }}
+                    dangerouslySetInnerHTML={{ __html: swapSharedImages(upgradeCtaLinks(s.body), page.slug) }}
                   />
                 </div>
               ))}

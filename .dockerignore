@@ -1,0 +1,29 @@
+# Build artifacts & deps (reinstalled/rebuilt in the image)
+node_modules
+.next
+out
+
+# Local env & secrets — never bake into an image
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Raw WordPress export (large; only migration/extracted is needed for
+# next.config redirects + the seed)
+migration/wp-export
+
+# VCS / tooling / editor
+.git
+.github
+.gitignore
+*.log
+npm-debug.log*
+.DS_Store
+.vscode
+.idea
+
+# Docs & CI that don't belong in the runtime image
+README.md
+deploy
+scratchpad

@@ -1,0 +1,26 @@
+# Caddy reverse proxy with automatic HTTPS (Let's Encrypt).
+# DOMAIN and ACME_EMAIL are injected from the .env file via compose.
+{
+	email {$ACME_EMAIL}
+}
+
+{$DOMAIN}, www.{$DOMAIN} {
+	encode zstd gzip
+
+	# long-cache immutable Next.js build assets
+	@static path /_next/static/* /services-art/* /audio/*
+	header @static Cache-Control "public, max-age=31536000, immutable"
+
+	# migrated media
+	@uploads path /uploads/*
+	header @uploads Cache-Control "public, max-age=604800"
+
+	# security headers
+	header {
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	reverse_proxy app:3000
+}

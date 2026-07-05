@@ -1,22 +1,37 @@
-# Local PostgreSQL for development (alternative to a native install).
-# Usage: docker compose up -d
+# Local development: database + cache only. Run the app with `npm run dev`.
+# For the full containerized stack (app included), see docker-compose.prod.yml.
+#
+#   docker compose up -d
+#   # then set DATABASE_URL to the 5433 port below and:
+#   npm run db:migrate && npm run db:seed && npm run dev
 services:
   db:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: pankajpramanik
+      POSTGRES_USER: ${POSTGRES_USER:-pankajpramanik}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pankajpramanik_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-pankajpramanik}
     ports:
-      - "5432:5432"
+      # Host 5433 avoids clashing with any native Postgres on 5432
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pankajpramanik}"]
       interval: 5s
-      timeout: 3s
+      timeout: 5s
       retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      # Host 6380 avoids clashing with any native Redis on 6379
+      - "6380:6379"
+    volumes:
+      - redisdata:/data
 
 volumes:
   pgdata:
+  redisdata:

@@ -86,7 +86,7 @@ export default function MusicPlayer() {
       aria-label={playing ? "Pause background music" : "Play background music"}
       aria-pressed={playing}
       title={playing ? "Pause music" : "Play music"}
-      className="fixed bottom-5 right-5 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-border bg-surface/90 shadow-lg backdrop-blur transition hover:border-accent hover:text-accent"
+      className="fixed bottom-5 right-5 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-accent/60 bg-surface/90 text-accent shadow-lg shadow-accent-strong/25 ring-2 ring-accent/15 backdrop-blur transition hover:scale-105 hover:border-accent hover:bg-accent-strong hover:text-white"
     >
       {playing ? (
         <span className="flex h-4 items-end gap-[3px]" aria-hidden>

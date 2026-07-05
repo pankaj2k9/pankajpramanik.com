@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
 
   // 5 submissions per 10 minutes per IP
-  const limited = rateLimit(`contact:${ip}`, { limit: 5, windowMs: 600_000 });
+  const limited = await rateLimit(`contact:${ip}`, { limit: 5, windowMs: 600_000 });
   if (!limited.ok) {
     return NextResponse.json(
       { error: "Too many requests. Please try again later." },

@@ -1,0 +1,72 @@
+# Production stack for the Hetzner VPS: app + Postgres + Redis + Caddy.
+# Caddy terminates TLS (auto Let's Encrypt) and reverse-proxies to the app.
+#
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# Env comes from a .env file placed next to this file on the server
+# (see .env.production.example). NEVER commit that file.
+services:
+  app:
+    image: ${APP_IMAGE:-ghcr.io/pankaj2k9/pankajpramanik:latest}
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
+      REDIS_URL: redis://redis:6379
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+    # NOTE: public/uploads (migrated media) is baked into the image and the
+    # admin references images by URL, so nothing writes there at runtime —
+    # we intentionally do NOT mount a volume over it (an empty volume would
+    # hide the baked files). If you later add file uploads, use object
+    # storage (S3 / DO Spaces) rather than a host volume.
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "3000"
+
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddydata:/data
+      - caddyconfig:/config
+    depends_on:
+      - app
+
+volumes:
+  pgdata:
+  redisdata:
+  caddydata:
+  caddyconfig:
