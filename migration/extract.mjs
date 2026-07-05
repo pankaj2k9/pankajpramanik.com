@@ -206,7 +206,8 @@ function cleanServiceHtml(html) {
     .replace(
       /<p>((?:[^<]{0,6}<strong>[^<]+<\/strong>){3,})\s*<\/p>/g,
       (_m, inner) =>
-        "<ul>" +
+        // icon-list: emoji acts as the bullet, so CSS hides the disc
+        '<ul class="icon-list">' +
         inner.replace(
           /([^<]{0,6})<strong>([^<]+)<\/strong>/g,
           "<li>$1<strong>$2</strong></li>"

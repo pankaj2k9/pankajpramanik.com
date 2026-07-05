@@ -277,6 +277,50 @@ html.lenis body {
 .prose-content hr { border-color: var(--border); margin: 2.5rem 0; }
 .prose-content iframe { max-width: 100%; border-radius: 0.75rem; margin: 1.75rem 0; }
 
+/* Emoji-bulleted lists from migrated service copy — the emoji IS the
+   bullet, so hide the disc marker. */
+.prose-content ul.icon-list {
+  list-style: none;
+  padding-left: 0;
+}
+.prose-content ul.icon-list li {
+  margin: 0.6rem 0;
+  padding-left: 0;
+}
+.prose-content ul.icon-list li::marker {
+  content: "";
+}
+
+/* CTA text-links in migrated copy, upgraded to buttons at render time */
+.prose-content a.btn-inline {
+  display: inline-block;
+  margin: 0.5rem 0.75rem 0.25rem 0;
+  padding: 0.65rem 1.4rem;
+  border-radius: 0.75rem;
+  background: var(--accent-strong);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: opacity 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  box-shadow: 0 8px 24px -10px color-mix(in srgb, var(--accent-strong) 60%, transparent);
+}
+.prose-content a.btn-inline:hover {
+  opacity: 0.9;
+  text-decoration: none;
+}
+/* second adjacent CTA becomes the outline variant */
+.prose-content a.btn-inline + a.btn-inline {
+  background: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border-strong);
+  box-shadow: none;
+}
+.prose-content a.btn-inline + a.btn-inline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* Elementor feature icons in migrated service pages: render small,
    attached to the heading that follows them. */
 .prose-content img.svc-icon {

@@ -23,11 +23,12 @@ export default function ScrollFX() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const lenis = new Lenis({
-      lerp: 0.1, // smoothing amount (lower = floatier)
+      // higher lerp = the scroll "catches up" faster (less laggy feel)
+      lerp: 0.16,
       smoothWheel: true,
       // >1 so each wheel tick travels a full, natural distance —
       // smoothing comes from lerp, not from shrinking scroll steps
-      wheelMultiplier: 1.35,
+      wheelMultiplier: 1.25,
       autoRaf: true,
     });
     lenis.on("scroll", ScrollTrigger.update);

@@ -35,18 +35,30 @@ export default async function ServicesPage() {
           <Link
             key={s.id}
             href={`/services/${s.slug}`}
-            className="card card-hover group relative overflow-hidden p-6"
+            className="card card-hover group relative overflow-hidden"
           >
-            <span className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-accent-strong to-pink opacity-0 transition-opacity group-hover:opacity-100" />
-            <h2 className="font-display text-lg font-semibold group-hover:text-accent">
-              {s.label}
-            </h2>
-            <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
-              {s.summary}
-            </p>
-            <span className="mt-4 inline-block text-sm font-medium text-accent">
-              Learn more →
-            </span>
+            <div className="relative aspect-[8/5] overflow-hidden border-b border-border bg-surface-raised">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/services-art/${s.slug}.svg`}
+                alt=""
+                loading="lazy"
+                width={800}
+                height={500}
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+              />
+            </div>
+            <div className="p-6">
+              <h2 className="font-display text-lg font-semibold group-hover:text-accent">
+                {s.label}
+              </h2>
+              <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
+                {s.summary}
+              </p>
+              <span className="mt-4 inline-block text-sm font-medium text-accent">
+                Learn more →
+              </span>
+            </div>
           </Link>
         ))}
       </div>

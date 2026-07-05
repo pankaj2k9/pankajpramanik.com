@@ -47,7 +47,56 @@ type Showcase = {
 };
 type Section = { title: string; body: string };
 
-const stripTags = (s: string) => s.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+const stripTags = (s: string) =>
+  s
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&amp;|&#038;/g, "&")
+    .replace(/&#8217;|&#039;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const CTA_PHRASES =
+  /^(hire me|book (a )?free consultation|view portfolio|contact me|get in touch|start a project|explore project( click here)?)$/i;
+
+/**
+ * Turn bare CTA text-links inside migrated copy ("Hire Me",
+ * "Book Free Consultation", "View Portfolio"…) into styled buttons.
+ * Elementor anchors wrap the label in whitespace + empty <i> icons and
+ * use "/#/contact"-style hrefs, so match on the stripped inner text and
+ * normalise the href.
+ */
+/**
+ * A few decorative stock images were reused on every one of the 20
+ * service pages. Swap them for this service's own generated artwork
+ * (project-screenshot images in showcases are left untouched).
+ */
+function swapSharedImages(html: string, slug: string): string {
+  return html
+    .replace(
+      /(<img[^>]*src=")[^"]*data-science-ml[^"]*("[^>]*>)/g,
+      `$1/services-art/${slug}-alt.svg$2`
+    )
+    .replace(
+      /(<img[^>]*src=")[^"]*ChatGPT-Image[^"]*("[^>]*>)/g,
+      `$1/services-art/${slug}-alt2.svg$2`
+    )
+    // cartoon "find me here" footer illustration — pure noise, drop it
+    .replace(/<img[^>]*contact-footer[^>]*\/?>/g, "");
+}
+
+function styleCtaLinks(html: string): string {
+  return html
+    .replace(/href="\/#\//g, 'href="/')
+    .replace(
+      /<a\b([^>]*)>([\s\S]{0,160}?)<\/a>/gi,
+      (full, attrs: string, inner: string) => {
+        const text = stripTags(inner);
+        if (!CTA_PHRASES.test(text)) return full;
+        return `<a${attrs} class="btn-inline">${text}</a>`;
+      }
+    );
+}
 
 /**
  * The tail of each migrated service page is a flat run of <h2> sections:
@@ -191,32 +240,48 @@ export default async function ServicePage({
             <span className="text-muted">{page.label || page.title}</span>
           </nav>
 
-          <div className="mt-10 max-w-3xl">
-            <p className="inline-flex items-center gap-2 rounded-full border border-emerald/30 bg-emerald/10 px-4 py-1.5 text-sm font-medium text-emerald">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald" />
-              Available for new projects
-            </p>
-            <h1 className="mt-6 font-display text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
-              {page.label || page.title}
-            </h1>
-            {page.summary && (
-              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
-                {page.summary}
+          <div className="mt-10 grid items-center gap-10 lg:grid-cols-[1fr_400px]">
+            <div className="max-w-3xl">
+              <p className="inline-flex items-center gap-2 rounded-full border border-emerald/30 bg-emerald/10 px-4 py-1.5 text-sm font-medium text-emerald">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-emerald" />
+                Available for new projects
               </p>
-            )}
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Link
-                href="/contact"
-                className="rounded-xl bg-accent-strong px-7 py-3.5 font-semibold text-white shadow-lg shadow-accent-strong/25 transition hover:opacity-90"
-              >
-                Hire Me for This
-              </Link>
-              <Link
-                href="/portfolio"
-                className="rounded-xl border border-border-strong px-7 py-3.5 font-semibold transition hover:border-accent hover:text-accent"
-              >
-                See Related Work
-              </Link>
+              <h1 className="mt-6 font-display text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
+                {page.label || page.title}
+              </h1>
+              {page.summary && (
+                <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
+                  {page.summary}
+                </p>
+              )}
+              <div className="mt-9 flex flex-wrap gap-3">
+                <Link
+                  href="/contact"
+                  className="rounded-xl bg-accent-strong px-7 py-3.5 font-semibold text-white shadow-lg shadow-accent-strong/25 transition hover:opacity-90"
+                >
+                  Hire Me for This
+                </Link>
+                <Link
+                  href="/portfolio"
+                  className="rounded-xl border border-border-strong px-7 py-3.5 font-semibold transition hover:border-accent hover:text-accent"
+                >
+                  See Related Work
+                </Link>
+              </div>
+            </div>
+
+            {/* unique generated artwork for this service */}
+            <div className="hidden lg:block">
+              <div className="overflow-hidden rounded-3xl border border-border-strong shadow-2xl shadow-black/40">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/services-art/${page.slug}.svg`}
+                  alt=""
+                  width={800}
+                  height={500}
+                  className="h-auto w-full"
+                />
+              </div>
             </div>
           </div>
 
@@ -279,10 +344,13 @@ export default async function ServicePage({
 
           {/* intro copy */}
           {stripTags(intro).length > 0 && (
-            <section className={features.length ? "mt-14 border-t border-border pt-12" : ""}>
+            <section
+              data-reveal
+              className={features.length ? "mt-14 border-t border-border pt-12" : ""}
+            >
               <div
                 className="prose-content text-lg"
-                dangerouslySetInnerHTML={{ __html: intro }}
+                dangerouslySetInnerHTML={{ __html: swapSharedImages(styleCtaLinks(intro), page.slug) }}
               />
             </section>
           )}
@@ -293,6 +361,7 @@ export default async function ServicePage({
               {sections.map((s) => (
                 <div
                   key={s.title}
+                  data-reveal
                   className="grid gap-4 border-b border-border/60 py-10 last:border-0 md:grid-cols-[240px_1fr] md:gap-10"
                 >
                   <h2 className="font-display text-xl font-bold leading-snug tracking-tight md:sticky md:top-24 md:self-start">
@@ -300,7 +369,7 @@ export default async function ServicePage({
                   </h2>
                   <div
                     className="prose-content min-w-0 [&>:first-child]:mt-0"
-                    dangerouslySetInnerHTML={{ __html: s.body }}
+                    dangerouslySetInnerHTML={{ __html: swapSharedImages(styleCtaLinks(s.body), page.slug) }}
                   />
                 </div>
               ))}
