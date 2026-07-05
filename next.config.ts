@@ -43,6 +43,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "pankajpramanik.com" },
       { protocol: "https", hostname: "github.com" },
       { protocol: "https", hostname: "avatars.githubusercontent.com" },
+      { protocol: "https", hostname: "opengraph.githubassets.com" },
+      { protocol: "https", hostname: "raw.githubusercontent.com" },
     ],
   },
   async redirects() {

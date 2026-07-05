@@ -172,13 +172,47 @@ function cleanServiceHtml(html) {
     ],
     allowedAttributes: {
       a: ["href", "title"],
-      img: ["src", "alt", "width", "height"],
+      img: ["src", "alt", "width", "height", "class"],
     },
     transformTags: {
       h1: "h2", // page template renders its own h1
+      // Square 512px Elementor feature icons — tag them so the CSS can
+      // render them as small inline icons instead of full-width images.
+      img: (tagName, attribs) => {
+        const isIcon =
+          attribs.width === "512" ||
+          attribs.width === "150" ||
+          attribs.width === "250" ||
+          attribs.width === "300";
+        return {
+          tagName,
+          attribs: isIcon
+            ? { ...attribs, class: "svc-icon" }
+            : attribs,
+        };
+      },
     },
   });
   return cleaned
+    // Elementor animated counters export as "<p>Label:</p> 0" — the real
+    // values only existed in JS. Drop the whole Key Metrics block.
+    .replace(
+      /<h2>\s*Key Metrics\s*<\/h2>[\s\S]*?(?=<img(?![^>]*svc-icon)|<h2>(?!\s*Key Metrics))/,
+      ""
+    )
+    .replace(/<p>[^<]{0,60}:<\/p>\s*0\s*/g, "")
+    // Elementor icon-lists flatten to one <p> of "emoji <strong>Item</strong>"
+    // runs — convert those to a proper list.
+    .replace(
+      /<p>((?:[^<]{0,6}<strong>[^<]+<\/strong>){3,})\s*<\/p>/g,
+      (_m, inner) =>
+        "<ul>" +
+        inner.replace(
+          /([^<]{0,6})<strong>([^<]+)<\/strong>/g,
+          "<li>$1<strong>$2</strong></li>"
+        ) +
+        "</ul>"
+    )
     // drop paragraphs that are empty or whitespace/nbsp only
     .replace(/<p>(\s|&nbsp;)*<\/p>/g, "")
     .replace(/\n{3,}/g, "\n\n")

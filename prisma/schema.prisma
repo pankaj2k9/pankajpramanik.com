@@ -71,12 +71,13 @@ model Tag {
 }
 
 model Project {
-  id          String        @id @default(cuid())
-  slug        String        @unique
-  title       String
-  tagline     String        @default("")
-  description String        @default("")
-  content     String        @default("") // optional long-form case study (markdown)
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  title         String
+  tagline       String        @default("")
+  description   String        @default("")
+  content       String        @default("") // optional long-form case study
+  contentFormat ContentFormat @default(MARKDOWN)
   techStack   String[]      @default([])
   repoUrl     String?
   liveUrl     String?

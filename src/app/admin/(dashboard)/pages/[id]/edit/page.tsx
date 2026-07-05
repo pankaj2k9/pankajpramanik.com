@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { marked } from "marked";
 import { prisma } from "@/lib/prisma";
 import PageForm from "@/components/admin/PageForm";
 
@@ -10,6 +11,11 @@ export default async function EditPagePage({
   const { id } = await params;
   const page = await prisma.page.findUnique({ where: { id } });
   if (!page) notFound();
+
+  // the WYSIWYG editor works in HTML — convert legacy markdown once
+  if (page.contentFormat === "MARKDOWN" && page.content) {
+    page.content = marked.parse(page.content, { async: false }) as string;
+  }
 
   return (
     <div>

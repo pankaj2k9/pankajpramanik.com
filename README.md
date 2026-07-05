@@ -113,7 +113,9 @@ npm run build && npm start # 11. production build + serve
 
 Other scripts: `db:studio` (Prisma Studio), `db:reset`, `wp:extract`, `wp:media` (re-run migration steps against the live WP site).
 
-## 12–13. Production Deployment — DigitalOcean Droplet ($12/mo, 2 GB RAM)
+## 12–13. Production Deployment — DigitalOcean Droplet or Hetzner Cloud
+
+Works on any Ubuntu VPS: DigitalOcean Droplet ($12/mo, 2 GB) or Hetzner Cloud CX23/CPX (often cheaper with 4 GB RAM — see [deploy/HETZNER.md](deploy/HETZNER.md) for the Hetzner-specific walkthrough; everything below applies to both).
 
 1. Create an Ubuntu 24.04 droplet, point DNS (`A` records for `@` and `www`) at it. Cloudflare proxy optional but recommended.
 2. SSH in as root and run the guided setup (review it first):
@@ -165,7 +167,7 @@ The app runs as Next.js **standalone** output under PM2 (`deploy/ecosystem.confi
 - **PRs & pushes** → lint + `prisma migrate deploy` against a throwaway Postgres + full build.
 - **Push to `main`** → after CI passes, SSH to the droplet: `git reset --hard origin/main`, `npm ci`, `prisma migrate deploy`, `npm run build`, copy standalone assets, `pm2 reload`.
 
-Repository secrets required: `DROPLET_HOST`, `DROPLET_USER` (e.g. `root` or a deploy user), `DROPLET_SSH_KEY` (private key whose public half is in `~/.ssh/authorized_keys` on the droplet).
+Repository secrets required: `DEPLOY_HOST`, `DEPLOY_USER` (e.g. `root` or a deploy user), `DEPLOY_SSH_KEY` (private key whose public half is in `~/.ssh/authorized_keys` on the server). The deploy step is plain SSH, so it works identically for DigitalOcean, Hetzner Cloud, or any Ubuntu VPS.
 
 ## 18. Resend
 

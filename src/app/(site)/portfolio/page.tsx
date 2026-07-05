@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ProjectCard } from "@/components/site/cards";
+import PortfolioGrid from "@/components/site/PortfolioGrid";
 import { getPublishedProjects } from "@/lib/queries";
 import { site } from "@/lib/site";
 
@@ -14,7 +14,6 @@ export const metadata: Metadata = {
 
 export default async function PortfolioPage() {
   const projects = await getPublishedProjects();
-  const categories = [...new Set(projects.map((p) => p.category))];
 
   return (
     <div className="container-site py-16">
@@ -43,24 +42,9 @@ export default async function PortfolioPage() {
         </p>
       </header>
 
-      {categories.map((cat) => {
-        const items = projects.filter((p) => p.category === cat);
-        return (
-          <section key={cat} className="mt-14">
-            <h2 className="font-display text-xl font-semibold text-foreground">
-              {cat}
-              <span className="ml-2 text-sm font-normal text-faint">
-                {items.length} project{items.length > 1 ? "s" : ""}
-              </span>
-            </h2>
-            <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {items.map((p) => (
-                <ProjectCard key={p.id} project={p} />
-              ))}
-            </div>
-          </section>
-        );
-      })}
+      <div className="mt-12">
+        <PortfolioGrid projects={projects} />
+      </div>
     </div>
   );
 }

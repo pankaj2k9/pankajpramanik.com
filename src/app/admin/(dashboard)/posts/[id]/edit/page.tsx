@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { marked } from "marked";
 import { prisma } from "@/lib/prisma";
 import PostForm from "@/components/admin/PostForm";
 
@@ -16,6 +17,11 @@ export default async function EditPostPage({
     prisma.category.findMany({ orderBy: { name: "asc" } }),
   ]);
   if (!post) notFound();
+
+  // the WYSIWYG editor works in HTML — convert legacy markdown once
+  if (post.contentFormat === "MARKDOWN" && post.content) {
+    post.content = marked.parse(post.content, { async: false }) as string;
+  }
 
   return (
     <div>

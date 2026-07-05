@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { updatePage, type PageFormState } from "@/actions/pages";
 import { FormError, SubmitButton, inputCls, labelCls } from "./ui";
+import RichTextEditor from "./RichTextEditor";
 
 type PageData = {
   id: string;
@@ -65,28 +66,10 @@ export default function PageForm({ page }: { page: PageData }) {
         </div>
       )}
 
+      <input type="hidden" name="contentFormat" value="HTML" />
       <div>
-        <div className="mb-1.5 flex items-center justify-between">
-          <label htmlFor="content" className="text-sm font-medium">
-            Content
-          </label>
-          <select
-            name="contentFormat"
-            defaultValue={page.contentFormat}
-            className="rounded-lg border border-border bg-surface-raised px-2 py-1 text-xs"
-            aria-label="Content format"
-          >
-            <option value="HTML">HTML</option>
-            <option value="MARKDOWN">Markdown</option>
-          </select>
-        </div>
-        <textarea
-          id="content"
-          name="content"
-          rows={20}
-          defaultValue={page.content}
-          className={`${inputCls} font-mono text-xs leading-relaxed`}
-        />
+        <p className={labelCls}>Content</p>
+        <RichTextEditor name="content" defaultValue={page.content} />
       </div>
 
       <fieldset className="card space-y-4 p-5">

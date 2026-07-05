@@ -7,14 +7,15 @@ import {
   type PostFormState,
 } from "@/actions/posts";
 import { FormError, SubmitButton, inputCls, labelCls } from "./ui";
+import RichTextEditor from "./RichTextEditor";
+import CoverImageInput from "./CoverImageInput";
 
 type PostData = {
   id: string;
   title: string;
   slug: string;
   excerpt: string;
-  content: string;
-  contentFormat: "HTML" | "MARKDOWN";
+  content: string; // always HTML by the time it reaches the form
   coverImage: string | null;
   status: "DRAFT" | "PUBLISHED";
   seoTitle: string | null;
@@ -39,6 +40,9 @@ export default function PostForm({
 
   return (
     <form action={formAction} className="max-w-3xl space-y-6">
+      {/* the WYSIWYG editor always emits HTML */}
+      <input type="hidden" name="contentFormat" value="HTML" />
+
       <div>
         <label htmlFor="title" className={labelCls}>
           Title *
@@ -94,41 +98,14 @@ export default function PostForm({
       </div>
 
       <div>
-        <div className="mb-1.5 flex items-center justify-between">
-          <label htmlFor="content" className="text-sm font-medium">
-            Content
-          </label>
-          <select
-            name="contentFormat"
-            defaultValue={post?.contentFormat ?? "MARKDOWN"}
-            className="rounded-lg border border-border bg-surface-raised px-2 py-1 text-xs"
-            aria-label="Content format"
-          >
-            <option value="MARKDOWN">Markdown</option>
-            <option value="HTML">HTML</option>
-          </select>
-        </div>
-        <textarea
-          id="content"
-          name="content"
-          rows={18}
-          defaultValue={post?.content}
-          className={`${inputCls} font-mono text-xs leading-relaxed`}
-        />
+        <p className={labelCls}>Content</p>
+        <RichTextEditor name="content" defaultValue={post?.content ?? ""} />
       </div>
 
-      <div>
-        <label htmlFor="coverImage" className={labelCls}>
-          Cover image URL{" "}
-          <span className="text-faint">(e.g. /uploads/2024/01/img.jpg)</span>
-        </label>
-        <input
-          id="coverImage"
-          name="coverImage"
-          defaultValue={post?.coverImage ?? ""}
-          className={inputCls}
-        />
-      </div>
+      <CoverImageInput
+        defaultValue={post?.coverImage ?? ""}
+        label="Featured image URL"
+      />
 
       <fieldset>
         <legend className={labelCls}>Categories</legend>
@@ -163,36 +140,34 @@ export default function PostForm({
         />
       </div>
 
-      <details className="card p-5">
-        <summary className="cursor-pointer text-sm font-medium">
-          SEO settings
-        </summary>
-        <div className="mt-4 space-y-4">
-          <div>
-            <label htmlFor="seoTitle" className={labelCls}>
-              SEO title
-            </label>
-            <input
-              id="seoTitle"
-              name="seoTitle"
-              defaultValue={post?.seoTitle ?? ""}
-              className={inputCls}
-            />
-          </div>
-          <div>
-            <label htmlFor="seoDescription" className={labelCls}>
-              SEO description
-            </label>
-            <textarea
-              id="seoDescription"
-              name="seoDescription"
-              rows={2}
-              defaultValue={post?.seoDescription ?? ""}
-              className={inputCls}
-            />
-          </div>
+      <fieldset className="card space-y-4 p-5">
+        <legend className="px-1 text-sm font-semibold">SEO</legend>
+        <div>
+          <label htmlFor="seoTitle" className={labelCls}>
+            SEO title{" "}
+            <span className="text-faint">(shown in search results)</span>
+          </label>
+          <input
+            id="seoTitle"
+            name="seoTitle"
+            defaultValue={post?.seoTitle ?? ""}
+            className={inputCls}
+          />
         </div>
-      </details>
+        <div>
+          <label htmlFor="seoDescription" className={labelCls}>
+            SEO description{" "}
+            <span className="text-faint">(150–160 characters ideal)</span>
+          </label>
+          <textarea
+            id="seoDescription"
+            name="seoDescription"
+            rows={2}
+            defaultValue={post?.seoDescription ?? ""}
+            className={inputCls}
+          />
+        </div>
+      </fieldset>
 
       <FormError error={state?.error} />
       <SubmitButton pending={pending}>

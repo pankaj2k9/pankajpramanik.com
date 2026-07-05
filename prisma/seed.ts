@@ -118,11 +118,29 @@ async function seedProjects() {
     order: number;
   };
   const projects = readJson<Proj[]>("projects.json");
+  // GitHub-scraped README content + OpenGraph cover images (optional file,
+  // produced by migration/github-projects.mjs)
+  let enriched: Record<string, { content: string; coverImage: string }> = {};
+  try {
+    enriched = readJson("project-content.json");
+  } catch {
+    console.log("  (no project-content.json — run migration/github-projects.mjs to enrich)");
+  }
   for (const p of projects) {
+    const extra = enriched[p.slug];
+    const data = {
+      ...p,
+      status: ContentStatus.PUBLISHED,
+      ...(extra?.content ? { content: extra.content } : {}),
+      ...(extra?.coverImage ? { coverImage: extra.coverImage } : {}),
+    };
     await prisma.project.upsert({
       where: { slug: p.slug },
-      update: {},
-      create: { ...p, status: ContentStatus.PUBLISHED },
+      update: {
+        ...(extra?.content ? { content: extra.content } : {}),
+        ...(extra?.coverImage ? { coverImage: extra.coverImage } : {}),
+      },
+      create: data,
     });
   }
   console.log(`✓ projects: ${projects.length}`);

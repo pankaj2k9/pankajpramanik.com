@@ -261,3 +261,19 @@ body {
 .prose-content th { color: var(--foreground); background: var(--surface-raised); }
 .prose-content hr { border-color: var(--border); margin: 2.5rem 0; }
 .prose-content iframe { max-width: 100%; border-radius: 0.75rem; margin: 1.75rem 0; }
+
+/* Elementor feature icons in migrated service pages: render small,
+   attached to the heading that follows them. */
+.prose-content img.svc-icon {
+  width: 56px;
+  height: 56px;
+  margin: 2.5rem 0 -2rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: var(--surface-raised);
+  padding: 10px;
+}
+.prose-content img.svc-icon + h2,
+.prose-content img.svc-icon + h3 {
+  margin-top: 2.75rem;
+}

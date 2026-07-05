@@ -13,6 +13,7 @@ const projectSchema = z.object({
   tagline: z.string().trim().max(200).optional().default(""),
   description: z.string().trim().max(2000).optional().default(""),
   content: z.string().optional().default(""),
+  contentFormat: z.enum(["HTML", "MARKDOWN"]).default("HTML"),
   techStack: z.string().optional().default(""), // comma separated
   repoUrl: z.string().trim().url().optional().or(z.literal("")),
   liveUrl: z.string().trim().url().optional().or(z.literal("")),
@@ -33,6 +34,7 @@ function parseForm(formData: FormData) {
     tagline: formData.get("tagline"),
     description: formData.get("description"),
     content: formData.get("content"),
+    contentFormat: formData.get("contentFormat"),
     techStack: formData.get("techStack"),
     repoUrl: formData.get("repoUrl"),
     liveUrl: formData.get("liveUrl"),
@@ -52,6 +54,7 @@ function toData(d: z.infer<typeof projectSchema>, slug: string) {
     tagline: d.tagline,
     description: d.description,
     content: d.content,
+    contentFormat: d.contentFormat,
     techStack: d.techStack.split(",").map((t) => t.trim()).filter(Boolean),
     repoUrl: d.repoUrl || null,
     liveUrl: d.liveUrl || null,

@@ -54,7 +54,9 @@ jobs:
         run: npm run build
 
   deploy:
-    name: Deploy to DigitalOcean
+    # Works with any Ubuntu VPS reachable over SSH:
+    # DigitalOcean Droplet, Hetzner Cloud (e.g. CX23 / CPX AMD), etc.
+    name: Deploy to server
     needs: ci
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
@@ -63,9 +65,9 @@ jobs:
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.DROPLET_HOST }}
-          username: ${{ secrets.DROPLET_USER }}
-          key: ${{ secrets.DROPLET_SSH_KEY }}
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
           script_stop: true
           command_timeout: 20m
           script: |

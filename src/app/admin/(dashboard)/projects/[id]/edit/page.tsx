@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { marked } from "marked";
 import { prisma } from "@/lib/prisma";
 import ProjectForm from "@/components/admin/ProjectForm";
 
@@ -10,6 +11,11 @@ export default async function EditProjectPage({
   const { id } = await params;
   const project = await prisma.project.findUnique({ where: { id } });
   if (!project) notFound();
+
+  // the WYSIWYG editor works in HTML — convert scraped README markdown
+  if (project.contentFormat === "MARKDOWN" && project.content) {
+    project.content = marked.parse(project.content, { async: false }) as string;
+  }
 
   return (
     <div>
