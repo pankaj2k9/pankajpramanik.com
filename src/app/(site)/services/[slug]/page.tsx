@@ -39,6 +39,62 @@ export async function generateMetadata({
 
 type Feature = { icon: string; title: string; desc: string };
 
+type Showcase = {
+  img: string | null;
+  title: string;
+  desc: string;
+  href: string | null;
+};
+type Section = { title: string; body: string };
+
+const stripTags = (s: string) => s.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+
+/**
+ * The tail of each migrated service page is a flat run of <h2> sections:
+ * some are project showcases (screenshot + "Explore Project" link), some
+ * are real copy, and some are empty Elementor tab stubs ("AI Industry" /
+ * "Hire Me"). Split and classify them so each kind gets a proper layout.
+ */
+function organizeArticle(html: string): {
+  intro: string;
+  showcases: Showcase[];
+  sections: Section[];
+} {
+  const parts = html.split(/<h2>([\s\S]*?)<\/h2>/);
+  const intro = parts[0]?.trim() ?? "";
+  const showcases: Showcase[] = [];
+  const sections: Section[] = [];
+
+  for (let i = 1; i < parts.length; i += 2) {
+    const title = stripTags(parts[i] ?? "");
+    const body = (parts[i + 1] ?? "").trim();
+    const text = stripTags(body);
+    const isShowcase = /explore\s+project/i.test(text);
+
+    if (isShowcase) {
+      const img = body.match(/<img[^>]*\bsrc="([^"]+)"[^>]*>/)?.[1] ?? null;
+      const href =
+        body.match(/<a[^>]*\bhref="([^"]+)"[^>]*>\s*Explore/i)?.[1] ??
+        body.match(/<a[^>]*\bhref="([^"]+)"/)?.[1] ??
+        null;
+      const desc =
+        stripTags(body.match(/<p>([\s\S]*?)<\/p>/)?.[1] ?? "").replace(
+          /Explore Project.*$/i,
+          ""
+        ) || text.replace(/Explore Project.*$/i, "");
+      showcases.push({ img, title, desc, href });
+      continue;
+    }
+
+    // Elementor tab/label stubs carry almost no text — drop them
+    if (text.length < 90) continue;
+
+    sections.push({ title, body });
+  }
+
+  return { intro, showcases, sections };
+}
+
 /**
  * Migrated service content follows a consistent Elementor pattern:
  * `<img class="svc-icon" src="…"><h2>Feature</h2><p>Description</p>`.
@@ -84,6 +140,7 @@ export default async function ServicePage({
   const services = await getServices();
   const fullHtml = renderContent(page.content, page.contentFormat);
   const { features, rest } = extractFeatures(fullHtml);
+  const { intro, showcases, sections } = organizeArticle(rest);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -220,13 +277,91 @@ export default async function ServicePage({
             </section>
           )}
 
-          {/* article */}
-          <section className={features.length ? "mt-14 border-t border-border pt-12" : ""}>
-            <div
-              className="prose-content"
-              dangerouslySetInnerHTML={{ __html: rest }}
-            />
-          </section>
+          {/* intro copy */}
+          {stripTags(intro).length > 0 && (
+            <section className={features.length ? "mt-14 border-t border-border pt-12" : ""}>
+              <div
+                className="prose-content text-lg"
+                dangerouslySetInnerHTML={{ __html: intro }}
+              />
+            </section>
+          )}
+
+          {/* editorial sections: title left, content right */}
+          {sections.length > 0 && (
+            <section className="mt-14 border-t border-border pt-4">
+              {sections.map((s) => (
+                <div
+                  key={s.title}
+                  className="grid gap-4 border-b border-border/60 py-10 last:border-0 md:grid-cols-[240px_1fr] md:gap-10"
+                >
+                  <h2 className="font-display text-xl font-bold leading-snug tracking-tight md:sticky md:top-24 md:self-start">
+                    {s.title}
+                  </h2>
+                  <div
+                    className="prose-content min-w-0 [&>:first-child]:mt-0"
+                    dangerouslySetInnerHTML={{ __html: s.body }}
+                  />
+                </div>
+              ))}
+            </section>
+          )}
+
+          {/* project showcases pulled from the article */}
+          {showcases.length > 0 && (
+            <section className="mt-14 border-t border-border pt-12">
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">
+                Proof of work
+              </p>
+              <h2 className="mt-3 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+                Case studies &amp; related projects
+              </h2>
+              <div className="mt-8 grid gap-6 sm:grid-cols-2">
+                {showcases.map((p) => (
+                  <article
+                    key={p.title}
+                    className="card card-hover group relative flex flex-col overflow-hidden"
+                  >
+                    {p.img && (
+                      <div className="relative aspect-[16/9] overflow-hidden border-b border-border bg-surface-raised">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={p.img}
+                          alt={p.title}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                        />
+                      </div>
+                    )}
+                    <div className="flex flex-1 flex-col p-6">
+                      <h3 className="font-display text-lg font-semibold leading-snug">
+                        {p.href ? (
+                          <a
+                            href={p.href}
+                            target={p.href.startsWith("http") ? "_blank" : undefined}
+                            rel="noopener noreferrer"
+                            className="after:absolute after:inset-0 group-hover:text-accent"
+                          >
+                            {p.title}
+                          </a>
+                        ) : (
+                          p.title
+                        )}
+                      </h3>
+                      <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
+                        {p.desc}
+                      </p>
+                      {p.href && (
+                        <span className="mt-4 text-sm font-medium text-accent">
+                          Explore project →
+                        </span>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* mini process */}
           <section className="mt-14 border-t border-border pt-12">
