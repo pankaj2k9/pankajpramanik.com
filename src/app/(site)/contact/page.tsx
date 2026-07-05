@@ -30,19 +30,6 @@ export default function ContactPage() {
           <dl className="mt-10 space-y-6 text-sm">
             <div>
               <dt className="font-semibold uppercase tracking-wider text-faint">
-                Email
-              </dt>
-              <dd className="mt-1">
-                <a
-                  href={`mailto:${site.email}`}
-                  className="text-accent hover:underline"
-                >
-                  {site.email}
-                </a>
-              </dd>
-            </div>
-            <div>
-              <dt className="font-semibold uppercase tracking-wider text-faint">
                 GitHub
               </dt>
               <dd className="mt-1">

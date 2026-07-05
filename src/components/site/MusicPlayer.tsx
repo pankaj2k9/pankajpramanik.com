@@ -1,77 +1,81 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 
 /**
- * Floating background-music toggle (bottom-right). Music is ON by
- * default (looping), like the original WordPress site — visitors click
- * to pause. Browsers block unmuted autoplay, so we try immediately and
- * fall back to starting on the first interaction anywhere on the page.
- * An explicit pause is remembered in localStorage and respected on
- * later visits.
+ * Floating background-music toggle (bottom-right).
+ *
+ * The <audio> element is a module-level singleton: the player component
+ * mounts in both the homepage layout and the site layout, and during
+ * route transitions two instances can briefly coexist. With a shared
+ * element there is only ever ONE playback pipeline, so pause always
+ * pauses the sound the visitor hears.
+ *
+ * Music is on by default (like the original WordPress site). Browsers
+ * block unmuted autoplay, so playback starts on the first interaction;
+ * an explicit pause is remembered in localStorage.
  */
-export default function MusicPlayer() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [playing, setPlaying] = useState(false);
 
-  useEffect(() => {
-    const audio = new Audio("/audio/bg.mp3");
+const listeners = new Set<() => void>();
+let audio: HTMLAudioElement | null = null;
+
+function getAudio(): HTMLAudioElement {
+  if (!audio) {
+    audio = new Audio("/audio/bg.mp3");
     audio.loop = true;
     audio.volume = 0.35;
     audio.preload = "auto";
-    audioRef.current = audio;
-
-    const wantsMusic = localStorage.getItem("bg-music") !== "off";
-
-    const start = () => {
-      audio.play().then(() => setPlaying(true)).catch(() => {});
-    };
-
-    const startOnGesture = () => {
-      if (localStorage.getItem("bg-music") !== "off" && audio.paused) start();
-      cleanupGesture();
-    };
-    const cleanupGesture = () => {
-      window.removeEventListener("pointerdown", startOnGesture);
-      window.removeEventListener("keydown", startOnGesture);
-      window.removeEventListener("scroll", startOnGesture);
-    };
-
-    if (wantsMusic) {
-      // attempt real autoplay; if the browser blocks it, wait for the
-      // first gesture (click, key, or scroll) and start then
-      audio
-        .play()
-        .then(() => setPlaying(true))
-        .catch(() => {
-          window.addEventListener("pointerdown", startOnGesture);
-          window.addEventListener("keydown", startOnGesture);
-          window.addEventListener("scroll", startOnGesture, { passive: true });
-        });
+    for (const ev of ["play", "pause"] as const) {
+      audio.addEventListener(ev, () => listeners.forEach((l) => l()));
     }
+  }
+  return audio;
+}
 
-    return () => {
-      cleanupGesture();
-      audio.pause();
-      audioRef.current = null;
-    };
+function subscribe(onChange: () => void) {
+  listeners.add(onChange);
+  return () => listeners.delete(onChange);
+}
+
+function isPlaying() {
+  return !!audio && !audio.paused;
+}
+
+export default function MusicPlayer() {
+  const playing = useSyncExternalStore(subscribe, isPlaying, () => false);
+
+  // autoplay attempt + first-gesture fallback (once per page load)
+  useEffect(() => {
+    const el = getAudio();
+    if (localStorage.getItem("bg-music") === "off") return;
+    if (!el.paused) return;
+
+    el.play().catch(() => {
+      const start = () => {
+        if (localStorage.getItem("bg-music") !== "off" && el.paused) {
+          el.play().catch(() => {});
+        }
+        cleanup();
+      };
+      const cleanup = () => {
+        window.removeEventListener("pointerdown", start, true);
+        window.removeEventListener("keydown", start, true);
+      };
+      // capture phase so a click on the pause button itself still counts
+      window.addEventListener("pointerdown", start, true);
+      window.addEventListener("keydown", start, true);
+      return cleanup;
+    });
   }, []);
 
   function toggle() {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (playing) {
-      audio.pause();
-      setPlaying(false);
+    const el = getAudio();
+    if (!el.paused) {
+      el.pause();
       localStorage.setItem("bg-music", "off");
     } else {
-      audio
-        .play()
-        .then(() => {
-          setPlaying(true);
-          localStorage.setItem("bg-music", "on");
-        })
-        .catch(() => {});
+      localStorage.setItem("bg-music", "on");
+      el.play().catch(() => {});
     }
   }
 
@@ -85,7 +89,6 @@ export default function MusicPlayer() {
       className="fixed bottom-5 right-5 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-border bg-surface/90 shadow-lg backdrop-blur transition hover:border-accent hover:text-accent"
     >
       {playing ? (
-        // animated equalizer bars
         <span className="flex h-4 items-end gap-[3px]" aria-hidden>
           <span className="w-[3px] animate-[eq_1s_ease-in-out_infinite] rounded-full bg-accent" />
           <span className="w-[3px] animate-[eq_1s_ease-in-out_0.25s_infinite] rounded-full bg-accent" />

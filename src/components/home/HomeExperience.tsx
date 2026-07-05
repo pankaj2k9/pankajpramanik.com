@@ -232,13 +232,6 @@ export default function HomeExperience() {
             Let&apos;s build something{" "}
             <span className="text-gradient">intelligent</span> together
           </h2>
-          <a
-            data-fx
-            href={`mailto:${site.email}`}
-            className="mt-8 font-mono text-lg text-muted underline decoration-border underline-offset-8 transition hover:text-accent hover:decoration-accent"
-          >
-            {site.email}
-          </a>
           <div data-fx className="mt-9 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/contact"

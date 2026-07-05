@@ -93,6 +93,23 @@ export default async function AboutPage() {
                 className="object-cover"
               />
             </div>
+            <div className="flex items-center gap-3 border-b border-border p-4">
+              <span
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg"
+                style={{
+                  background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                }}
+                aria-hidden
+              >
+                ⚡
+              </span>
+              <div>
+                <p className="text-xs text-faint">Currently at</p>
+                <p className="text-sm font-bold">
+                  IIT Guwahati · Data Science &amp; AI
+                </p>
+              </div>
+            </div>
             <div className="p-5">
               <p className="font-display font-semibold">{site.name}</p>
               <p className="mt-1 text-sm text-muted">{site.headline}</p>
@@ -117,15 +134,83 @@ export default async function AboutPage() {
               Find me online
             </h2>
             <SocialLinks className="mt-4" size="lg" />
-            <a
-              href={`mailto:${site.email}`}
-              className="mt-4 block text-sm text-muted hover:text-accent"
-            >
-              {site.email}
-            </a>
           </div>
         </aside>
       </div>
+
+      {/* ---------- Work process ---------- */}
+      <section className="mt-24">
+        <div className="text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-500">
+            How I work
+          </p>
+          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+            My work <span className="text-gradient">process</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-muted">
+            A simple, transparent six-step process from first conversation to
+            deployment.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            {
+              n: "01",
+              color: "#6366f1",
+              title: "Discuss",
+              desc: "Understanding your goals, constraints, and what success looks like for this project.",
+            },
+            {
+              n: "02",
+              color: "#8b5cf6",
+              title: "Ideate",
+              desc: "Mapping the problem to the right architecture, tools, and approach — with trade-offs upfront.",
+            },
+            {
+              n: "03",
+              color: "#ec4899",
+              title: "Design",
+              desc: "Drafting the system: data flow, model choices, integrations, and rollout plan.",
+            },
+            {
+              n: "04",
+              color: "#f59e0b",
+              title: "Develop",
+              desc: "Building iteratively with clean code, tests, and frequent check-ins so nothing surprises you.",
+            },
+            {
+              n: "05",
+              color: "#10b981",
+              title: "Test",
+              desc: "Validation across edge cases, performance, security, and the user experience.",
+            },
+            {
+              n: "06",
+              color: "#06b6d4",
+              title: "Launch",
+              desc: "Production deployment with monitoring, documentation, and a handoff that lasts.",
+            },
+          ].map((s) => (
+            <div key={s.n} className="card card-hover p-6">
+              <div className="flex items-center gap-3">
+                <span
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-sm font-bold text-white"
+                  style={{ background: s.color }}
+                >
+                  {s.n}
+                </span>
+                <h3 className="font-display text-lg font-semibold">
+                  {s.title}
+                </h3>
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-muted">
+                {s.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

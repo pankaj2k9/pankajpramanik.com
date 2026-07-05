@@ -36,6 +36,27 @@ export async function generateMetadata({
   };
 }
 
+type Feature = { icon: string; title: string; desc: string };
+
+/**
+ * Migrated service content follows a consistent Elementor pattern:
+ * `<img class="svc-icon" src="…"><h2>Feature</h2><p>Description</p>`.
+ * Pull those triplets out into a proper card grid and keep the rest
+ * of the article as flowing prose.
+ */
+function extractFeatures(html: string): { features: Feature[]; rest: string } {
+  const features: Feature[] = [];
+  const rest = html.replace(
+    // attribute order varies after sanitizing — assert svc-icon via lookahead
+    /<img\b(?=[^>]*\bsvc-icon\b)[^>]*\bsrc="([^"]+)"[^>]*\/?>\s*<h2>([\s\S]*?)<\/h2>\s*<p>([\s\S]*?)<\/p>/g,
+    (_m, icon: string, title: string, desc: string) => {
+      features.push({ icon, title, desc });
+      return "";
+    }
+  );
+  return { features, rest };
+}
+
 export default async function ServicePage({
   params,
 }: {
@@ -46,6 +67,8 @@ export default async function ServicePage({
   if (!page || page.kind !== "SERVICE") notFound();
 
   const others = (await getServices()).filter((s) => s.slug !== slug);
+  const fullHtml = renderContent(page.content, page.contentFormat);
+  const { features, rest } = extractFeatures(fullHtml);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -57,54 +80,137 @@ export default async function ServicePage({
   };
 
   return (
-    <div className="container-site py-16">
+    <div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="mx-auto max-w-3xl">
-        <nav className="text-sm text-faint" aria-label="Breadcrumb">
-          <Link href="/services" className="hover:text-accent">
-            ← All services
-          </Link>
-        </nav>
 
-        <header className="mt-6">
-          <p className="text-sm font-semibold uppercase tracking-widest text-accent">
-            Service
+      {/* ---------- Hero ---------- */}
+      <section className="relative overflow-hidden border-b border-border">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-25"
+          style={{
+            background:
+              "radial-gradient(55% 90% at 50% 0%, #6366f1 0%, #8b5cf6 40%, transparent 75%)",
+          }}
+          aria-hidden
+        />
+        <div className="container-site relative py-16 sm:py-20">
+          <nav className="text-sm text-faint" aria-label="Breadcrumb">
+            <Link href="/services" className="hover:text-accent">
+              Services
+            </Link>{" "}
+            <span aria-hidden>/</span>{" "}
+            <span className="text-muted">{page.label || page.title}</span>
+          </nav>
+
+          <div className="mt-8 max-w-3xl">
+            <p className="inline-flex items-center gap-2 rounded-full border border-emerald/30 bg-emerald/10 px-4 py-1.5 text-sm font-medium text-emerald">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald" />
+              Available for new projects
+            </p>
+            <h1 className="mt-6 font-display text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+              {page.label || page.title}
+            </h1>
+            {page.summary && (
+              <p className="mt-5 text-lg leading-relaxed text-muted">
+                {page.summary}
+              </p>
+            )}
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/contact"
+                className="rounded-xl bg-accent-strong px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-accent-strong/25 transition hover:opacity-90"
+              >
+                Hire Me for This
+              </Link>
+              <Link
+                href="/portfolio"
+                className="rounded-xl border border-border-strong px-6 py-3 text-sm font-semibold transition hover:border-accent hover:text-accent"
+              >
+                See Related Work
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- Feature cards ---------- */}
+      {features.length > 0 && (
+        <section className="container-site py-16">
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">
+            What&apos;s included
           </p>
-          <h1 className="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-            {page.label || page.title}
-          </h1>
-          {page.summary && (
-            <p className="mt-3 text-lg text-muted">{page.summary}</p>
-          )}
-        </header>
+          <h2 className="mt-3 font-display text-2xl font-bold tracking-tight sm:text-3xl">
+            Capabilities in this service
+          </h2>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {features.map((f) => (
+              <div key={f.title} className="card card-hover p-6">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={f.icon}
+                  alt=""
+                  width={48}
+                  height={48}
+                  loading="lazy"
+                  className="h-12 w-12 rounded-xl bg-surface-raised p-2"
+                />
+                <h3
+                  className="mt-4 font-display text-lg font-semibold"
+                  dangerouslySetInnerHTML={{ __html: f.title }}
+                />
+                <p
+                  className="mt-2 text-sm leading-relaxed text-muted"
+                  dangerouslySetInnerHTML={{ __html: f.desc }}
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
-        <div className="mt-8 flex flex-wrap gap-3">
+      {/* ---------- Article ---------- */}
+      <section className={features.length ? "border-t border-border" : ""}>
+        <div className="container-site py-16">
+          <div
+            className="prose-content mx-auto max-w-3xl"
+            dangerouslySetInnerHTML={{ __html: rest }}
+          />
+        </div>
+      </section>
+
+      {/* ---------- CTA ---------- */}
+      <section className="container-site pb-8">
+        <div className="card relative overflow-hidden p-10 text-center sm:p-14">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-20"
+            style={{
+              background:
+                "radial-gradient(60% 80% at 50% 0%, #6366f1 0%, transparent 70%)",
+            }}
+            aria-hidden
+          />
+          <h2 className="relative font-display text-2xl font-bold tracking-tight sm:text-3xl">
+            Need {page.label || "this"}?{" "}
+            <span className="text-gradient">Let&apos;s talk.</span>
+          </h2>
+          <p className="relative mx-auto mt-3 max-w-lg text-muted">
+            Tell me about your project — I&apos;ll reply within 24 hours with a
+            concrete plan.
+          </p>
           <Link
             href="/contact"
-            className="rounded-xl bg-accent-strong px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+            className="relative mt-7 inline-block rounded-xl bg-accent-strong px-8 py-3.5 font-semibold text-white shadow-lg shadow-accent-strong/25 transition hover:opacity-90"
           >
-            Hire Me for This
-          </Link>
-          <Link
-            href="/portfolio"
-            className="rounded-xl border border-border-strong px-6 py-3 text-sm font-semibold transition hover:border-accent hover:text-accent"
-          >
-            See Related Work
+            Start a Project
           </Link>
         </div>
+      </section>
 
-        <div
-          className="prose-content mt-10"
-          dangerouslySetInnerHTML={{
-            __html: renderContent(page.content, page.contentFormat),
-          }}
-        />
-      </div>
-
-      <aside className="mx-auto mt-16 max-w-3xl border-t border-border pt-10">
+      {/* ---------- Other services ---------- */}
+      <aside className="container-site pb-20">
         <h2 className="font-display text-xl font-bold">Other services</h2>
         <ul className="mt-5 flex flex-wrap gap-2">
           {others.map((s) => (

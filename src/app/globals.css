@@ -131,6 +131,21 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* --- Lenis smooth scroll (recommended styles) --- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
 ::selection {
   background: color-mix(in srgb, var(--accent-strong) 40%, transparent);
 }
