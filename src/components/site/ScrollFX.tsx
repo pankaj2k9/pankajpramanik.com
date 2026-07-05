@@ -23,9 +23,11 @@ export default function ScrollFX() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const lenis = new Lenis({
-      lerp: 0.09, // lower = smoother/floatier
+      lerp: 0.1, // smoothing amount (lower = floatier)
       smoothWheel: true,
-      wheelMultiplier: 0.9,
+      // >1 so each wheel tick travels a full, natural distance —
+      // smoothing comes from lerp, not from shrinking scroll steps
+      wheelMultiplier: 1.35,
       autoRaf: true,
     });
     lenis.on("scroll", ScrollTrigger.update);
