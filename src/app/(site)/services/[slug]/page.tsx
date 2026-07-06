@@ -63,22 +63,16 @@ const stripTags = (s: string) =>
     .trim();
 
 /**
- * A few decorative stock images were reused on every one of the 20
- * service pages. Swap them for this service's own generated artwork
- * (project-screenshot images in showcases are left untouched).
+ * Remove decorative inline images from the article body. Feature-card
+ * icons and case-study screenshots are extracted separately and rendered
+ * on their own; the images left in the prose are reused stock art that
+ * looks out of place, so strip them (and any now-empty figure wrappers).
  */
-function swapSharedImages(html: string, slug: string): string {
+function stripInlineImages(html: string): string {
   return html
-    .replace(
-      /(<img[^>]*src=")[^"]*data-science-ml[^"]*("[^>]*>)/g,
-      `$1/services-art/${slug}-alt.svg$2`
-    )
-    .replace(
-      /(<img[^>]*src=")[^"]*ChatGPT-Image[^"]*("[^>]*>)/g,
-      `$1/services-art/${slug}-alt2.svg$2`
-    )
-    // cartoon "find me here" footer illustration — pure noise, drop it
-    .replace(/<img[^>]*contact-footer[^>]*\/?>/g, "");
+    .replace(/<figure[^>]*>[\s\S]*?<\/figure>/g, "")
+    .replace(/<img\b[^>]*\/?>/g, "")
+    .replace(/<p>\s*<\/p>/g, "");
 }
 
 /**
@@ -333,7 +327,7 @@ export default async function ServicePage({
             >
               <div
                 className="prose-content text-lg"
-                dangerouslySetInnerHTML={{ __html: swapSharedImages(upgradeCtaLinks(intro), page.slug) }}
+                dangerouslySetInnerHTML={{ __html: stripInlineImages(upgradeCtaLinks(intro)) }}
               />
             </section>
           )}
@@ -352,7 +346,7 @@ export default async function ServicePage({
                   </h2>
                   <div
                     className="prose-content min-w-0 [&>:first-child]:mt-0"
-                    dangerouslySetInnerHTML={{ __html: swapSharedImages(upgradeCtaLinks(s.body), page.slug) }}
+                    dangerouslySetInnerHTML={{ __html: stripInlineImages(upgradeCtaLinks(s.body)) }}
                   />
                 </div>
               ))}

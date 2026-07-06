@@ -22,6 +22,27 @@ const MANIFEST = path.join(__dirname, "..", "src", "lib", "service-art.ts");
 
 fs.mkdirSync(SRC, { recursive: true });
 
+// Files may be named after the service slug (e.g. agentic-ai-development.jpg)
+// OR simply numbered 1..15 in the order the thumbnails were provided — this
+// map assigns each number to its service by theme.
+const ORDER_MAP = {
+  1: "llm-rag-developer-hire", //            wireframe glowing brain + circuits
+  2: "data-structure-and-algorithm-problem-solving", // abstract rainbow lines/particles
+  3: "ai-based-software-development", //      brain + hand + code windows/flowchart
+  4: "data-science-and-machine-learning", //  low-poly brain + data particles
+  5: "hire-ai-langchain-expert", //           chains: LMs/Tools/Memory/Agents
+  6: "deep-learning-solutions", //            neural net INPUT/HIDDEN/OUTPUT + sine
+  7: "vector-database-integration-expert", // isometric DB servers + arrows
+  8: "hire-data-analytics-visualization-expert", // dashboards + line charts
+  9: "hire-the-perfect-mlops-developer", //   CI/CD infinity + neural + containers
+  10: "chatting-app-development", //           chat bubbles + user network
+  11: "hire-cloud-devops-engineer-ai", //      glass cloud + glowing cubes
+  12: "hire-ai-data-pipeline-engineer", //     green particle brain → pipes/ports
+  13: "ai-voice-assistant-developer", //       microphone + soundwave → brain
+  14: "ai-chatbot-agent-designer", //          neon circuit brain + chat + hex icons
+  15: "agentic-ai-development", //             circuit brain + chat + diamond bursts
+};
+
 const exts = new Set([".jpg", ".jpeg", ".png", ".webp", ".avif"]);
 const sources = fs
   .readdirSync(SRC)
@@ -29,7 +50,13 @@ const sources = fs
 
 const done = [];
 for (const file of sources) {
-  const slug = path.basename(file, path.extname(file)).trim().toLowerCase();
+  const base = path.basename(file, path.extname(file)).trim().toLowerCase();
+  const num = base.match(/^0*(\d{1,2})$/);
+  const slug = num ? ORDER_MAP[Number(num[1])] : base;
+  if (!slug) {
+    console.log(`✗ ${file}: no mapping for "${base}" (name it after a service slug)`);
+    continue;
+  }
   const out = path.join(ART, `${slug}.webp`);
   try {
     await sharp(path.join(SRC, file))
