@@ -1,10 +1,21 @@
-# Production stack for the Hetzner VPS: app + Postgres + Redis + Caddy.
-# Caddy terminates TLS (auto Let's Encrypt) and reverse-proxies to the app.
+# =============================================================================
+# Production stack for pankajpramanik.com — app + Postgres + Redis.
 #
+# There is deliberately NO Caddy here. This VPS already runs one shared reverse
+# proxy at /opt/proxy that fronts every application on the box (JourneyMesh and
+# this one). Two Caddies cannot both hold :80 and :443, so this stack publishes
+# no host ports at all: it joins the shared `proxy` network and the proxy
+# reaches the app over that network by its alias.
+#
+#   docker network create proxy      # once per VPS, if it does not exist
 #   docker compose -f docker-compose.prod.yml up -d
 #
-# Env comes from a .env file placed next to this file on the server
-# (see .env.production.example). NEVER commit that file.
+# Env comes from a .env file placed next to this file on the server (see
+# .env.production.example). NEVER commit that file.
+#
+# The matching site block for /opt/proxy/Caddyfile lives in
+# deploy/proxy-caddyfile.snippet.
+# =============================================================================
 services:
   app:
     image: ${APP_IMAGE:-ghcr.io/pankaj2k9/pankajpramanik:latest}
@@ -20,12 +31,19 @@ services:
     # admin references images by URL, so nothing writes there at runtime —
     # we intentionally do NOT mount a volume over it (an empty volume would
     # hide the baked files). If you later add file uploads, use object
-    # storage (S3 / DO Spaces) rather than a host volume.
+    # storage (S3 / OVH Object Storage) rather than a host volume.
     depends_on:
       db:
         condition: service_healthy
     expose:
       - "3000"
+    networks:
+      internal:
+      proxy:
+        aliases:
+          # The name the shared Caddy reverse-proxies to. Changing it means
+          # changing /opt/proxy/Caddyfile too.
+          - pankajpramanik-app
 
   db:
     image: postgres:16-alpine
@@ -41,6 +59,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+    # Database and cache stay off the shared network — nothing outside this
+    # stack, including the other applications on the VPS, can reach them.
+    networks: [internal]
 
   redis:
     image: redis:7-alpine
@@ -48,25 +69,13 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - redisdata:/data
+    networks: [internal]
 
-  caddy:
-    image: caddy:2-alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    environment:
-      DOMAIN: ${DOMAIN}
-      ACME_EMAIL: ${ACME_EMAIL}
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddydata:/data
-      - caddyconfig:/config
-    depends_on:
-      - app
+networks:
+  internal:
+  proxy:
+    external: true
 
 volumes:
   pgdata:
   redisdata:
-  caddydata:
-  caddyconfig:

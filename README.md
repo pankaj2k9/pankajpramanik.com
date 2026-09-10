@@ -44,16 +44,20 @@ Runs on **Docker Compose** both locally (Postgres + Redis) and in production (ap
 ## 4. Folder Structure
 
 ```
-├── docker-compose.yml              # LOCAL: Postgres (5433) + Redis (6380)
-├── docker-compose.prod.yml         # PROD: app + Postgres + Redis + Caddy
+├── docker-compose.yml              # DEV: Postgres (5433) + Redis (6380) [+ app via --profile full]
+├── docker-compose.prod.yml         # PROD: app + Postgres + Redis, behind the shared proxy
 ├── Dockerfile                      # multi-stage build (Next.js standalone)
+├── Dockerfile.dev                  # deps-only dev image (hot reload)
 ├── docker-entrypoint.sh            # runs `prisma migrate deploy` then starts app
-├── Caddyfile                       # reverse proxy + automatic HTTPS
+├── Caddyfile                       # standalone fallback only (single-app VPS)
 ├── .env.example / .env.production.example
 ├── .github/workflows/
-│   ├── docker.yml                  # build image → GHCR → SSH deploy (Docker)
-│   └── deploy.yml                  # alternative bare-metal (PM2/Nginx) deploy
-├── deploy/                         # HETZNER.md, nginx.conf, server-setup.sh (bare-metal)
+│   ├── ci.yml                      # lint · typecheck · migrate · seed · build
+│   └── docker.yml                  # build image → GHCR → SSH deploy to OVHcloud
+├── deploy/
+│   ├── OVH.md                      # the deployment guide
+│   ├── ovh-bootstrap.sh            # idempotent, additive server bootstrap
+│   └── proxy-caddyfile.snippet     # site block for the shared /opt/proxy/Caddyfile
 ├── migration/                      # WordPress migration tooling
 │   ├── wp-export/  extracted/      # raw REST export → cleaned seed JSON
 │   ├── extract*.mjs                # WP export/portfolio → clean JSON
@@ -129,42 +133,78 @@ npm run services:svg   # regenerate SVG service thumbnails
 npm run services:art   # optimize raster service thumbnails → webp
 ```
 
-## 9. Production Deployment (Docker Compose)
+## 9. Production Deployment (OVHcloud VPS)
 
-Full stack in containers: **app + Postgres + Redis + Caddy** (automatic Let's Encrypt HTTPS). Works on any Ubuntu VPS — DigitalOcean Droplet or Hetzner Cloud CX/CPX. See **[deploy/HETZNER.md](deploy/HETZNER.md)** for the full walkthrough.
+The app runs as **app + Postgres + Redis** in containers on an OVHcloud VPS that
+already hosts other applications. A single shared Caddy in `/opt/proxy` fronts every
+site on the box and terminates TLS. This stack publishes **no host ports** — it joins
+the shared `proxy` Docker network as `pankajpramanik-app`, and Caddy is the only thing
+that can reach it.
 
-**On the server (one-time):**
+Full walkthrough: **[deploy/OVH.md](deploy/OVH.md)**.
 
 ```bash
-curl -fsSL https://get.docker.com | sh          # Docker Engine + compose
+# 1. DNS: A record @ → VPS IP, CNAME www → pankajpramanik.com (do this FIRST)
 
-mkdir -p /opt/pankajpramanik && cd /opt/pankajpramanik
-# copy these to the server: docker-compose.prod.yml, Caddyfile, .env
-cp .env.production.example .env && nano .env    # secrets + DOMAIN + POSTGRES_*
+# 2. bootstrap — idempotent and additive; touches no other app on the VPS
+scp deploy/ovh-bootstrap.sh <user>@<host>:~
+ssh <user>@<host> 'bash ovh-bootstrap.sh'
 
-# point DNS (A records @ and www) at the server IP first, then:
-docker login ghcr.io -u <github-user>           # to pull the image
-docker compose -f docker-compose.prod.yml up -d
+# 3. stack files
+scp docker-compose.prod.yml <user>@<host>:/opt/pankajpramanik/
+scp .env.production.example  <user>@<host>:/opt/pankajpramanik/.env   # then fill it in
+
+# 4. first start
+ssh <user>@<host>
+echo "$GHCR_TOKEN" | docker login ghcr.io -u <github-user> --password-stdin
+cd /opt/pankajpramanik && docker compose -f docker-compose.prod.yml up -d
+
+# 5. reload the shared proxy (reload, not restart — other sites keep serving)
+docker compose -f /opt/proxy/docker-compose.yml exec caddy \
+  caddy reload --config /etc/caddy/Caddyfile
 ```
 
 - The app container runs **`prisma migrate deploy` automatically on start** (`docker-entrypoint.sh`).
 - **Seed once** (the slim runtime image can't seed itself) from a repo checkout pointed at the prod DB:
   ```bash
-  DATABASE_URL="postgresql://appuser:PASS@<server-ip>:5432/pankajpramanik" npm ci && npm run db:seed
+  DATABASE_URL="postgresql://appuser:PASS@localhost:5432/pankajpramanik" npm run db:seed
   ```
-- **Caddy** obtains + renews TLS certs automatically for `DOMAIN` and `www.DOMAIN` from `.env` — nothing else to configure.
+- **TLS** is issued and renewed by the shared Caddy from `PANKAJPRAMANIK_DOMAIN` in `/opt/proxy/.env`.
 - `public/uploads` (migrated media) is baked into the image; no volume is mounted over it.
+- `Caddyfile` in the repo root is a **standalone fallback** for a VPS where this app is
+  the only thing running. It is not used by `docker-compose.prod.yml`.
 
-## 10. CI/CD (GitHub Actions → GHCR → server)
+## 10. CI/CD (GitHub Actions → GHCR → OVHcloud)
 
-`.github/workflows/docker.yml`:
+**`.github/workflows/ci.yml`** — every push and PR to `main`: lint, typecheck, migrate,
+seed, build. Never touches the server.
 
-- Spins up a throwaway Postgres, migrates + seeds it, and **builds the image against it** (`next build` prerenders DB-backed pages), then pushes to `ghcr.io/<owner>/pankajpramanik`.
-- On push to `main`, SSHes to the server and runs `docker compose -f docker-compose.prod.yml pull && up -d`.
+**`.github/workflows/docker.yml`** — pushes to `main` and version tags:
 
-Required repo secrets: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY` (the `GITHUB_TOKEN` for GHCR is automatic). Make the GHCR package readable by the server, or `docker login` on it.
+1. Spins up a throwaway Postgres, migrates + seeds it, and **builds the image against it**
+   (`next build` prerenders DB-backed pages).
+2. Pushes to `ghcr.io/<owner>/pankajpramanik`, tagged `latest`, `sha-<short>`, and the git tag.
+3. SSHes to the VPS, pulls, restarts this stack, and **waits for the app to answer**
+   before reporting success.
 
-> **Bare-metal alternative** (PM2 + Nginx + certbot) is still supported via `deploy/server-setup.sh`, `deploy/nginx.conf`, and `.github/workflows/deploy.yml` — see [deploy/HETZNER.md](deploy/HETZNER.md).
+Required repo secrets (in the `production` environment): `DEPLOY_HOST`, `DEPLOY_USER`,
+`DEPLOY_SSH_KEY`, `GHCR_PULL_TOKEN`.
+
+`GHCR_PULL_TOKEN` is a PAT with `read:packages`. `GITHUB_TOKEN` is deliberately not used
+for the server-side `docker login` — it expires with the workflow run, leaving a dead
+credential on the box.
+
+**Because the VPS is shared**, the deploy job is deliberately narrow: it names only this
+stack's compose file, runs no `down`, no `system prune`, no network or volume removal,
+never edits `/opt/proxy`, and aborts if the stack directory or shared network is missing
+rather than recreating either. Image cleanup is limited to dangling layers older than 72h.
+
+**Rollback** to any build by tag:
+
+```bash
+APP_IMAGE=ghcr.io/pankaj2k9/pankajpramanik:sha-abc1234 \
+  docker compose -f docker-compose.prod.yml up -d app
+```
 
 ## 11. Resend (contact email)
 

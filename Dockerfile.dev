@@ -1,0 +1,28 @@
+# syntax=docker/dockerfile:1
+
+# Development image: dependencies only, no build step. `next dev` compiles on
+# demand and the sources arrive via a bind mount from docker-compose.yml.
+# Production uses the multi-stage Dockerfile instead.
+FROM node:22-alpine
+WORKDIR /app
+
+RUN apk add --no-cache libc6-compat openssl
+
+# Installed at image build time so a `docker compose up` does not reinstall on
+# every start. The compose file mounts an anonymous volume over node_modules,
+# which preserves this layer instead of the host's (possibly darwin-arm64)
+# binaries.
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Prisma Client is generated against the schema, not the database, so it can be
+# built into the image; migrate deploy runs at container start.
+COPY prisma ./prisma
+RUN npx prisma generate
+
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]

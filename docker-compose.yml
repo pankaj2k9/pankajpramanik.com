@@ -1,9 +1,16 @@
-# Local development: database + cache only. Run the app with `npm run dev`.
-# For the full containerized stack (app included), see docker-compose.prod.yml.
+# Local development stack.
 #
-#   docker compose up -d
-#   # then set DATABASE_URL to the 5433 port below and:
-#   npm run db:migrate && npm run db:seed && npm run dev
+# Two ways to run it:
+#
+#   1. Services only (default, fastest feedback loop)
+#        docker compose up -d
+#        npm run db:migrate && npm run db:seed && npm run dev
+#
+#   2. Everything in containers, app included
+#        docker compose --profile full up -d --build
+#
+# Host ports are shifted (5433 / 6380) so a native Postgres or Redis on the
+# usual ports keeps working. Production lives in docker-compose.prod.yml.
 services:
   db:
     image: postgres:16-alpine
@@ -13,7 +20,6 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pankajpramanik_dev}
       POSTGRES_DB: ${POSTGRES_DB:-pankajpramanik}
     ports:
-      # Host 5433 avoids clashing with any native Postgres on 5432
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -27,10 +33,43 @@ services:
     image: redis:7-alpine
     restart: unless-stopped
     ports:
-      # Host 6380 avoids clashing with any native Redis on 6379
       - "6380:6379"
     volumes:
       - redisdata:/data
+
+  # Only started with `--profile full`. Sources are bind-mounted, so edits on
+  # the host trigger Fast Refresh inside the container.
+  app:
+    profiles: ["full"]
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      NODE_ENV: development
+      # `db` / `redis` are the in-network hostnames — the 5433/6380 host
+      # mappings above are for processes running on the host, not here.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-pankajpramanik}:${POSTGRES_PASSWORD:-pankajpramanik_dev}@db:5432/${POSTGRES_DB:-pankajpramanik}?schema=public
+      REDIS_URL: redis://redis:6379
+      AUTH_URL: http://localhost:3000
+      AUTH_TRUST_HOST: "true"
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      # Anonymous volumes keep container-built artifacts from being shadowed
+      # by (or leaking into) the host checkout.
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "npx prisma migrate deploy && npm run dev"
 
 volumes:
   pgdata:

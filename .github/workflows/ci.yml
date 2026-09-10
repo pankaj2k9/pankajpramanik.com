@@ -1,0 +1,69 @@
+# Lint and build only. Deployment lives in docker.yml — having two workflows
+# both push to the server on the same event made them race, and the loser
+# silently overwrote the winner.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Lint & Build
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ci_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ci_test
+      AUTH_SECRET: ci-only-secret-not-used-in-production
+      AUTH_URL: http://localhost:3000
+      AUTH_TRUST_HOST: "true"
+      NEXT_PUBLIC_SITE_URL: https://pankajpramanik.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Apply migrations (schema check)
+        run: npx prisma migrate deploy
+
+      # `next build` prerenders pages that read PostgreSQL, so the CI database
+      # needs content or generateStaticParams produces empty routes.
+      - name: Seed
+        env:
+          ADMIN_EMAIL: ci@example.com
+          ADMIN_NAME: CI
+          ADMIN_PASSWORD: ci-only-placeholder-pw
+        run: npm run db:seed
+
+      - name: Build
+        run: npm run build

@@ -6,6 +6,12 @@ on:
     tags: ["v*"]
   workflow_dispatch:
 
+# One deploy at a time, and never cancel one mid-flight — a killed run can
+# leave the stack half-restarted.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   IMAGE: ghcr.io/${{ github.repository }}
 
@@ -15,6 +21,10 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      # Surfaced so the deploy job can log exactly which build it shipped,
+      # and so a rollback has a concrete tag to name.
+      image: ${{ env.IMAGE }}:${{ steps.meta.outputs.version }}
     # `next build` prerenders pages that read PostgreSQL, so provide a
     # throwaway DB, migrate + seed it, then let the Docker build read it
     # over the host network (buildx --network=host).
@@ -92,21 +102,81 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
+    name: Deploy to OVHcloud VPS
     needs: build
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - name: Pull & restart on the server
+      # This VPS is shared. Other applications run behind the same Caddy at
+      # /opt/proxy, so this job is deliberately narrow:
+      #   * it only ever names docker-compose.prod.yml in /opt/pankajpramanik
+      #   * no `docker compose down`, no `docker system prune`, no network or
+      #     volume removal — nothing another app depends on is touched
+      #   * it does not edit /opt/proxy; the proxy is configured once by
+      #     deploy/ovh-bootstrap.sh and reloaded by hand
+      - name: Pull image from GHCR and restart the stack
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          # A read:packages PAT, NOT GITHUB_TOKEN. GITHUB_TOKEN dies with the
+          # workflow run, so a later manual `docker compose pull` on the box
+          # would fail with a 401.
+          GHCR_USER: ${{ github.repository_owner }}
+          GHCR_TOKEN: ${{ secrets.GHCR_PULL_TOKEN }}
+          IMAGE_REF: ${{ needs.build.outputs.image }}
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script_stop: true
+          command_timeout: 20m
+          envs: GHCR_USER,GHCR_TOKEN,IMAGE_REF
           script: |
-            set -e
-            cd /opt/pankajpramanik
-            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
-            docker compose -f docker-compose.prod.yml pull app
-            docker compose -f docker-compose.prod.yml up -d
-            docker image prune -f
+            set -euo pipefail
+
+            APP_DIR=/opt/pankajpramanik
+            COMPOSE="docker compose -f docker-compose.prod.yml"
+
+            # Fail loudly rather than bootstrapping half a stack from CI.
+            test -d "$APP_DIR" || { echo "::error::$APP_DIR missing — run deploy/ovh-bootstrap.sh first"; exit 1; }
+            cd "$APP_DIR"
+            test -f docker-compose.prod.yml || { echo "::error::docker-compose.prod.yml missing in $APP_DIR"; exit 1; }
+            test -f .env || { echo "::error::.env missing in $APP_DIR"; exit 1; }
+
+            # Created by the bootstrap script and shared with the other apps.
+            # Never recreated here — recreating it would detach them from Caddy.
+            docker network inspect proxy >/dev/null 2>&1 || {
+              echo "::error::shared 'proxy' network missing — run deploy/ovh-bootstrap.sh"; exit 1; }
+
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+
+            # Record what is running now, so a rollback has a target.
+            PREVIOUS=$($COMPOSE images -q app | head -1 || true)
+            echo "Currently running image id: ${PREVIOUS:-none}"
+            echo "Deploying: ${IMAGE_REF:-latest tag}"
+
+            $COMPOSE pull app
+            # `up -d` recreates only what changed. Migrations run from the
+            # container entrypoint (prisma migrate deploy) on start.
+            $COMPOSE up -d
+
+            docker logout ghcr.io
+
+            # Wait for the app to answer before calling this a success.
+            for i in $(seq 1 30); do
+              if $COMPOSE exec -T app node -e \
+                   "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"; then
+                echo "App is serving."
+                break
+              fi
+              if [ "$i" = "30" ]; then
+                echo "::error::App did not become healthy in 60s. Recent logs:"
+                $COMPOSE logs --tail=60 app
+                exit 1
+              fi
+              sleep 2
+            done
+
+            # Dangling images only, and only ones older than three days, so a
+            # concurrent build for another app on this box is never collected.
+            docker image prune -f --filter "until=72h"
