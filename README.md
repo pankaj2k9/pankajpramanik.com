@@ -53,10 +53,12 @@ Runs on **Docker Compose** both locally (Postgres + Redis) and in production (ap
 ├── .env.example / .env.production.example
 ├── .github/workflows/
 │   ├── ci.yml                      # lint · typecheck · migrate · seed · build
-│   └── docker.yml                  # build image → GHCR → SSH deploy to OVHcloud
+│   ├── docker.yml                  # build image → GHCR → SSH deploy to OVHcloud
+│   └── decommission-journeymesh.yml # manual dispatch, retires the previous app
 ├── deploy/
 │   ├── OVH.md                      # the deployment guide
 │   ├── ovh-bootstrap.sh            # idempotent, additive server bootstrap
+│   ├── decommission-journeymesh.sh # one-time retirement of the previous app
 │   └── proxy-caddyfile.snippet     # site block for the shared /opt/proxy/Caddyfile
 ├── migration/                      # WordPress migration tooling
 │   ├── wp-export/  extracted/      # raw REST export → cleaned seed JSON
@@ -198,6 +200,14 @@ credential on the box.
 stack's compose file, runs no `down`, no `system prune`, no network or volume removal,
 never edits `/opt/proxy`, and aborts if the stack directory or shared network is missing
 rather than recreating either. Image cleanup is limited to dangling layers older than 72h.
+
+**Retiring JourneyMesh.** The VPS previously served JourneyMesh on the bare IP. Once
+pankajpramanik.com is live over HTTPS, retire it with the **Decommission JourneyMesh**
+workflow (manual dispatch, typed confirmation) or `deploy/decommission-journeymesh.sh`.
+It refuses to run until the new site returns 200, archives everything first, comments the
+old site block out rather than deleting it, and rolls the proxy back automatically if the
+post-reload check fails. Volumes are kept unless you opt in. See
+[deploy/OVH.md](deploy/OVH.md#retiring-journeymesh).
 
 **Rollback** to any build by tag:
 

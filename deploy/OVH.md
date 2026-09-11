@@ -5,9 +5,13 @@ Actions, published to the GitHub Container Registry, and pulled onto an
 OVHcloud VPS that already hosts other applications.
 
 **The VPS is shared.** A single Caddy in `/opt/proxy` fronts every site on the
-box. Everything in this document is additive: it adds one site block, one stack
-directory, and one set of containers. No step stops, removes, or reconfigures an
-application that is already there.
+box. Setup and deployment are entirely additive: they add one site block, one
+stack directory, and one set of containers, and no part of the deploy path ever
+stops or reconfigures an application that is already there.
+
+Retiring JourneyMesh is the one destructive operation, and it is kept separate
+on purpose. It has its own script, its own manually triggered workflow, and its
+own typed confirmation. See [Retiring JourneyMesh](#retiring-journeymesh).
 
 ```
                     :80 / :443
@@ -17,9 +21,10 @@ application that is already there.
               └──┬──────────────┬──┘
                  │  proxy network
      ┌───────────▼──┐        ┌──▼──────────────────┐
-     │ other apps   │        │ pankajpramanik-app  │  :3000, no host port
-     │ (untouched)  │        └──┬──────────────────┘
-     └──────────────┘           │  internal network
+     │ journeymesh  │        │ pankajpramanik-app  │  :3000, no host port
+     │ (until it is │        └──┬──────────────────┘
+     │  retired)    │           │  internal network
+     └──────────────┘           │
                           ┌─────▼──────┐
                           │ db · redis │  reachable only by this stack
                           └────────────┘
@@ -185,6 +190,71 @@ Written down because this VPS is shared:
   step 4.
 - It aborts if the stack directory, the compose file, the `.env`, or the shared
   network is missing, rather than recreating any of them.
+
+---
+
+## Retiring JourneyMesh
+
+Once pankajpramanik.com is live and serving over HTTPS, JourneyMesh can come off
+this VPS. `deploy/decommission-journeymesh.sh` does it, gated behind a typed
+confirmation:
+
+```sh
+scp deploy/decommission-journeymesh.sh <user>@<host>:~
+ssh <user>@<host> 'CONFIRM=REMOVE-JOURNEYMESH bash decommission-journeymesh.sh'
+```
+
+Or from the Actions tab: **Decommission JourneyMesh** → Run workflow → type
+`REMOVE-JOURNEYMESH`. Manual dispatch only. It is deliberately not part of the
+deploy workflow, because a destructive step that runs on every push to `main` is
+one bad merge away from an outage.
+
+**Order matters, and the script enforces it.** JourneyMesh's block currently owns
+the bare IP (`JOURNEYMESH_DOMAIN=http://<vps-ip>`), so it is what answers on
+this VPS today. The script refuses to touch anything unless
+`https://pankajpramanik.com` already returns 200.
+
+What it does, in order:
+
+1. Verifies the replacement is live, the shared network exists, and prints every
+   running container.
+2. Archives the Caddyfile, both `.env` files, a container and volume inventory,
+   and a `tar.gz` of each JourneyMesh volume, into `/opt/decommissioned/…`.
+3. **Comments out** the `{$JOURNEYMESH_DOMAIN}` block rather than deleting it,
+   by counting braces from its opening line. Caddy placeholders like `{host}`
+   and `{scheme}` are balanced, so they do not confuse the match. Verified
+   against a copy of the real Caddyfile with `caddy validate`.
+4. Comments out `JOURNEYMESH_DOMAIN` in `/opt/proxy/.env`.
+5. Runs `caddy validate`. On failure it restores the backup and reloads nothing.
+6. Reloads, then re-checks the live URL. If that check fails it rolls the proxy
+   back and leaves the JourneyMesh containers running.
+7. Only then runs `docker compose down` in JourneyMesh's own directory.
+
+**Volumes are kept by default.** Containers are cheap to recreate, data is not.
+Pass `PURGE_VOLUMES=yes` only when you are certain, and note the backup in the
+archive directory is your last copy.
+
+To undo the proxy half at any point, restore the timestamped backup and reload:
+
+```sh
+ls -t /opt/proxy/Caddyfile.bak.*
+cp /opt/proxy/Caddyfile.bak.<timestamp> /opt/proxy/Caddyfile
+docker compose -f /opt/proxy/docker-compose.yml exec caddy \
+  caddy reload --config /etc/caddy/Caddyfile
+```
+
+### Tighten the proxy afterwards
+
+Two things in the shared config were held back only because JourneyMesh served
+plain HTTP on a bare IP. Once every site on the VPS is on a real domain with a
+certificate, both should be turned on:
+
+- Uncomment `Strict-Transport-Security` in the `(common)` snippet. It was left
+  out because sending HSTS over `http://` is ignored at best, and on a hostname
+  it would pin that name to HTTPS in every browser for two years before a
+  certificate existed.
+- Set `ACME_EMAIL` in `/opt/proxy/.env` and uncomment the `email` directive, for
+  Let's Encrypt expiry warnings.
 
 ---
 

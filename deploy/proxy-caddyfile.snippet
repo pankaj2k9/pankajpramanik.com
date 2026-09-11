@@ -7,10 +7,10 @@
 #
 # The same two modes described at the top of that file apply here:
 #
-#   IP mode        PANKAJPRAMANIK_DOMAIN=http://51.79.166.97:8080
-#     Only useful for a smoke test. A bare IP already belongs to JourneyMesh,
-#     so a second site on the same address needs a distinct port, and Caddy
-#     will not issue a certificate for it.
+#   IP mode        PANKAJPRAMANIK_DOMAIN=http://<vps-ip>:8080
+#     Only useful for a smoke test. The bare IP already belongs to the other
+#     application, so a second site on the same address needs a distinct port,
+#     and Caddy will not issue a certificate for a bare IP.
 #
 #   Domain mode    PANKAJPRAMANIK_DOMAIN=pankajpramanik.com
 #     The real deployment. Point the A record (and the www CNAME) at the VPS

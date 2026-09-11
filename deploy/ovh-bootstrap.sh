@@ -33,6 +33,24 @@ UPSTREAM=${UPSTREAM:-pankajpramanik-app:3000}
 # parsing Caddy's syntax.
 MARKER="# >>> ${APP_NAME} (managed by deploy/ovh-bootstrap.sh) >>>"
 
+# The shared proxy's compose file may be named any of the four conventional
+# spellings, so resolve it rather than assuming. Falls back to talking to the
+# container directly if there is no compose file at all.
+PROXY_COMPOSE=""
+for f in docker-compose.yml docker-compose.yaml compose.yml compose.yaml; do
+  if [ -f "$PROXY_DIR/$f" ]; then PROXY_COMPOSE="$PROXY_DIR/$f"; break; fi
+done
+
+caddy_cmd() {
+  if [ -n "$PROXY_COMPOSE" ]; then
+    docker compose -f "$PROXY_COMPOSE" exec -T "$PROXY_SERVICE" "$@"
+  else
+    CID=$(docker ps --filter "name=$PROXY_SERVICE" --format '{{.ID}}' | head -1)
+    [ -n "$CID" ] || { echo "cannot find a running '$PROXY_SERVICE' container" >&2; return 1; }
+    docker exec -i "$CID" "$@"
+  fi
+}
+
 say()  { printf '\n\033[1;36m==> %s\033[0m\n' "$*"; }
 warn() { printf '\033[1;33m    ! %s\033[0m\n' "$*"; }
 ok()   { printf '\033[0;32m    ✓ %s\033[0m\n' "$*"; }
@@ -170,8 +188,7 @@ fi
 # every site on this VPS down, not just this one.
 
 say "Validating the proxy config"
-if docker compose -f "$PROXY_DIR/docker-compose.yml" exec -T "$PROXY_SERVICE" \
-     caddy validate --config /etc/caddy/Caddyfile; then
+if caddy_cmd caddy validate --config /etc/caddy/Caddyfile; then
   ok "config is valid"
 else
   warn "VALIDATION FAILED — the proxy has NOT been reloaded, so the other"

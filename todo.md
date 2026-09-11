@@ -228,6 +228,23 @@ Palette stays; these are all behaviour, not color.
       72h; polls the app until it answers before reporting success.
 - [x] Build job now exports the image tag, so a rollback has a concrete SHA to name.
 
+### Retiring JourneyMesh
+
+- [x] `deploy/decommission-journeymesh.sh` — gated behind `CONFIRM=REMOVE-JOURNEYMESH`.
+      Refuses to run unless `https://pankajpramanik.com` already returns 200, since the
+      JourneyMesh block currently owns the bare IP and is what answers on this VPS today.
+- [x] Archives the Caddyfile, both `.env` files, a container and volume inventory, and a
+      `tar.gz` of every JourneyMesh volume, before touching anything.
+- [x] Comments the site block out rather than deleting it, by counting braces from the
+      opening line. Caddy placeholders like `{host}` and `{scheme}` are balanced, so they
+      do not break the match. Tested against a copy of the real Caddyfile, and the result
+      passes `caddy validate` on a real Caddy 2 image.
+- [x] Validates before reloading, re-checks the live URL after, and rolls the proxy back
+      automatically if either step fails — leaving the JourneyMesh containers running.
+- [x] Volumes kept by default. `PURGE_VOLUMES=yes` is opt-in.
+- [x] `.github/workflows/decommission-journeymesh.yml` — `workflow_dispatch` only, with a
+      typed confirmation input. Never wired into the deploy workflow.
+
 ### Still to do on the server
 
 - [ ] Create the `GHCR_PULL_TOKEN` PAT with `read:packages` (or make the package public).
@@ -240,3 +257,9 @@ Palette stays; these are all behaviour, not color.
 - [ ] Start the stack, then reload the shared proxy.
 - [ ] Seed once from a checkout, then change the seeded admin password.
 - [ ] Add a `pg_dump` cron writing off this VPS. Nothing backs up Postgres today.
+- [ ] Once pankajpramanik.com is verified live, retire JourneyMesh — either the Actions
+      workflow or `CONFIRM=REMOVE-JOURNEYMESH bash deploy/decommission-journeymesh.sh`.
+- [ ] After that, with every site on a real domain and certificate: uncomment
+      `Strict-Transport-Security` in the shared `(common)` snippet, and set `ACME_EMAIL`
+      in `/opt/proxy/.env` for expiry warnings. Both were held back only because
+      JourneyMesh served plain HTTP on a bare IP.
