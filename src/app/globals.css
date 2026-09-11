@@ -377,6 +377,23 @@ html.lenis body {
   --cursor-dot-bg: #1e1b4b;
 }
 
+/*
+ * Sections marked .force-dark stay dark in both themes (the homepage hero).
+ * The light "ink blot" is multiply-blended dark ink, which disappears over a
+ * near-black ground, so over those sections the cursor reverts to the dark
+ * variant. The second selector has to out-specify :root[data-theme="light"].
+ */
+:root.cursor-on-dark,
+:root[data-theme="light"].cursor-on-dark {
+  --cursor-ring-bg: transparent;
+  --cursor-ring-border: color-mix(in srgb, #818cf8 85%, transparent);
+  --cursor-ring-width: 1.5px;
+  --cursor-ring-shadow: 0 0 14px color-mix(in srgb, #818cf8 45%, transparent);
+  --cursor-ring-blur: 0px;
+  --cursor-blend: screen;
+  --cursor-dot-bg: #818cf8;
+}
+
 html.has-custom-cursor,
 html.has-custom-cursor * {
   cursor: none !important;
@@ -681,14 +698,34 @@ html.cursor-down .cursor-dot {
    Mono micro-label — the eyebrow used above section titles and on cards
    ========================================================================= */
 
+/*
+ * Dedicated colours rather than --accent / --faint.
+ *
+ * At 0.72rem this is "normal" text under WCAG, so it needs 4.5:1. The theme
+ * accent only reaches 4.27:1 on the light background, and --faint is 2.45:1
+ * there — a clear failure. These two tokens are picked to clear 4.5:1 in both
+ * themes; see the ratios in the comment below.
+ *
+ *   dark   label #818cf8 on #07080f = 6.70:1   index #9aa1c0 = 7.84:1
+ *   light  label #4f46e5 on #f8fafc = 6.01:1   index #64748b = 4.55:1
+ */
+:root {
+  --label: #818cf8;
+  --label-index: #9aa1c0;
+}
+:root[data-theme="light"] {
+  --label: #4f46e5;
+  --label-index: #64748b;
+}
+
 .micro-label {
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--label);
 }
 .micro-label .micro-index {
-  color: var(--faint);
+  color: var(--label-index);
 }

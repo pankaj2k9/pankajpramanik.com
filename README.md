@@ -59,6 +59,7 @@ Runs on **Docker Compose** both locally (Postgres + Redis) and in production (ap
 │   ├── OVH.md                      # the deployment guide
 │   ├── ovh-bootstrap.sh            # idempotent, additive server bootstrap
 │   ├── decommission-journeymesh.sh # one-time retirement of the previous app
+│   ├── backup.sh                   # nightly pg_dump → off-box, with rotation
 │   └── proxy-caddyfile.snippet     # site block for the shared /opt/proxy/Caddyfile
 ├── migration/                      # WordPress migration tooling
 │   ├── wp-export/  extracted/      # raw REST export → cleaned seed JSON
@@ -245,7 +246,7 @@ APP_IMAGE=ghcr.io/pankaj2k9/pankajpramanik:sha-abc1234 \
 
 | Symptom | Fix |
 | --- | --- |
-| Port 5433 / 6380 already in use | Another Postgres/Redis is bound; stop it or change the host port in `docker-compose.yml` |
+| Port 5433 / 6380 already in use | Another Postgres/Redis is bound. Override without editing compose: `DB_PORT=5434 REDIS_PORT=6381 docker compose up -d`, and point `DATABASE_URL` at the new port |
 | `Prisma only supports Node.js 20.19+` | Upgrade Node (`nvm install 22`) |
 | Login always fails | Re-check `AUTH_SECRET` / `AUTH_URL`; reseed admin with `npm run db:seed` |
 | Contact email not arriving | Check admin → Messages (stored regardless); verify Resend domain + `CONTACT_FROM_EMAIL` |

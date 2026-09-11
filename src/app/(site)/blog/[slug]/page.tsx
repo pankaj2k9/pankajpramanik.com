@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getPostBySlug, getRelatedPosts } from "@/lib/queries";
 import { renderContent, readingTimeMinutes } from "@/lib/content";
-import { formatDate } from "@/lib/utils";
+import { formatDate, jsonLdScript } from "@/lib/utils";
 import { absoluteUrl, site } from "@/lib/site";
 import { PostCard } from "@/components/site/cards";
 
@@ -90,7 +90,7 @@ export default async function BlogPostPage({
     <article className="container-site py-16">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(articleJsonLd) }}
       />
 
       <div className="mx-auto max-w-3xl">

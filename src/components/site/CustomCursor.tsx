@@ -173,6 +173,11 @@ export default function CustomCursor() {
       const target = e.target as Element | null;
       if (!target || typeof target.closest !== "function") return;
 
+      // Sections that stay dark in both themes (the hero) need the dark
+      // cursor even while the rest of the site is light — a multiply-blended
+      // ink blot over near-black is invisible.
+      root.classList.toggle("cursor-on-dark", !!target.closest(".force-dark"));
+
       const opted = target.closest<HTMLElement>("[data-cursor]");
       const mode = opted?.dataset.cursor;
 
@@ -229,7 +234,8 @@ export default function CustomCursor() {
         "cursor-link",
         "cursor-view",
         "cursor-text",
-        "cursor-down"
+        "cursor-down",
+        "cursor-on-dark"
       );
     };
   }, [enabled, pathname]);

@@ -278,13 +278,21 @@ APP_IMAGE=ghcr.io/pankaj2k9/pankajpramanik:sha-abc1234 \
 Rolling back the image does **not** roll back a migration. If a deploy shipped a
 destructive schema change, restore from a dump instead.
 
-**Backups.** Nothing backs up Postgres today. Add a cron writing somewhere that
-is not this VPS:
+**Backups.** `deploy/backup.sh` dumps, compresses, verifies, copies off-box, and
+rotates. Install it as a cron:
 
 ```sh
-docker compose -f /opt/pankajpramanik/docker-compose.prod.yml exec -T db \
-  pg_dump -U appuser pankajpramanik | gzip > "pankajpramanik-$(date +%F).sql.gz"
+sudo install -m 755 deploy/backup.sh /usr/local/bin/pankajpramanik-backup
+crontab -e
+# 03:17 daily, an odd minute so it misses the top-of-hour pile-up
+17 3 * * * /usr/local/bin/pankajpramanik-backup >> /var/log/pankajpramanik-backup.log 2>&1
 ```
+
+Set `REMOTE` inside the script to an rsync destination. A dump that only ever
+lands on the machine it came from is not a backup, and the script warns on every
+run until that is set. It also writes to a `.part` file and renames only on
+success, so a truncated dump is never mistaken for a good one, and it shouts if
+a dump comes back at less than half the previous size.
 
 ---
 

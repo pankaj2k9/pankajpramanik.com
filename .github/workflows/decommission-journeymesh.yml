@@ -45,7 +45,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Copy the decommission script to the server
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@917f8b81dfc1ccd331fef9e2d61bdc6c8be94634 # v0.1.7
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
@@ -55,7 +55,7 @@ jobs:
           strip_components: 1
 
       - name: Run it
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@7eaf76671a0d7eec5d98ee897acda4f968735a17 # v1.2.0
         env:
           PURGE: ${{ inputs.purge_volumes }}
           LIVE: ${{ inputs.live_url }}

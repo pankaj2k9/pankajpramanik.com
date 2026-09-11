@@ -105,7 +105,18 @@ export default function ScrollFX() {
       );
       const hash = link?.getAttribute("href");
       if (!link || !hash || hash === "#") return;
-      const el = document.querySelector<HTMLElement>(hash);
+
+      // The href comes from migrated WordPress HTML, which the sanitizer
+      // permits `href` on. A value like `#a"]` is a valid attribute but an
+      // invalid selector, and querySelector throws SyntaxError on it — an
+      // uncaught exception inside a click handler. Fall back to the browser's
+      // own anchor handling rather than swallowing the click.
+      let el: HTMLElement | null = null;
+      try {
+        el = document.querySelector<HTMLElement>(hash);
+      } catch {
+        return;
+      }
       if (!el) return;
       e.preventDefault();
       lenis.scrollTo(el, { offset: -80 });

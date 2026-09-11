@@ -7,6 +7,7 @@ import { getProjectBySlug, getPublishedProjects } from "@/lib/queries";
 import { renderContent, upgradeCtaLinks } from "@/lib/content";
 import { absoluteUrl } from "@/lib/site";
 import Tabs from "@/components/site/Tabs";
+import { jsonLdScript } from "@/lib/utils";
 
 export const revalidate = 300;
 
@@ -154,7 +155,7 @@ export default async function ProjectPage({
     <article className="container-site py-16">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <div className="mx-auto max-w-4xl">
         <nav className="text-sm text-faint" aria-label="Breadcrumb">

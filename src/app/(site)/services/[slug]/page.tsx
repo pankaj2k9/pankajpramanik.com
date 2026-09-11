@@ -6,7 +6,7 @@ import { getPageBySlug, getServices } from "@/lib/queries";
 import { renderContent, upgradeCtaLinks } from "@/lib/content";
 import { absoluteUrl, site } from "@/lib/site";
 import { serviceArt } from "@/lib/service-art";
-import { cn } from "@/lib/utils";
+import { cn, jsonLdScript } from "@/lib/utils";
 
 export const revalidate = 3600;
 
@@ -181,7 +181,7 @@ export default async function ServicePage({
     <div>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       {/* ---------- Banner (always dark, agency-style) ---------- */}

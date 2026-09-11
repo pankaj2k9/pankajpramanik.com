@@ -1,5 +1,6 @@
 import HomeExperience from "@/components/home/HomeExperience";
 import { site, absoluteUrl } from "@/lib/site";
+import { jsonLdScript } from "@/lib/utils";
 
 export const metadata = {
   alternates: { canonical: "/" },
@@ -29,7 +30,7 @@ export default function HomePage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(personJsonLd) }}
       />
       <HomeExperience />
     </>

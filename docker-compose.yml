@@ -20,9 +20,12 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pankajpramanik_dev}
       POSTGRES_DB: ${POSTGRES_DB:-pankajpramanik}
     ports:
-      # Overridable: 5433 avoids a native Postgres on 5432, but another
-      # project on the same machine may already hold it. Set DB_PORT to move.
-      - "${DB_PORT:-5433}:5432"
+      # Bound to loopback on purpose. Published on 0.0.0.0 this database — with
+      # the weak default password below — would be reachable from every other
+      # machine on the network, including hotel and cafe wifi.
+      # Overridable: 5433 avoids a native Postgres on 5432, but another project
+      # on the same machine may already hold it. Set DB_PORT to move.
+      - "127.0.0.1:${DB_PORT:-5433}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -35,7 +38,8 @@ services:
     image: redis:7-alpine
     restart: unless-stopped
     ports:
-      - "${REDIS_PORT:-6380}:6379"
+      # Loopback only, same reasoning as the database.
+      - "127.0.0.1:${REDIS_PORT:-6380}:6379"
     volumes:
       - redisdata:/data
 
@@ -61,7 +65,7 @@ services:
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
       WATCHPACK_POLLING: "true"
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     volumes:
       - .:/app
       # Anonymous volumes keep container-built artifacts from being shadowed

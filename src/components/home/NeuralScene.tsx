@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 /**
@@ -133,7 +133,48 @@ function Constellation({ slide }: { slide: number }) {
   );
 }
 
+/**
+ * Is WebGL actually usable here?
+ *
+ * three.js throws synchronously while creating the renderer when it is not —
+ * WebGL disabled by policy, a blocklisted GPU, a VM, a headless browser. The
+ * Canvas `onError` prop does not catch that, because the throw happens during
+ * mount rather than inside the render loop. So ask first.
+ *
+ * Cached at module level: the answer cannot change within a page load, and the
+ * probe allocates a context.
+ */
+let webglSupported: boolean | null = null;
+function supportsWebGL(): boolean {
+  if (webglSupported !== null) return webglSupported;
+  try {
+    const canvas = document.createElement("canvas");
+    const gl =
+      canvas.getContext("webgl2") ??
+      canvas.getContext("webgl") ??
+      canvas.getContext("experimental-webgl");
+    webglSupported = !!gl;
+    // Hand the probe context back rather than waiting for GC; browsers cap
+    // how many live contexts a page may hold.
+    if (gl && "getExtension" in gl) {
+      (gl as WebGLRenderingContext)
+        .getExtension("WEBGL_lose_context")
+        ?.loseContext();
+    }
+  } catch {
+    webglSupported = false;
+  }
+  return webglSupported;
+}
+
 export default function NeuralScene({ slide }: { slide: number }) {
+  // Client-only (imported with `ssr: false`), so probing in a lazy initializer
+  // is safe and avoids a setState-in-effect round trip.
+  const [supported] = useState(supportsWebGL);
+
+  // The hero's radial gradient wash stands on its own, so fail quiet.
+  if (!supported) return null;
+
   return (
     <Canvas
       camera={{ position: [0, 0.4, 8.2], fov: 50 }}
