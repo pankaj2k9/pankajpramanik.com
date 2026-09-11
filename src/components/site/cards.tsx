@@ -13,7 +13,8 @@ type PostCardPost = {
 
 export function PostCard({ post }: { post: PostCardPost }) {
   return (
-    <article className="card card-hover group overflow-hidden">
+    <article className="card card-hover group overflow-hidden" data-cursor="Read">
+      <span className="card-sweep" aria-hidden />
       <Link href={`/blog/${post.slug}`} className="block">
         {post.coverImage && (
           <div className="relative aspect-[16/9] overflow-hidden border-b border-border">
@@ -61,7 +62,8 @@ type ProjectCardProject = {
 
 export function ProjectCard({ project }: { project: ProjectCardProject }) {
   return (
-    <article className="card card-hover group relative overflow-hidden p-6">
+    <article className="card card-hover group relative overflow-hidden p-6" data-cursor="View">
+      <span className="card-sweep" aria-hidden />
       {project.featured && (
         <span className="absolute right-4 top-4 rounded-full bg-accent-strong/15 px-2.5 py-0.5 text-[11px] font-semibold text-accent">
           Featured
@@ -100,15 +102,23 @@ export function SectionHeading({
   eyebrow,
   title,
   action,
+  index,
 }: {
   eyebrow: string;
   title: string;
   action?: { href: string; label: string };
+  /** Renders a mono "01 /" prefix before the eyebrow when given. */
+  index?: number;
 }) {
   return (
     <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-widest text-accent">
+        <p className="micro-label">
+          {index !== undefined && (
+            <span className="micro-index">
+              {String(index).padStart(2, "0")} /{" "}
+            </span>
+          )}
           {eyebrow}
         </p>
         <h2 className="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">

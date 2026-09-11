@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import gsap from "gsap";
 import SocialLinks from "@/components/site/SocialLinks";
+import Ticker from "@/components/site/Ticker";
+import Counter from "@/components/site/Counter";
 import { site } from "@/lib/site";
+import { scrollToTarget } from "@/lib/lenis";
 import { cn } from "@/lib/utils";
 
 const NeuralScene = dynamic(() => import("./NeuralScene"), {
@@ -14,6 +17,21 @@ const NeuralScene = dynamic(() => import("./NeuralScene"), {
 });
 
 const SLIDES = ["intro", "work", "contact"] as const;
+
+const AVAILABILITY = [
+  "Available for new projects",
+  "AI & Data Engineering",
+  "LLM · RAG · Agentic systems",
+  "Remote worldwide",
+  "Open to contract & full-time",
+];
+
+/** Headline numbers for the "what I build" section. */
+const STATS = [
+  { value: 8, suffix: "+", label: "years shipping production systems" },
+  { value: 40, suffix: "+", label: "data & AI pipelines delivered" },
+  { value: 20, suffix: "+", label: "services offered end to end" },
+];
 
 const CAPABILITIES = [
   { label: "LLM & RAG Systems", href: "/services/llm-rag-developer-hire" },
@@ -24,10 +42,15 @@ const CAPABILITIES = [
 ];
 
 /**
- * Full-viewport homepage experience (no footer, no card sections):
- * a persistent Three.js neural scene behind three scroll-snapped
- * full-screen slides. GSAP animates slide copy in as each becomes
- * active; the scene's palette follows the active slide.
+ * Full-viewport homepage experience: a persistent Three.js neural scene fixed
+ * behind three full-screen sections. GSAP animates each section's copy in as it
+ * becomes active, and the scene's palette follows the active section.
+ *
+ * The sections used to live in their own scroll-snapped `overflow-y-auto`
+ * element. Lenis attaches to the window, so it never touched that scroller and
+ * the landing page silently had no smooth scrolling at all while every other
+ * page did. Snap and momentum smoothing also pull against each other. The page
+ * now scrolls normally, through the same Lenis instance as everywhere else.
  */
 const motionQuery = "(prefers-reduced-motion: reduce)";
 function subscribeMotion(onChange: () => void) {
@@ -59,7 +82,7 @@ export default function HomeExperience() {
           }
         }
       },
-      { root, threshold: 0.55 }
+      { threshold: 0.55 }
     );
     panels.forEach((p) => io.observe(p));
     return () => io.disconnect();
@@ -81,15 +104,16 @@ export default function HomeExperience() {
   }, [active]);
 
   function goTo(i: number) {
-    const root = scroller.current;
-    const panel = root?.querySelector<HTMLElement>(`[data-slide="${i}"]`);
-    panel?.scrollIntoView({ behavior: "smooth" });
+    const panel = scroller.current?.querySelector<HTMLElement>(
+      `[data-slide="${i}"]`
+    );
+    if (panel) scrollToTarget(panel);
   }
 
   return (
-    <div className="force-dark relative h-dvh overflow-hidden bg-background text-foreground">
+    <div className="force-dark relative bg-background text-foreground">
       {/* persistent 3D scene */}
-      <div className="absolute inset-0" aria-hidden>
+      <div className="fixed inset-0 z-0" aria-hidden>
         <div
           className="absolute left-1/2 top-1/2 h-[46rem] w-[46rem] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 blur-3xl"
           style={{
@@ -103,7 +127,7 @@ export default function HomeExperience() {
 
       {/* slide dots */}
       <nav
-        className="absolute right-5 top-1/2 z-20 flex -translate-y-1/2 flex-col gap-3 sm:right-8"
+        className="fixed right-5 top-1/2 z-20 flex -translate-y-1/2 flex-col gap-3 sm:right-8"
         aria-label="Homepage sections"
       >
         {SLIDES.map((s, i) => (
@@ -126,7 +150,7 @@ export default function HomeExperience() {
       {active < SLIDES.length - 1 && (
         <button
           onClick={() => goTo(active + 1)}
-          className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 text-faint transition hover:text-accent"
+          className="fixed bottom-6 left-1/2 z-20 -translate-x-1/2 text-faint transition hover:text-accent"
           aria-label="Scroll to next section"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-bounce" aria-hidden>
@@ -138,12 +162,12 @@ export default function HomeExperience() {
       {/* slides */}
       <div
         ref={scroller}
-        className="relative z-10 h-dvh snap-y snap-mandatory overflow-y-auto overscroll-contain"
+        className="relative z-10"
       >
         {/* ---- slide 1: intro ---- */}
         <section
           data-slide="0"
-          className="flex h-dvh snap-start flex-col items-center justify-center px-6 text-center"
+          className="flex h-dvh flex-col items-center justify-center px-6 text-center"
         >
           <p
             data-fx
@@ -168,6 +192,7 @@ export default function HomeExperience() {
           <div data-fx className="mt-9 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/portfolio"
+              data-magnetic
               className="rounded-xl bg-accent-strong px-7 py-3.5 font-semibold text-white shadow-lg shadow-accent-strong/25 transition hover:opacity-90"
             >
               View My Work
@@ -179,12 +204,16 @@ export default function HomeExperience() {
               About Me
             </Link>
           </div>
+
+          <div data-fx className="mt-14 w-screen">
+            <Ticker items={AVAILABILITY} />
+          </div>
         </section>
 
         {/* ---- slide 2: what I build ---- */}
         <section
           data-slide="1"
-          className="flex h-dvh snap-start flex-col justify-center px-6"
+          className="flex h-dvh flex-col justify-center px-6"
         >
           <div className="mx-auto w-full max-w-4xl">
             <p data-fx className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald">
@@ -210,9 +239,31 @@ export default function HomeExperience() {
                 </li>
               ))}
             </ul>
-            <p data-fx className="mt-8 text-sm text-faint">
-              8+ years · production systems for AI, SaaS, and data-driven teams
-              — <Link href="/services" className="text-accent hover:underline">all services</Link>
+            <dl
+              data-fx
+              className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-3"
+            >
+              {STATS.map((stat) => (
+                <div key={stat.label} className="bg-background p-5">
+                  <dt className="sr-only">{stat.label}</dt>
+                  <dd>
+                    <Counter
+                      value={stat.value}
+                      suffix={stat.suffix}
+                      className="font-display text-3xl font-bold tabular-nums tracking-tight sm:text-4xl"
+                    />
+                    <span className="mt-1 block text-sm text-muted">
+                      {stat.label}
+                    </span>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <p data-fx className="mt-6 text-sm text-faint">
+              Production systems for AI, SaaS, and data-driven teams —{" "}
+              <Link href="/services" className="text-accent hover:underline">
+                all services
+              </Link>
             </p>
           </div>
         </section>
@@ -220,7 +271,7 @@ export default function HomeExperience() {
         {/* ---- slide 3: contact ---- */}
         <section
           data-slide="2"
-          className="flex h-dvh snap-start flex-col items-center justify-center px-6 text-center"
+          className="flex h-dvh flex-col items-center justify-center px-6 text-center"
         >
           <p data-fx className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald">
             Have data? Let&apos;s make it think.
@@ -235,6 +286,7 @@ export default function HomeExperience() {
           <div data-fx className="mt-9 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/contact"
+              data-magnetic
               className="rounded-xl bg-accent-strong px-8 py-3.5 font-semibold text-white shadow-lg shadow-accent-strong/25 transition hover:opacity-90"
             >
               Start a Project

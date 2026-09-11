@@ -40,11 +40,10 @@ export default function Header() {
               <Link
                 key={l.href}
                 href={l.href}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "rounded-lg px-3 py-2 text-sm transition-colors",
-                  active
-                    ? "text-foreground bg-surface-raised"
-                    : "text-muted hover:text-foreground"
+                  "nav-link rounded-lg px-3 py-2 text-sm transition-colors",
+                  active ? "text-foreground" : "text-muted hover:text-foreground"
                 )}
               >
                 {l.label}
@@ -65,6 +64,7 @@ export default function Header() {
             </a>
             <Link
               href="/contact"
+              data-magnetic
               className="rounded-lg bg-accent-strong px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               Hire Me
@@ -97,8 +97,12 @@ export default function Header() {
           aria-label="Mobile"
         >
           <ul className="flex flex-col gap-1">
-            {links.map((l) => (
-              <li key={l.href}>
+            {links.map((l, i) => (
+              <li
+                key={l.href}
+                className="menu-item"
+                style={{ "--delay": `${i * 45}ms` } as React.CSSProperties}
+              >
                 <Link
                   href={l.href}
                   onClick={() => setOpen(false)}
@@ -108,7 +112,10 @@ export default function Header() {
                 </Link>
               </li>
             ))}
-            <li>
+            <li
+              className="menu-item"
+              style={{ "--delay": `${links.length * 45}ms` } as React.CSSProperties}
+            >
               <a
                 href="/Pankaj_Kumar_Pramanik_AI_Data_Engineer_CV.pdf"
                 download

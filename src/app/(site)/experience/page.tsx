@@ -29,7 +29,7 @@ export default async function ExperiencePage() {
   return (
     <div className="container-site py-16">
       <header className="max-w-2xl">
-        <p className="text-sm font-semibold uppercase tracking-widest text-accent">
+        <p className="micro-label">
           Experience
         </p>
         <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">

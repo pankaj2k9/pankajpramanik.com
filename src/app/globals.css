@@ -336,3 +336,359 @@ html.lenis body {
 .prose-content img.svc-icon + h3 {
   margin-top: 2.75rem;
 }
+
+/* =========================================================================
+   Custom cursor
+   -------------------------------------------------------------------------
+   Two genuinely different objects, not one shape recoloured:
+
+     dark  — "phosphor probe": a hollow accent ring with a glow and a solid
+             core, blended with `screen` so it brightens what it crosses.
+     light — "ink blot": a filled dark blob, blended with `multiply` and
+             softened, which reads as liquid once the component's velocity
+             squash is applied to it.
+
+   Layers are driven by CustomCursor.tsx via transform x/y, so everything here
+   is appearance only. `cursor: none` is added by that component, never by this
+   stylesheet, so a JS failure cannot leave a visitor with no pointer.
+   ========================================================================= */
+
+:root {
+  --cursor-ring-size: 34px;
+  --cursor-dot-size: 6px;
+  --cursor-ring-bg: transparent;
+  --cursor-ring-border: color-mix(in srgb, var(--accent) 85%, transparent);
+  --cursor-ring-width: 1.5px;
+  --cursor-ring-shadow: 0 0 14px color-mix(in srgb, var(--accent) 45%, transparent);
+  --cursor-ring-blur: 0px;
+  --cursor-blend: screen;
+  --cursor-dot-bg: var(--accent);
+  --cursor-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root[data-theme="light"] {
+  /* Ink, not a ring: no border, a filled body, and a soft edge. */
+  --cursor-ring-bg: color-mix(in srgb, #1e1b4b 78%, transparent);
+  --cursor-ring-border: transparent;
+  --cursor-ring-width: 0px;
+  --cursor-ring-shadow: none;
+  --cursor-ring-blur: 2px;
+  --cursor-blend: multiply;
+  --cursor-dot-bg: #1e1b4b;
+}
+
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+
+.cursor-ring,
+.cursor-dot,
+.cursor-label {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+  /* Only appearance transitions here. Position is GSAP's job. */
+  transition: opacity 0.25s ease, width 0.28s var(--cursor-ease),
+    height 0.28s var(--cursor-ease), background-color 0.28s ease,
+    border-color 0.28s ease, border-width 0.28s ease, filter 0.28s ease,
+    box-shadow 0.28s ease, border-radius 0.28s ease;
+}
+
+html.cursor-ready .cursor-ring,
+html.cursor-ready .cursor-dot {
+  opacity: 1;
+}
+
+.cursor-ring {
+  width: var(--cursor-ring-size);
+  height: var(--cursor-ring-size);
+  margin: calc(var(--cursor-ring-size) / -2) 0 0 calc(var(--cursor-ring-size) / -2);
+  border: var(--cursor-ring-width) solid var(--cursor-ring-border);
+  border-radius: 999px;
+  background: var(--cursor-ring-bg);
+  box-shadow: var(--cursor-ring-shadow);
+  filter: blur(var(--cursor-ring-blur));
+  mix-blend-mode: var(--cursor-blend);
+}
+
+.cursor-dot {
+  width: var(--cursor-dot-size);
+  height: var(--cursor-dot-size);
+  margin: calc(var(--cursor-dot-size) / -2) 0 0 calc(var(--cursor-dot-size) / -2);
+  border-radius: 999px;
+  background: var(--cursor-dot-bg);
+  mix-blend-mode: var(--cursor-blend);
+}
+
+.cursor-label {
+  display: grid;
+  place-items: center;
+  width: var(--cursor-ring-size);
+  height: var(--cursor-ring-size);
+  margin: calc(var(--cursor-ring-size) / -2) 0 0 calc(var(--cursor-ring-size) / -2);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--background);
+}
+
+/* --- over a link or button: the ring opens up, the core gets out of the way */
+html.cursor-link {
+  --cursor-ring-size: 64px;
+  --cursor-dot-size: 0px;
+  --cursor-ring-border: var(--accent);
+}
+html[data-theme="light"].cursor-link {
+  --cursor-ring-bg: color-mix(in srgb, #1e1b4b 20%, transparent);
+  --cursor-ring-blur: 4px;
+}
+
+/* --- over a card: the ring fills and carries a word --- */
+html.cursor-view {
+  --cursor-ring-size: 76px;
+  --cursor-dot-size: 0px;
+  --cursor-ring-bg: var(--accent);
+  --cursor-ring-border: transparent;
+  --cursor-ring-width: 0px;
+  --cursor-blend: normal;
+  --cursor-ring-blur: 0px;
+}
+html.cursor-view .cursor-label {
+  opacity: 1;
+}
+
+/* --- over text input: collapse to an I-beam --- */
+html.cursor-text {
+  --cursor-ring-size: 2px;
+  --cursor-dot-size: 0px;
+  --cursor-ring-bg: var(--accent);
+  --cursor-ring-border: transparent;
+  --cursor-ring-width: 0px;
+  --cursor-ring-blur: 0px;
+}
+html.cursor-text .cursor-ring {
+  height: 26px;
+  margin-top: -13px;
+  border-radius: 1px;
+}
+
+/* --- click feedback --- */
+html.cursor-down .cursor-ring {
+  transform-origin: center;
+  filter: blur(var(--cursor-ring-blur)) brightness(1.35);
+}
+html.cursor-down .cursor-dot {
+  --cursor-dot-size: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-ring,
+  .cursor-dot,
+  .cursor-label {
+    display: none !important;
+  }
+}
+
+/* A custom cursor must never become the only affordance a keyboard user has,
+   so make the focus ring explicit rather than relying on the UA default. */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 0.35rem;
+}
+
+/* =========================================================================
+   Card micro-interactions
+   -------------------------------------------------------------------------
+   Three effects layered on the existing `card` utility. --mx / --my are set
+   by CardFX.tsx from the pointer position; they default to the centre so a
+   keyboard-focused card still looks deliberate.
+   ========================================================================= */
+
+.card {
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* 1. a glow that follows the pointer inside the card */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    220px circle at var(--mx) var(--my),
+    color-mix(in srgb, var(--accent) 14%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.22s var(--cursor-ease);
+}
+.card:hover::before,
+.card:focus-within::before {
+  opacity: 1;
+}
+
+/* 2. a diagonal sheen that sweeps across on hover */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    transparent 32%,
+    color-mix(in srgb, var(--accent) 6%, transparent) 46%,
+    color-mix(in srgb, var(--accent) 16%, transparent) 50%,
+    color-mix(in srgb, var(--accent) 6%, transparent) 54%,
+    transparent 68%
+  );
+  background-size: 260% 100%;
+  background-position: 125% 0;
+  opacity: 0;
+  transition: background-position 0.72s var(--cursor-ease),
+    opacity 0.22s var(--cursor-ease);
+}
+.card:hover::after,
+.card:focus-within::after {
+  opacity: 1;
+  background-position: -25% 0;
+}
+
+/* 3. an accent line that runs along the top edge */
+.card-sweep {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent),
+    transparent
+  );
+  opacity: 0;
+}
+.card:hover .card-sweep {
+  opacity: 1;
+  animation: card-sweep 0.9s var(--cursor-ease) 1;
+}
+@keyframes card-sweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card::before,
+  .card::after,
+  .card-sweep {
+    transition: none;
+    animation: none;
+  }
+  .card-sweep { display: none; }
+}
+
+/* =========================================================================
+   Navigation links — terminal prompt on hover, underline from the left
+   ========================================================================= */
+
+.nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+}
+.nav-link::before {
+  content: ">_";
+  display: inline-block;
+  width: 0;
+  margin-right: 0;
+  overflow: hidden;
+  white-space: pre;
+  font-family: var(--font-mono);
+  font-size: 0.72em;
+  color: var(--accent);
+  opacity: 0;
+  transition: width 0.26s steps(2, end), margin-right 0.26s steps(2, end),
+    opacity 0.14s var(--cursor-ease);
+}
+.nav-link:hover::before,
+.nav-link:focus-visible::before {
+  width: 1.7ch;
+  margin-right: 0.45ch;
+  opacity: 1;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 1.5px;
+  background: var(--accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 50%, transparent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: 0.5;
+  transition: transform 0.32s var(--cursor-ease), opacity 0.32s var(--cursor-ease);
+}
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+.nav-link[aria-current="page"]::after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-link::before,
+  .nav-link::after { transition: none; }
+}
+
+/* =========================================================================
+   Staggered mobile menu entrance
+   ========================================================================= */
+
+@keyframes menu-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.menu-item {
+  opacity: 0;
+  animation: menu-in 0.42s var(--cursor-ease) forwards;
+  animation-delay: var(--delay, 0ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-item { opacity: 1; animation: none; }
+}
+
+/* =========================================================================
+   Mono micro-label — the eyebrow used above section titles and on cards
+   ========================================================================= */
+
+.micro-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.micro-label .micro-index {
+  color: var(--faint);
+}

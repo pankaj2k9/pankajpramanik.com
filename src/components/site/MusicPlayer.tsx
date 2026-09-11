@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 
 /**
- * Floating background-music toggle (bottom-right).
+ * Floating background-music control (bottom-right).
  *
  * The <audio> element is a module-level singleton: the player component
  * mounts in both the homepage layout and the site layout, and during
@@ -14,10 +14,21 @@ import { useEffect, useSyncExternalStore } from "react";
  * Music is on by default (like the original WordPress site). Browsers
  * block unmuted autoplay, so playback starts on the first interaction;
  * an explicit pause is remembered in localStorage.
+ *
+ * Pause and mute are separate on purpose. Pausing stops the track and
+ * remembers the position; muting silences it while it keeps running, which is
+ * what someone wants when a call starts.
  */
+
+const TRACK = { title: "Ambient", subtitle: "background loop" };
 
 const listeners = new Set<() => void>();
 let audio: HTMLAudioElement | null = null;
+
+/** Web Audio graph, built lazily and only once. */
+let audioCtx: AudioContext | null = null;
+let analyser: AnalyserNode | null = null;
+let graphFailed = false;
 
 function getAudio(): HTMLAudioElement {
   if (!audio) {
@@ -25,7 +36,8 @@ function getAudio(): HTMLAudioElement {
     audio.loop = true;
     audio.volume = 0.35;
     audio.preload = "auto";
-    for (const ev of ["play", "pause"] as const) {
+    audio.muted = localStorage.getItem("bg-music-muted") === "yes";
+    for (const ev of ["play", "pause", "volumechange"] as const) {
       audio.addEventListener(ev, () => listeners.forEach((l) => l()));
     }
     // resume where the visitor left off on the previous visit
@@ -47,17 +59,56 @@ function getAudio(): HTMLAudioElement {
   return audio;
 }
 
+/**
+ * Attach an analyser so the meter reflects the actual track rather than a
+ * fixed CSS loop.
+ *
+ * `createMediaElementSource` can only be called once per element and it
+ * re-routes the audio through the graph, so it must connect on to the
+ * destination or playback goes silent. If anything here throws — an older
+ * browser, a locked-down context — we give up permanently and the CSS
+ * equalizer takes over.
+ */
+function getAnalyser(): AnalyserNode | null {
+  if (analyser || graphFailed) return analyser;
+  try {
+    const el = getAudio();
+    const Ctor =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext?: typeof AudioContext })
+        .webkitAudioContext;
+    if (!Ctor) throw new Error("no AudioContext");
+
+    audioCtx = new Ctor();
+    const source = audioCtx.createMediaElementSource(el);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 64;
+    analyser.smoothingTimeConstant = 0.75;
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    return analyser;
+  } catch {
+    graphFailed = true;
+    analyser = null;
+    audioCtx = null;
+    return null;
+  }
+}
+
 function subscribe(onChange: () => void) {
   listeners.add(onChange);
   return () => listeners.delete(onChange);
 }
 
-function isPlaying() {
-  return !!audio && !audio.paused;
+function readState() {
+  const el = audio;
+  return `${!!el && !el.paused}|${!!el && el.muted}`;
 }
 
 export default function MusicPlayer() {
-  const playing = useSyncExternalStore(subscribe, isPlaying, () => false);
+  const state = useSyncExternalStore(subscribe, readState, () => "false|false");
+  const [playing, muted] = state.split("|").map((v) => v === "true");
+  const barsRef = useRef<HTMLDivElement>(null);
 
   // autoplay attempt + first-gesture fallback (once per page load)
   useEffect(() => {
@@ -83,6 +134,50 @@ export default function MusicPlayer() {
     });
   }, []);
 
+  // Drive the meter from real audio levels while playing.
+  //
+  // No React state here: the bars are written to directly. An inline `height`
+  // and `animation: none` override the CSS equalizer classes, and clearing both
+  // on cleanup hands playback back to the fallback loop.
+  useEffect(() => {
+    if (!playing || muted) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const node = getAnalyser();
+    const bars = barsRef.current;
+    if (!node || !bars) return;
+
+    // A context created before a gesture starts suspended.
+    audioCtx?.resume().catch(() => {});
+
+    const spectrum = new Uint8Array(node.frequencyBinCount);
+    const children = Array.from(bars.children) as HTMLElement[];
+    let frame = 0;
+
+    const tick = () => {
+      // `as never` only satisfies the DOM lib's ArrayBuffer generic; at
+      // runtime this is a plain Uint8Array.
+      node.getByteFrequencyData(spectrum as never);
+      for (let i = 0; i < children.length; i++) {
+        // Low bins carry the body of an ambient track, so spread the taps out
+        // rather than letting all four bars read the same frequency.
+        const v = spectrum[i * 2 + 1] ?? 0;
+        children[i].style.animation = "none";
+        children[i].style.height = `${Math.max(22, (v / 255) * 100)}%`;
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      for (const c of children) {
+        c.style.height = "";
+        c.style.animation = "";
+      }
+    };
+  }, [playing, muted]);
+
   function toggle() {
     const el = getAudio();
     if (!el.paused) {
@@ -94,29 +189,80 @@ export default function MusicPlayer() {
     }
   }
 
+  function toggleMute() {
+    const el = getAudio();
+    el.muted = !el.muted;
+    localStorage.setItem("bg-music-muted", el.muted ? "yes" : "no");
+  }
+
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      aria-label={playing ? "Pause background music" : "Play background music"}
-      aria-pressed={playing}
-      title={playing ? "Pause music" : "Play music"}
-      className="fixed bottom-5 right-5 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-accent/60 bg-surface/90 text-accent shadow-lg shadow-accent-strong/25 ring-2 ring-accent/15 backdrop-blur transition hover:scale-105 hover:border-accent hover:bg-accent-strong hover:text-white"
+    <div
+      className="fixed bottom-5 right-5 z-50 flex items-center gap-1 rounded-full border border-border-strong bg-surface/95 p-1 shadow-lg shadow-accent-strong/10 backdrop-blur
+                 supports-[backdrop-filter]:bg-surface/80"
     >
-      {playing ? (
-        <span className="flex h-4 items-end gap-[3px]" aria-hidden>
-          <span className="w-[3px] animate-[eq_1s_ease-in-out_infinite] rounded-full bg-accent" />
-          <span className="w-[3px] animate-[eq_1s_ease-in-out_0.25s_infinite] rounded-full bg-accent" />
-          <span className="w-[3px] animate-[eq_1s_ease-in-out_0.5s_infinite] rounded-full bg-accent" />
-          <span className="w-[3px] animate-[eq_1s_ease-in-out_0.75s_infinite] rounded-full bg-accent" />
+      <button
+        type="button"
+        onClick={toggle}
+        data-cursor={playing ? "Pause" : "Play"}
+        aria-label={playing ? "Pause background music" : "Play background music"}
+        aria-pressed={playing}
+        title={playing ? "Pause music" : "Play music"}
+        className="flex h-10 w-10 items-center justify-center rounded-full text-accent transition hover:bg-accent-strong hover:text-white"
+      >
+        {playing ? (
+          <div
+            ref={barsRef}
+            className="flex h-4 items-end gap-[3px]"
+            aria-hidden
+          >
+            {/* The CSS loop is the baseline; the analyser overrides it inline
+                when Web Audio is available. */}
+            {[0, 0.25, 0.5, 0.75].map((delay) => (
+              <span
+                key={delay}
+                style={{ animationDelay: `${delay}s` }}
+                className="h-[30%] w-[3px] animate-[eq_1s_ease-in-out_infinite] rounded-full bg-accent transition-[height] duration-75"
+              />
+            ))}
+          </div>
+        ) : (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M9 18V5l12-2v13" />
+            <circle cx="6" cy="18" r="3" />
+            <circle cx="18" cy="16" r="3" />
+          </svg>
+        )}
+      </button>
+
+      {/* Title is decoration for a control that is already labelled, so it is
+          hidden from assistive tech and from narrow screens. */}
+      <span className="hidden pr-1 leading-tight sm:block" aria-hidden>
+        <span className="block font-mono text-[11px] font-semibold tracking-wide text-foreground">
+          {TRACK.title}
         </span>
-      ) : (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <path d="M9 18V5l12-2v13" />
-          <circle cx="6" cy="18" r="3" />
-          <circle cx="18" cy="16" r="3" />
+        <span className="block font-mono text-[10px] text-faint">
+          {TRACK.subtitle}
+        </span>
+      </span>
+
+      <button
+        type="button"
+        onClick={toggleMute}
+        data-cursor={muted ? "Unmute" : "Mute"}
+        aria-label={muted ? "Unmute background music" : "Mute background music"}
+        aria-pressed={muted}
+        title={muted ? "Unmute" : "Mute"}
+        className="flex h-8 w-8 items-center justify-center rounded-full text-faint transition hover:bg-surface-raised hover:text-foreground"
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <path d="M11 5 6 9H2v6h4l5 4z" />
+          {muted ? (
+            <path d="m22 9-6 6M16 9l6 6" />
+          ) : (
+            <path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a9 9 0 0 1 0 14" />
+          )}
         </svg>
-      )}
-    </button>
+      </button>
+    </div>
   );
 }

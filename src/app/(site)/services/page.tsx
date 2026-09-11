@@ -18,7 +18,7 @@ export default async function ServicesPage() {
   return (
     <div className="container-site py-16">
       <header className="max-w-3xl">
-        <p className="text-sm font-semibold uppercase tracking-widest text-accent">
+        <p className="micro-label">
           Services
         </p>
         <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">

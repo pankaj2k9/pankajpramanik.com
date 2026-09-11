@@ -4,6 +4,10 @@ import MusicPlayer from "@/components/site/MusicPlayer";
 /**
  * Homepage shell: minimal overlay navigation on top of the full-screen
  * Three.js experience. Deliberately no footer and no site header chrome.
+ *
+ * The header is `fixed`, not `absolute`. It used to sit inside a non-scrolling
+ * `h-dvh overflow-hidden` wrapper, where absolute positioning was effectively
+ * fixed; now that the page itself scrolls, absolute would scroll it away.
  */
 export default function HomeLayout({
   children,
@@ -12,7 +16,7 @@ export default function HomeLayout({
 }) {
   return (
     <div className="force-dark relative">
-      <header className="pointer-events-none absolute inset-x-0 top-0 z-30">
+      <header className="pointer-events-none fixed inset-x-0 top-0 z-30">
         <div className="pointer-events-auto mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <Link
             href="/"

@@ -284,7 +284,7 @@ export default async function ServicePage({
           {/* feature cards */}
           {features.length > 0 && (
             <section>
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">
+              <p className="micro-label">
                 What&apos;s included
               </p>
               <h2 className="mt-3 font-display text-2xl font-bold tracking-tight sm:text-3xl">
@@ -356,7 +356,7 @@ export default async function ServicePage({
           {/* project showcases pulled from the article */}
           {showcases.length > 0 && (
             <section className="mt-14 border-t border-border pt-12">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">
+              <p className="micro-label">
                 Proof of work
               </p>
               <h2 className="mt-3 font-display text-2xl font-bold tracking-tight sm:text-3xl">
@@ -411,7 +411,7 @@ export default async function ServicePage({
 
           {/* mini process */}
           <section className="mt-14 border-t border-border pt-12">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">
+            <p className="micro-label">
               How we&apos;ll work
             </p>
             <h2 className="mt-3 font-display text-2xl font-bold tracking-tight">

@@ -20,7 +20,7 @@ export default async function SkillsPage() {
   return (
     <div className="container-site py-16">
       <header className="max-w-2xl">
-        <p className="text-sm font-semibold uppercase tracking-widest text-accent">
+        <p className="micro-label">
           Skills
         </p>
         <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">
@@ -54,7 +54,7 @@ export default async function SkillsPage() {
       <section className="mt-20">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-widest text-accent">
+            <p className="micro-label">
               Services
             </p>
             <h2 className="mt-2 font-display text-3xl font-bold tracking-tight">

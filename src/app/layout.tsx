@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { site, absoluteUrl } from "@/lib/site";
+import CustomCursor from "@/components/site/CustomCursor";
+import ScrollFX from "@/components/site/ScrollFX";
+import CardFX from "@/components/site/CardFX";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -69,7 +72,12 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-dvh flex flex-col">{children}</body>
+      <body className="min-h-dvh flex flex-col">
+        <ScrollFX />
+        <CardFX />
+        {children}
+        <CustomCursor />
+      </body>
     </html>
   );
 }

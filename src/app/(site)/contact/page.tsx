@@ -15,7 +15,7 @@ export default function ContactPage() {
     <div className="container-site py-16">
       <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-widest text-accent">
+          <p className="micro-label">
             Contact
           </p>
           <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">

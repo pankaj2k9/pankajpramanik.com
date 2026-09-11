@@ -20,7 +20,9 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pankajpramanik_dev}
       POSTGRES_DB: ${POSTGRES_DB:-pankajpramanik}
     ports:
-      - "5433:5432"
+      # Overridable: 5433 avoids a native Postgres on 5432, but another
+      # project on the same machine may already hold it. Set DB_PORT to move.
+      - "${DB_PORT:-5433}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -33,7 +35,7 @@ services:
     image: redis:7-alpine
     restart: unless-stopped
     ports:
-      - "6380:6379"
+      - "${REDIS_PORT:-6380}:6379"
     volumes:
       - redisdata:/data
 

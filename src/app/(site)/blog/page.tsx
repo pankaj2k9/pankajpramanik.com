@@ -27,7 +27,7 @@ export default async function BlogPage({
   return (
     <div className="container-site py-16">
       <header className="max-w-2xl">
-        <p className="text-sm font-semibold uppercase tracking-widest text-accent">
+        <p className="micro-label">
           Blog
         </p>
         <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">

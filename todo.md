@@ -26,175 +26,155 @@ Their fluid config, read off the live bundle, if we go that route:
 
 ---
 
-## Track A — Custom cursor
+## Track A — Custom cursor ✅ done
 
-One `src/components/site/CustomCursor.tsx`, mounted once in the root layout, reading
-`data-theme` off `<html>` the same way `ThemeToggle` already does.
+`src/components/site/CustomCursor.tsx`, mounted once in the root layout. The two
+theme variants are defined entirely in CSS, so the component never reads
+`data-theme` and a theme switch cross-fades for free.
 
 ### A1. Base behaviour
 
-- [ ] Render only when `(pointer: fine)` matches. Touch devices keep the native cursor
-      and the component renders nothing at all, not a hidden div.
-- [ ] Two layers: an inner dot that tracks the pointer exactly, and an outer ring that
-      lags behind it.
-- [ ] Drive the lag with `gsap.quickTo(el, "x", { duration: 0.4, ease: "power3" })`.
-      A `quickTo` setter reuses one tween instead of allocating a new one per
-      `mousemove`, which matters at 120Hz.
-- [ ] Position with `transform: translate3d(...)` only. Animating `left`/`top` forces
-      layout on every frame.
-- [ ] `pointer-events: none` and a high `z-index` on both layers, above the header but
-      below the mobile menu overlay.
-- [ ] `cursor: none` on `body` only once the component has mounted, so a JS failure
-      never leaves a visitor with no cursor at all.
-- [ ] Hide both layers on `mouseleave` of the document, show on `mouseenter`.
+- [x] Renders only when `(pointer: fine)` matches. Touch devices get nothing at all.
+- [x] Two layers: a dot that tracks exactly, a ring that lags.
+- [x] Lag driven by `gsap.quickTo`, which reuses one tween instead of allocating
+      per `mousemove`.
+- [x] Transform-only positioning. No layout on any frame.
+- [x] `pointer-events: none`, `z-index: 9999`, above the fixed header and the scene.
+- [x] `cursor: none` applied from the component, never from the stylesheet, so a
+      JS failure cannot leave a visitor with no pointer.
+- [x] Hides on document leave, returns on enter.
+- [x] A third layer carries the label. Inside the ring it would be smeared by the
+      squash.
 
 ### A2. Two distinct designs
 
-The interesting half of the ask. The cursor should read as a different object per theme,
-not the same shape recolored.
-
-- [ ] **Dark theme — "phosphor probe".** Hollow ring in `--accent`, 1px stroke, soft
-      outer glow, tiny solid core dot. `mix-blend-mode: screen` so it brightens whatever
-      it crosses. Optional short trail of 4-6 decaying dots, matching the neural scene's
-      particle language.
-- [ ] **Light theme — "ink blot".** Filled blob in a dark ink tone, `mix-blend-mode:
-      multiply`, `filter: blur(2px)`, and a slight squash-and-stretch along the direction
-      of travel driven by pointer velocity. This is the aaabadcode feel without the cost
-      of a fluid sim.
-- [ ] Cross-fade the two on theme switch rather than swapping instantly.
-- [ ] Both variants defined as CSS custom properties in `globals.css` so the component
-      stays theme-agnostic and only toggles a class.
+- [x] **Dark — phosphor probe.** Hollow accent ring, 1.5px stroke, glow, solid
+      core, `mix-blend-mode: screen`.
+- [x] **Light — ink blot.** Filled `#1e1b4b` body, no border, `multiply`,
+      `blur(2px)`, plus velocity-driven squash-and-stretch along the direction of
+      travel.
+- [x] Cross-fades on theme switch through transitions on the token-driven rules.
+- [x] Both variants are custom properties in `globals.css`; the component only
+      toggles state classes.
 
 ### A3. Hover states
 
-- [ ] Links and buttons: ring scales to ~2.2x, core dot fades out, border brightens.
-- [ ] Cards and portfolio items: ring grows into a filled disc carrying a mono label
-      (`VIEW`, `READ`, `OPEN`). Driven by a `data-cursor="view"` attribute so any element
-      can opt in without the component knowing about it.
-- [ ] Text inputs and textareas: collapse to a thin vertical I-beam.
-- [ ] The music toggle: label reads `PLAY` / `PAUSE` to match its state.
-- [ ] Magnetic pull on primary buttons — the button translates up to ~6px toward the
-      pointer within a radius, and springs back on leave.
-- [ ] Click feedback: quick scale-down then overshoot on `mousedown` / `mouseup`.
+- [x] Links and buttons: ring opens to 64px, core fades out.
+- [x] Cards: ring fills to 76px and carries a mono word, via `data-cursor="Read"`
+      / `data-cursor="View"`. Any element can opt in without the component
+      knowing about it.
+- [x] Text inputs and textareas: collapse to a 2px I-beam.
+- [x] Music toggle reads `PLAY` / `PAUSE`, and the mute button `MUTE` / `UNMUTE`.
+- [x] Magnetic pull on `[data-magnetic]` CTAs, elastic return on leave.
+- [x] Click feedback: the core swells and the ring brightens on `pointerdown`.
 
 ### A4. Guard rails
 
-- [ ] Disable entirely under `prefers-reduced-motion: reduce` and restore the native cursor.
-- [ ] Never hide the cursor over `/admin` — it is a working tool, not a showcase.
-- [ ] Verify focus-visible outlines still show for keyboard users. A custom cursor must
-      not become the only focus affordance.
-- [ ] Confirm the cursor sits above the Three.js canvas on the homepage and does not
-      swallow its `pointermove` handlers.
+- [x] Disabled under `prefers-reduced-motion: reduce`; native cursor returns.
+- [x] Never active on `/admin`.
+- [x] Explicit `:focus-visible` outline added for every interactive element, so
+      the cursor is never the only affordance a keyboard user has.
+- [x] Sits above the Three.js canvas and swallows no pointer events.
 
-### A5. Optional — fluid trail
+### A5. Fluid trail — skipped, deliberately
 
-- [ ] Decide whether to add a WebGL fluid canvas at all. The homepage already runs a
-      Three.js scene; a second WebGL context with a 1440px dye texture is a real cost on
-      integrated GPUs and mobile.
-      Recommendation: skip it, and if the ink feel is wanted, do a 2D canvas trail with
-      ~30 decaying segments instead. Roughly 1% of the GPU cost, most of the impression.
-- [ ] If it ships anyway: homepage only, dynamically imported, `ssr: false`, dropped when
-      the tab is hidden and when the device reports fewer than 4 cores.
+- [x] Decided against the WebGL fluid canvas. The homepage already runs a
+      Three.js context; a second one with a 1440px dye texture is a real cost on
+      integrated GPUs for an effect the velocity squash already suggests.
+      Revisit only if the ink feel is judged insufficient in a browser.
 
 ---
 
-## Track B — Smooth scrolling
+## Track B — Smooth scrolling ✅ done
 
-`src/components/site/ScrollFX.tsx` works, but three specific things are fighting each
-other. This is the "not sure what's wrong" part, and here is what is actually wrong.
+All three defects were real, not matters of taste.
 
-### B1. Two animation loops running at once
-
-- [ ] `autoRaf: true` gives Lenis its own `requestAnimationFrame` loop while GSAP runs a
-      separate ticker. Two loops means Lenis and ScrollTrigger read positions at different
-      moments in the same frame, which is exactly the jitter that is felt but hard to name.
-- [ ] Fix: set `autoRaf: false` and drive Lenis from the GSAP ticker.
-
-```ts
-const lenis = new Lenis({ autoRaf: false, /* … */ });
-lenis.on("scroll", ScrollTrigger.update);
-const raf = (time: number) => lenis.raf(time * 1000); // gsap ticker is in seconds
-gsap.ticker.add(raf);
-gsap.ticker.lagSmoothing(0);
-// cleanup: gsap.ticker.remove(raf)
-```
-
-- [ ] `lagSmoothing(0)` matters. By default GSAP fabricates a catch-up frame after a
-      long task, which makes Lenis jump.
-
-### B2. Reveal animations that undo themselves
-
-- [ ] `toggleActions: "play reverse play reverse"` fades every block back **out** as it
-      leaves the viewport. Scrolling back up replays everything. It reads as flicker,
-      not polish.
-- [ ] Fix: reveal once with `once: true`, or `toggleActions: "play none none none"`.
-- [ ] Batch the reveals with `ScrollTrigger.batch()` and a `stagger: 0.09`. That is the
-      staggered-grid feel from the reference, and it replaces up to N individual
-      ScrollTriggers with one.
-- [ ] Reveal transform is `y: 34` with `opacity`. Add a small `scale: 0.98` and lengthen
-      to ~0.64s on `power2.out` for the slower, more deliberate feel.
-
-### B3. Tuning
-
-- [ ] `lerp: 0.16` with `wheelMultiplier: 1.25` is snappy to the point of feeling loose.
-      Try `lerp: 0.09` and `wheelMultiplier: 1`, then compare side by side.
-- [ ] Set `syncTouch: false` and let touch devices scroll natively. Smoothed touch
-      scrolling on iOS fights the platform's own momentum.
-- [ ] Handle in-page anchors through `lenis.scrollTo()`, otherwise `#hash` links jump
-      while everything else glides.
-- [ ] Call `ScrollTrigger.refresh()` after fonts load and after images decode. Reveal
-      triggers currently measure against a pre-font layout and fire at the wrong points.
-- [ ] Add `ScrollTrigger.config({ ignoreMobileResize: true })` so the mobile URL bar
-      collapsing does not re-trigger everything.
-
-### B4. The homepage is a special case
-
-- [ ] `HomeExperience.tsx` scrolls a nested `overflow` element with CSS scroll-snap.
-      Lenis is attached to the window, so it never touches that scroller — smooth scroll
-      silently does nothing on the landing page.
-- [ ] Fix: either give Lenis that element via `wrapper` / `content`, or drop scroll-snap
-      and let the page scroll normally. Scroll-snap and momentum smoothing pull in
-      opposite directions; picking one is better than half of each.
-- [ ] Whichever way it goes, `/` and interior pages should feel like one site.
+- [x] **Two rAF loops.** `autoRaf: true` ran a Lenis loop alongside GSAP's ticker,
+      so Lenis and ScrollTrigger sampled scroll position at different moments in
+      the same frame. Now `autoRaf: false`, with `gsap.ticker` driving
+      `lenis.raf(time * 1000)`.
+- [x] `gsap.ticker.lagSmoothing(0)`, so GSAP stops fabricating a catch-up frame
+      after a long task and lurching the page.
+- [x] **Reveals undid themselves.** `play reverse play reverse` faded every block
+      back out on the way past. Now `once: true`.
+- [x] Reveals batched with `ScrollTrigger.batch` and `stagger: 0.09` — one trigger
+      for the set instead of one per element.
+- [x] Reveal retuned: `y: 34` plus `scale: 0.98`, 0.64s on `power2.out`.
+- [x] `lerp: 0.09`, `wheelMultiplier: 1`. The old 0.16 with 1.25 overshot.
+- [x] `syncTouch: false` — touch scrolls natively rather than fighting iOS momentum.
+- [x] In-page anchors routed through `lenis.scrollTo()` with an `-80` offset.
+      Native `scrollIntoView` is inert while Lenis runs.
+- [x] `ScrollTrigger.refresh()` after `document.fonts.ready` and after every
+      pending image settles.
+- [x] `ScrollTrigger.config({ ignoreMobileResize: true })`.
+- [x] **The homepage had no smooth scrolling at all.** Its sections lived in a
+      nested scroll-snap `overflow-y-auto` element that window-attached Lenis
+      never touched. Snap is gone, the scene is `fixed` behind a normally
+      scrolling page, and `/` now shares one Lenis with every other route.
+- [x] `ScrollFX` hoisted from the site layout to the root layout, so exactly one
+      instance exists across both route groups.
+- [x] `src/lib/lenis.ts` exposes the instance, so components scroll through Lenis
+      instead of calling `scrollIntoView` and getting a jump.
+- [x] The homepage header was `absolute` inside a non-scrolling wrapper, which
+      only looked fixed. Now genuinely `fixed`, or it would have scrolled away.
 
 ---
 
-## Track C — Audio section, both themes
+## Track C — Audio, both themes ✅ done
 
-- [ ] `MusicPlayer.tsx` styling is currently one look for both themes. Give it a light
-      variant: on light backgrounds the floating control needs a real surface and border,
-      not the translucent dark treatment.
-- [ ] The `eq` keyframe bars should use `--accent`, not a hardcoded color, so they follow
-      the theme.
-- [ ] The control sits bottom-right, which is where a custom cursor label will also want
-      to live. Check they do not collide.
-- [ ] Add a visible track title and a mute-vs-pause distinction. Right now the only state
-      is playing or not.
-- [ ] Consider a small waveform or level meter driven by `AnalyserNode` instead of the
-      fixed CSS equalizer. Real motion tied to real audio, and it costs one analyser node.
-- [ ] Respect `prefers-reduced-motion` for the bars, and keep autoplay behaviour as is —
-      it already handles the browser gesture requirement correctly.
-- [ ] Verify contrast of the control against the light theme's `#f8fafc` background.
+- [x] The control is now a pill on `bg-surface` with a `border-border-strong`
+      edge, so it reads correctly on the light theme's near-white background
+      rather than assuming a dark ground.
+- [x] Correction to an earlier note: the equalizer bars were already using the
+      `bg-accent` token and did follow the theme. The surface was the real gap.
+- [x] Pause and mute are now separate controls. Pausing stops and remembers the
+      position; muting silences a track that keeps running.
+- [x] Visible track title and subtitle, `aria-hidden` since the buttons are
+      already labelled, and hidden below `sm`.
+- [x] Real level meter from an `AnalyserNode` (`fftSize: 64`), written straight to
+      the bars' inline height. Falls back permanently to the CSS equalizer if the
+      Web Audio graph cannot be built.
+- [x] `createMediaElementSource` guarded — it can only be called once per element
+      and re-routes audio, so it connects on to the destination or playback would
+      go silent.
+- [x] The suspended `AudioContext` is resumed after the first gesture.
+- [x] Meter disabled under `prefers-reduced-motion`; the autoplay-after-gesture
+      behaviour is unchanged.
+- [x] No collision with the cursor label, which follows the pointer rather than
+      sitting bottom-right.
 
 ---
 
-## Track D — Micro-interactions worth borrowing
+## Track D — Micro-interactions ✅ done
 
-Palette stays; these are all behaviour, not color.
+Behaviour only. The indigo → violet → pink palette is untouched.
 
-- [ ] Cursor-tracked radial glow inside cards. Set `--mx` / `--my` from `mousemove` and
-      paint a `radial-gradient(220px circle at var(--mx) var(--my), …)` in a `::before`.
-- [ ] Diagonal sheen sweep across a card on hover, animating `background-position` over
-      ~0.72s.
-- [ ] A 2px accent line that sweeps across the top edge of a card on hover.
-- [ ] Mono uppercase micro-labels: section eyebrows as `01 / Services`, card indices,
-      chip rows. Uses the existing `--font-mono` token, no new font needed.
-- [ ] Nav links: a terminal-style `>_` prefix that types in on hover using
-      `transition: width .26s steps(2, end)`, plus an underline that scales from the left.
-- [ ] Marquee ticker of availability statements. The `marquee` keyframes already exist in
-      `globals.css` and are used for the tech strip; reuse them.
-- [ ] Number counters that animate up when the stats section first enters view.
-- [ ] Staggered mobile menu entrance, one link at a time.
+- [x] Cursor-tracked radial glow inside every `.card`, painted from `--mx` /
+      `--my`. Set by one delegated listener in `CardFX.tsx` rather than a handler
+      per card, so the cards stay server components.
+- [x] Diagonal sheen sweeping across a card on hover over 0.72s.
+- [x] A 2px accent line running along a card's top edge on hover.
+- [x] Mono uppercase micro-labels. The `micro-label` class replaced the repeated
+      inline eyebrow across all seven interior pages.
+- [x] Nav links get the terminal `>_` prefix that types in with
+      `steps(2, end)`, plus an underline that scales from the left and stays lit
+      on the current page.
+- [x] Availability ticker on the homepage, reusing the existing `marquee`
+      keyframes, with `✦` separators.
+- [x] Counters that animate up on first view, in `Counter.tsx`. The final value is
+      server-rendered, so the real number is in the HTML without JavaScript.
+- [x] Staggered mobile menu entrance, 45ms per item.
+- [x] Glow and sheen also trigger on `:focus-within`, so keyboard users get them.
+
+### Known remaining
+
+- [ ] `SectionHeading` in `cards.tsx` gained an optional numbered `index` prop but
+      is not imported anywhere. Either adopt it on the interior pages or delete it.
+- [ ] Visual pass in a real browser, both themes: the light-theme ink blot over
+      images, and contrast of `micro-label` at 0.72rem against `--background`.
+- [ ] `docker-compose.yml` dev ports are now `${DB_PORT:-5433}` and
+      `${REDIS_PORT:-6380}`. 5433 collides with `journeymesh-dev-db` on this
+      machine, so local work needs `DB_PORT=5434` until that is retired.
 
 ---
 

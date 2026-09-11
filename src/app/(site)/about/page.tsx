@@ -26,7 +26,7 @@ export default async function AboutPage() {
     <div className="container-site py-16">
       <div className="grid gap-12 lg:grid-cols-[2fr_1fr]">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-widest text-accent">
+          <p className="micro-label">
             About
           </p>
           <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">
