@@ -13,6 +13,7 @@ export default function AdminNav() {
         { href: "/admin/experience", label: "Experience" },
         { href: "/admin/certifications", label: "Certifications" },
         { href: "/admin/skills", label: "Skills" },
+        { href: "/admin/comments", label: "Comments" },
         { href: "/admin/messages", label: "Messages" },
       ].map((l) => (
         <Link

@@ -1,10 +1,18 @@
 import Link from "next/link";
-import Image from "next/image";
 import IntelligenceExperience from "./IntelligenceExperience";
+import HeroIcon from "./HeroIcons";
 import ServiceFinder from "@/components/site/ServiceFinder";
 import { servicePaths } from "@/lib/services";
 import { site } from "@/lib/site";
+import { Caveat } from "next/font/google";
 import type { PortfolioProject } from "@/components/site/PortfolioGrid";
+
+const handwriting = Caveat({
+  subsets: ["latin"],
+  weight: "500",
+  variable: "--font-hand",
+  display: "swap",
+});
 
 export default function HomeExperience({
   projects,
@@ -12,64 +20,79 @@ export default function HomeExperience({
   projects: PortfolioProject[];
 }) {
   return (
-    <main id="main-content" className="home-page">
-      <section className="home-hero" aria-labelledby="hero-title">
-        <div className="hero-copy">
-          <p className="eyebrow">
-            <span className="tiny-cross" aria-hidden>
-              ✳
-            </span>{" "}
-            Pankaj Pramanik / AI &amp; Data Engineer
-          </p>
-          <h1 id="hero-title">
-            YOUR DATA.
-            <br />
-            REAL
-            <br />
-            <span>INTELLIGENCE.</span>
-            <br />
-            IN ACTION<span className="coral-dot">.</span>
-          </h1>
-          <p className="hero-description">
-            I connect data, AI, and automation to build systems that make your
-            work flow better.
-          </p>
-          <div className="hero-actions">
-            <Link href="/contact" className="button-primary">
-              Let’s build something <span aria-hidden>↗</span>
-            </Link>
-            <Link href="/portfolio" className="text-link">
-              Explore my work <span aria-hidden>↗</span>
-            </Link>
-          </div>
-          <div className="hero-signature">
-            <Image
-              src={site.photo}
-              alt="Pankaj Kumar Pramanik"
-              width={40}
-              height={40}
-            />
-            <span>
-              Engineering with purpose.
+    <main
+      id="main-content"
+      className={`home-page ${handwriting.variable}`}
+    >
+      <div className="home-hero-frame">
+        <section className="home-hero" aria-labelledby="hero-title">
+          <div className="hero-copy">
+            <p className="eyebrow">
+              <span className="tiny-cross" aria-hidden>
+                ✳
+              </span>{" "}
+              Pankaj Pramanik / AI &amp; Data Engineer
+            </p>
+            <h1 id="hero-title">
+              YOUR DATA.
               <br />
-              <strong>Built around your business.</strong>
-            </span>
+              REAL
+              <br />
+              <span className="hero-gradient">INTELLIGENCE.</span>
+              <br />
+              IN ACTION<span className="coral-dot">.</span>
+            </h1>
+            <p className="hero-description">
+              I connect data, AI, and automation to build systems that make
+              your work flow better.
+            </p>
+            <div className="hero-actions">
+              <Link href="/contact" className="button-primary">
+                Let’s build something <span aria-hidden>↗</span>
+              </Link>
+              <Link href="/portfolio" className="button-ghost">
+                Explore my work <span aria-hidden>▶</span>
+              </Link>
+            </div>
+            <dl className="hero-stats">
+              <div>
+                <dt>8+ Years</dt>
+                <dd>Global Experience</dd>
+              </div>
+              <div className="stat-bolt">
+                <HeroIcon name="bolt" size={20} />
+                <dt>
+                  Start
+                  <br />
+                  Immediately
+                </dt>
+              </div>
+              <div>
+                <dt>40h/wk</dt>
+                <dd>Availability</dd>
+              </div>
+              <div>
+                <dt>10+</dt>
+                <dd>
+                  Client Reviews
+                  <small>Global clients • Upwork • LinkedIn</small>
+                </dd>
+              </div>
+            </dl>
           </div>
+          <IntelligenceExperience />
+          <div className="hero-footnote">
+            <a href="#expertise">
+              Scroll to discover <span aria-hidden>↓</span>
+            </a>
+            <span>HUMAN IDEAS. INTELLIGENT SYSTEMS.</span>
+          </div>
+        </section>
+        <div className="tech-ribbon" aria-label="Selected tools">
+          {["Python", "LangChain", "n8n", "Next.js", "AWS", "DBT"].map((t) => (
+            <span key={t}>{t}</span>
+          ))}
         </div>
-        <IntelligenceExperience />
-        <div className="hero-footnote">
-          <span>01 — FROM DATA TO POSSIBILITY</span>
-          <a href="#expertise">
-            Scroll to discover <span aria-hidden>↓</span>
-          </a>
-          <span>HUMAN IDEAS. INTELLIGENT SYSTEMS.</span>
-        </div>
-      </section>
-      <div className="tech-ribbon" aria-label="Selected tools">
-        <span>THE TOOLS. THE POSSIBILITIES.</span>
-        {["Python", "LangChain", "n8n", "Next.js", "AWS", "Docker"].map((t) => (
-          <span key={t}>{t}</span>
-        ))}
       </div>
       <section
         id="expertise"

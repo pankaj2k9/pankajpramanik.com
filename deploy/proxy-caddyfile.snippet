@@ -49,6 +49,10 @@
 	@immutable path /_next/static/* /services-art/* /audio/* /fonts/*
 	header @immutable Cache-Control "public, max-age=31536000, immutable"
 
+	# Generated hero model (scripts/models/generate-brain.mjs) — stable name.
+	@models path /models/*
+	header @models Cache-Control "public, max-age=604800"
+
 	# Migrated WordPress media — stable, but replaceable.
 	@uploads path /uploads/*
 	header @uploads Cache-Control "public, max-age=604800"

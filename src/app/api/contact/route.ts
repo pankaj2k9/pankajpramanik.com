@@ -3,6 +3,7 @@ import { z } from "zod";
 import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/client-ip";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Name is too short").max(100),
@@ -16,8 +17,7 @@ const contactSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const ip = clientIp(req.headers);
 
   // 5 submissions per 10 minutes per IP
   const limited = await rateLimit(`contact:${ip}`, {

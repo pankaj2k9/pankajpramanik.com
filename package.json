@@ -20,7 +20,9 @@
     "test:e2e": "playwright test",
     "content:export": "tsx scripts/content/export.ts",
     "content:import": "tsx scripts/content/import.ts",
-    "content:bundle": "esbuild scripts/content/import.ts --bundle --platform=node --target=node22 --format=cjs --external:@prisma/client --outfile=dist/content-import.cjs"
+    "content:bundle": "esbuild scripts/content/import.ts --bundle --platform=node --target=node22 --format=cjs --external:@prisma/client --outfile=dist/content-import.cjs",
+    "models:brain": "node scripts/models/generate-brain.mjs",
+    "photo": "node scripts/set-photo.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
@@ -45,6 +47,9 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
+    "@gltf-transform/core": "^4.5.0",
+    "@gltf-transform/extensions": "^4.5.0",
+    "@gltf-transform/functions": "^4.5.0",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^2.4.6",
@@ -57,6 +62,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "lighthouse": "^13.4.1",
+    "meshoptimizer": "^1.2.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.0",
     "typescript": "^5"

@@ -8,12 +8,12 @@ export default function HomeLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <div className="home-shell">
       <Header />
       {children}
       <Footer />
       <MusicPlayer />
       <WhatsAppButton />
-    </>
+    </div>
   );
 }

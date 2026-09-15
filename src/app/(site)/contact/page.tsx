@@ -43,7 +43,10 @@ export default async function ContactPage({
             <div>
               <dt className="eyebrow text-muted">Email</dt>
               <dd className="mt-2 break-all">
-                <a className="hover:underline" href={`mailto:${site.email}`}>
+                <a className="block hover:underline" href={`mailto:${site.businessEmail}`}>
+                  {site.businessEmail}
+                </a>
+                <a className="mt-1 block hover:underline" href={`mailto:${site.email}`}>
                   {site.email}
                 </a>
               </dd>

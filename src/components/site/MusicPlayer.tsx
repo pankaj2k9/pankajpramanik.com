@@ -69,6 +69,9 @@ function getAudio(): HTMLAudioElement {
  * equalizer takes over.
  */
 function getAnalyser(): AnalyserNode | null {
+  // Only ever built from the play click (see toggle): a context created
+  // outside a user gesture starts suspended, and Safari/iOS then route the
+  // element into a silent graph — the track "plays" but nothing is heard.
   if (analyser || graphFailed) return analyser;
   try {
     const el = getAudio();
@@ -79,6 +82,9 @@ function getAnalyser(): AnalyserNode | null {
     if (!Ctor) throw new Error("no AudioContext");
 
     audioCtx = new Ctor();
+    // resume() settles asynchronously; re-render so the meter attaches once
+    // the context is actually running.
+    audioCtx.addEventListener("statechange", () => listeners.forEach((l) => l()));
     const source = audioCtx.createMediaElementSource(el);
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 64;
@@ -101,12 +107,12 @@ function subscribe(onChange: () => void) {
 
 function readState() {
   const el = audio;
-  return `${!!el && !el.paused}|${!!el && el.muted}`;
+  return `${!!el && !el.paused}|${!!el && el.muted}|${audioCtx?.state === "running"}`;
 }
 
 export default function MusicPlayer() {
-  const state = useSyncExternalStore(subscribe, readState, () => "false|false");
-  const [playing, muted] = state.split("|").map((v) => v === "true");
+  const state = useSyncExternalStore(subscribe, readState, () => "false|false|false");
+  const [playing, muted, graphRunning] = state.split("|").map((v) => v === "true");
   const barsRef = useRef<HTMLDivElement>(null);
 
   // Audio starts only from the explicit play button.
@@ -120,12 +126,10 @@ export default function MusicPlayer() {
     if (!playing || muted) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const node = getAnalyser();
+    // The graph is built in toggle(); never create it here, outside a gesture.
+    const node = analyser;
     const bars = barsRef.current;
-    if (!node || !bars) return;
-
-    // A context created before a gesture starts suspended.
-    audioCtx?.resume().catch(() => {});
+    if (!node || !bars || audioCtx?.state !== "running") return;
 
     const spectrum = new Uint8Array(node.frequencyBinCount);
     const children = Array.from(bars.children) as HTMLElement[];
@@ -153,17 +157,35 @@ export default function MusicPlayer() {
         c.style.animation = "";
       }
     };
-  }, [playing, muted]);
+  }, [playing, muted, graphRunning]);
 
   function toggle() {
     const el = getAudio();
     if (!el.paused) {
       el.pause();
       localStorage.setItem("bg-music", "off");
-    } else {
-      localStorage.setItem("bg-music", "on");
-      el.play().catch(() => {});
+      return;
     }
+    localStorage.setItem("bg-music", "on");
+    // Pressing play means "I want to hear it": a mute left over from an
+    // earlier visit would otherwise make the button look broken.
+    if (el.muted) {
+      el.muted = false;
+      localStorage.setItem("bg-music-muted", "no");
+    }
+    // Everything below runs synchronously inside the click, so the browser
+    // counts it as user-initiated. The analyser is skipped for reduced motion
+    // (the meter is not animated then), keeping playback on the plain path.
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      getAnalyser();
+      if (audioCtx && audioCtx.state !== "running") {
+        audioCtx.resume().catch(() => {});
+      }
+    }
+    el.play().catch((error: unknown) => {
+      // The player stays in its paused state; the reason goes to the console.
+      console.warn("Background music could not start:", error);
+    });
   }
 
   function toggleMute() {

@@ -35,3 +35,80 @@ export const servicePaths = [
       "An integrated workflow with monitoring, handoff notes, and recovery steps.",
   },
 ] as const;
+
+/** The six capability cards orbiting the homepage brain. `region` maps each
+ * card onto one of the model's three glow masks (Data / Intelligence / Automation). */
+export const heroServices = [
+  {
+    id: "data",
+    label: "Data",
+    tags: "Collect • Process • Transform",
+    slug: "data-engineering-excellence",
+    region: 0,
+    tone: "blue",
+    title: "Give your data direction.",
+  },
+  {
+    id: "ml",
+    label: "AI / ML",
+    tags: "Models • Insights • Prediction",
+    slug: "data-science-and-machine-learning",
+    region: 1,
+    tone: "violet",
+    title: "Models that earn their place.",
+  },
+  {
+    id: "intelligence",
+    label: "Intelligence",
+    tags: "Understand • Reason • Plan",
+    slug: "llm-rag-developer-hire",
+    region: 1,
+    tone: "coral",
+    title: "Turn knowledge into answers.",
+  },
+  {
+    id: "automation",
+    label: "Automation",
+    tags: "Agents • Workflows • Scale",
+    slug: "ai-automation",
+    region: 2,
+    tone: "teal",
+    title: "Make room for better work.",
+  },
+  {
+    id: "analytics",
+    label: "Data Analytics",
+    tags: "Dashboards • BI • Insights",
+    slug: "hire-data-analytics-visualization-expert",
+    region: 0,
+    tone: "orange",
+    title: "Numbers your team can act on.",
+  },
+  {
+    id: "llmops",
+    label: "LLMOps / MLOps",
+    tags: "Evaluation • Deployment • Monitoring",
+    slug: "llmops",
+    region: 2,
+    tone: "indigo",
+    title: "AI that keeps working in production.",
+  },
+] as const;
+
+export const heroNiches = [
+  { label: "Healthcare", icon: "heart", href: "/portfolio" },
+  { label: "Legal", icon: "scale", href: "/portfolio" },
+  { label: "Finance", icon: "bank", href: "/portfolio" },
+  { label: "Education", icon: "cap", href: "/portfolio" },
+  { label: "Travel", icon: "plane", href: "/portfolio" },
+  {
+    label: "Analytics",
+    icon: "bars",
+    href: "/services/hire-data-analytics-visualization-expert",
+  },
+  {
+    label: "MLOps",
+    icon: "cube",
+    href: "/services/hire-the-perfect-mlops-developer",
+  },
+] as const;

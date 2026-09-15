@@ -7,6 +7,7 @@ export const site = {
   phone: "+8801716121009",
   whatsapp: "https://wa.me/8801716121009",
   email: "pkp2.me2k9@gmail.com",
+  businessEmail: "me@pankajpramanik.com",
   github: "https://github.com/pankaj2k9",
   githubUsername: "pankaj2k9",
   linkedin: "https://www.linkedin.com/in/pankaj-pramanik/",

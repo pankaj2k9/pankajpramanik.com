@@ -21,7 +21,8 @@ export const getPublishedPosts = cache(async (categorySlug?: string) =>
 export const getPostBySlug = cache(async (slug: string) =>
   prisma.post.findUnique({
     where: { slug },
-    include: { categories: true, tags: true, author: true },
+    // Only the author's public name — never the whole User row (passwordHash).
+    include: { categories: true, tags: true, author: { select: { name: true } } },
   })
 );
 

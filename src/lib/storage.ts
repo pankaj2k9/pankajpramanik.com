@@ -68,6 +68,27 @@ function safeBaseName(name: string): string {
   return base || "file";
 }
 
+/** Checks the file's leading bytes, since the declared type is client-supplied. */
+function matchesSignature(bytes: Buffer, type: string): boolean {
+  const ascii = (start: number, end: number) => bytes.subarray(start, end).toString("latin1");
+  switch (type) {
+    case "image/jpeg":
+      return bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+    case "image/png":
+      return bytes.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+    case "image/gif":
+      return ascii(0, 6) === "GIF87a" || ascii(0, 6) === "GIF89a";
+    case "image/webp":
+      return ascii(0, 4) === "RIFF" && ascii(8, 12) === "WEBP";
+    case "image/avif":
+      return ascii(4, 8) === "ftyp" && /avi[fs]/.test(ascii(8, 12));
+    case "application/pdf":
+      return ascii(0, 5) === "%PDF-";
+    default:
+      return false;
+  }
+}
+
 /**
  * Saves an uploaded file into a date-based folder (uploads/YYYY/MM/DD) and
  * returns its public URL. Names get a random suffix, so an upload never
@@ -77,6 +98,9 @@ export async function saveUpload(file: File, now = new Date()): Promise<string> 
   const ext = UPLOAD_TYPES[file.type];
   if (!ext) throw new Error("Unsupported file type.");
   if (file.size > MAX_UPLOAD_BYTES) throw new Error("File is larger than 10 MB.");
+  const bytes = Buffer.from(await file.arrayBuffer());
+  if (!matchesSignature(bytes, file.type))
+    throw new Error("Unsupported file type: contents do not match.");
 
   const yyyy = String(now.getFullYear());
   const mm = String(now.getMonth() + 1).padStart(2, "0");
@@ -86,8 +110,6 @@ export async function saveUpload(file: File, now = new Date()): Promise<string> 
 
   await mkdir(dir, { recursive: true });
   // "wx" fails instead of overwriting if the name somehow already exists.
-  await writeFile(path.join(dir, name), Buffer.from(await file.arrayBuffer()), {
-    flag: "wx",
-  });
+  await writeFile(path.join(dir, name), bytes, { flag: "wx" });
   return `/uploads/${yyyy}/${mm}/${dd}/${name}`;
 }

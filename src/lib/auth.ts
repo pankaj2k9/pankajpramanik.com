@@ -6,6 +6,12 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { authConfig } from "@/lib/auth.config";
+import { rateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/client-ip";
+
+// Compared against when the email is unknown, so a miss costs the same bcrypt
+// time as a wrong password and response timing does not reveal valid emails.
+const DUMMY_HASH = "$2b$12$C6UzMDM.H6dfI/f/IKcEeO5Ld3KZrWcG4Vn6h2dI8sDBxLr0yqk4a";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -21,16 +27,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, request) {
         const parsed = credentialsSchema.safeParse(credentials);
         if (!parsed.success) return null;
 
         const { email, password } = parsed.data;
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return null;
+        // Brute-force protection: per IP, and per account so rotating IPs
+        // cannot hammer one admin. A limited attempt fails like a bad password.
+        const ip = clientIp(request.headers);
+        const [byIp, byAccount] = await Promise.all([
+          rateLimit(`login:ip:${ip}`, { limit: 10, windowMs: 15 * 60_000 }),
+          rateLimit(`login:acct:${email.toLowerCase()}`, { limit: 20, windowMs: 60 * 60_000 }),
+        ]);
+        if (!byIp.ok || !byAccount.ok) {
+          console.warn(`Login rate limit hit (ip ${byIp.ok ? "ok" : "blocked"}, account ${byAccount.ok ? "ok" : "blocked"})`);
+          return null;
+        }
 
-        const valid = await bcrypt.compare(password, user.passwordHash);
-        if (!valid) return null;
+        const user = await prisma.user.findUnique({ where: { email } });
+        const valid = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
+        if (!user || !valid) return null;
 
         return {
           id: user.id,

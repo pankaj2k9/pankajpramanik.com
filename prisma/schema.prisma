@@ -49,6 +49,7 @@ model Post {
   authorId       String?
   categories     Category[]
   tags           Tag[]
+  comments       Comment[]
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
@@ -188,4 +189,28 @@ model ContentSync {
   id        String   @id
   hash      String
   appliedAt DateTime @default(now()) @updatedAt
+}
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  SPAM
+}
+
+// Reader comments on blog posts. Held for moderation (PENDING) until approved
+// in the admin; only APPROVED comments are rendered, and the email is never
+// shown publicly. ipHash is a keyed hash for abuse handling, not the raw IP.
+model Comment {
+  id        String        @id @default(cuid())
+  post      Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  name      String
+  email     String
+  body      String
+  status    CommentStatus @default(PENDING)
+  ipHash    String?
+  createdAt DateTime      @default(now())
+
+  @@index([postId, status, createdAt])
+  @@index([status, createdAt])
 }

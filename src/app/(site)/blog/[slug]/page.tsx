@@ -8,6 +8,8 @@ import { renderContent, readingTimeMinutes } from "@/lib/content";
 import { formatDate, jsonLdScript } from "@/lib/utils";
 import { absoluteUrl, site } from "@/lib/site";
 import { PostCard } from "@/components/site/cards";
+import ShareButtons from "@/components/site/ShareButtons";
+import Comments from "@/components/site/Comments";
 
 export const revalidate = 300;
 
@@ -157,6 +159,9 @@ export default async function BlogPostPage({
             ))}
           </ul>
         )}
+
+        <ShareButtons url={absoluteUrl(`/blog/${post.slug}`)} title={post.title} />
+        <Comments postId={post.id} />
       </div>
 
       {related.length > 0 && (

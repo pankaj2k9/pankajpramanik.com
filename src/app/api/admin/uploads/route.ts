@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ url }, { status: 201 });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Upload failed.";
-    const known = /Unsupported|larger than/.test(message);
+    const known = /^Unsupported|larger than/.test(message);
     if (!known) console.error("upload failed", error);
     return NextResponse.json(
       { error: known ? message : "Upload failed." },
