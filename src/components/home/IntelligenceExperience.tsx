@@ -13,24 +13,35 @@ import { heroNiches, heroServices } from "@/lib/services";
 import HeroIcon from "./HeroIcons";
 import type { NodeAnchors } from "./NeuralScene";
 
-/** Gap (px) between a card's edge and its sphere. */
-const NODE_GAP = 28;
+/** Distance (px) from a card's edge to the centre of its sphere. */
+const NODE_GAP = 22;
 
 /**
- * For each card, the point on its outline closest to the canvas centre, pushed
- * a little toward the brain — in the canvas's normalised device coordinates.
+ * Where each card's sphere docks, in heroServices order: a point on the card's
+ * outline as [x, y] fractions of its box. The sphere sits just outside that
+ * edge — below/right for the cards above-left of the brain, on top for the rest.
  */
+const DOCKS: [number, number][] = [
+  [0.85, 1], // Data — under the bottom-right corner
+  [1, 0.72], // AI / ML — off the right edge
+  [0.2, 0], // Intelligence
+  [0.3, 0], // Automation
+  [0.35, 0], // Data Analytics
+  [0.3, 0], // LLMOps
+];
+
+/** Each card's dock point, in the canvas's normalised device coordinates. */
 function measureAnchors(canvas: HTMLElement, cards: HTMLElement[]): NodeAnchors {
   const c = canvas.getBoundingClientRect();
-  const cx = c.left + c.width / 2;
-  const cy = c.top + c.height / 2;
-  return cards.map((card) => {
+  return cards.map((card, i) => {
     const r = card.getBoundingClientRect();
-    let px = Math.min(Math.max(cx, r.left), r.right);
-    let py = Math.min(Math.max(cy, r.top), r.bottom);
-    const len = Math.hypot(cx - px, cy - py) || 1;
-    px += ((cx - px) / len) * NODE_GAP;
-    py += ((cy - py) / len) * NODE_GAP;
+    const [fx, fy] = DOCKS[i] ?? [0.5, 0];
+    let px = r.left + r.width * fx;
+    let py = r.top + r.height * fy;
+    if (fy === 0) py -= NODE_GAP;
+    else if (fy === 1) py += NODE_GAP;
+    else if (fx === 1) px += NODE_GAP;
+    else if (fx === 0) px -= NODE_GAP;
     return [((px - c.left) / c.width) * 2 - 1, -(((py - c.top) / c.height) * 2 - 1)];
   });
 }

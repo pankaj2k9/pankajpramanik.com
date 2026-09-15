@@ -15,6 +15,7 @@ export const site = {
   leetcode: "https://leetcode.com/pankajpramanik/",
   kaggle: "https://www.kaggle.com/pankajpramanik",
   huggingface: "https://huggingface.co/pankajpramanik",
+  youtube: "https://www.youtube.com/@pankaj_data_ai_researcher_iitg",
   headline: "AI & Data Engineer — Agentic AI · MLOps · GenAI",
   photo: "/uploads/2026/09/16/pankaj-kumar-pramanik-portrait.jpg",
   cv: "/Pankaj_Kumar_Pramanik_AI_Data_Engineer_CV.pdf",

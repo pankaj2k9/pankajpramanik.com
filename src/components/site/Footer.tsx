@@ -101,6 +101,16 @@ export default function Footer() {
             <li>
               <a
                 className="hover:text-foreground"
+                href={site.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                YouTube
+              </a>
+            </li>
+            <li>
+              <a
+                className="hover:text-foreground"
                 href={site.facebook}
                 target="_blank"
                 rel="noopener noreferrer"

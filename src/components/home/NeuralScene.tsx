@@ -229,6 +229,7 @@ function Signals({
     // A private copy of the scene camera, so the shared one is never mutated.
     const camera = new THREE.PerspectiveCamera(CAMERA.fov, aspect, 0.1, 100);
     camera.position.set(...CAMERA.position);
+    camera.lookAt(0, 0, 0); // R3F aims its default camera at the origin too
     camera.updateMatrixWorld();
     return anchors.map(([x, y]) => {
       const ray = new THREE.Vector3(x, y, 0.5).unproject(camera).sub(camera.position).normalize();

@@ -29,6 +29,7 @@ export default async function HomePage() {
       site.leetcode,
       site.kaggle,
       site.huggingface,
+      site.youtube,
     ],
     knowsAbout: [...site.keywords],
   };

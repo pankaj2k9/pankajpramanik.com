@@ -21,6 +21,15 @@ const socials = [
     ),
   },
   {
+    label: "YouTube",
+    href: site.youtube,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+        <path d="M23.5 6.2a3 3 0 0 0-2.12-2.13C19.5 3.56 12 3.56 12 3.56s-7.5 0-9.38.51A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.12 2.13c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3 3 0 0 0 2.12-2.13A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8ZM9.6 15.57V8.43L15.82 12 9.6 15.57Z" />
+      </svg>
+    ),
+  },
+  {
     label: "Facebook",
     href: site.facebook,
     icon: (

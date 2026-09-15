@@ -1,18 +1,11 @@
+import Image from "next/image";
 import Link from "next/link";
 import IntelligenceExperience from "./IntelligenceExperience";
 import HeroIcon from "./HeroIcons";
 import ServiceFinder from "@/components/site/ServiceFinder";
 import { servicePaths } from "@/lib/services";
 import { site } from "@/lib/site";
-import { Caveat } from "next/font/google";
 import type { PortfolioProject } from "@/components/site/PortfolioGrid";
-
-const handwriting = Caveat({
-  subsets: ["latin"],
-  weight: "500",
-  variable: "--font-hand",
-  display: "swap",
-});
 
 export default function HomeExperience({
   projects,
@@ -22,7 +15,7 @@ export default function HomeExperience({
   return (
     <main
       id="main-content"
-      className={`home-page ${handwriting.variable}`}
+      className="home-page"
     >
       <div className="home-hero-frame">
         <section className="home-hero" aria-labelledby="hero-title">
@@ -54,31 +47,45 @@ export default function HomeExperience({
                 Explore my work <span aria-hidden>▶</span>
               </Link>
             </div>
-            <dl className="hero-stats">
-              <div>
-                <dt>8+ Years</dt>
-                <dd>Global Experience</dd>
-              </div>
-              <div className="stat-bolt">
-                <HeroIcon name="bolt" size={20} />
-                <dt>
-                  Start
-                  <br />
-                  Immediately
-                </dt>
-              </div>
-              <div>
-                <dt>40h/wk</dt>
-                <dd>Availability</dd>
-              </div>
-              <div>
-                <dt>10+</dt>
-                <dd>
-                  Client Reviews
-                  <small>Global clients • Upwork • LinkedIn</small>
-                </dd>
-              </div>
-            </dl>
+            <div className="hero-proof">
+              <Link
+                href="/about"
+                className="hero-avatar"
+                aria-label="About Pankaj Kumar Pramanik"
+              >
+                <Image
+                  src={site.photo}
+                  alt=""
+                  width={112}
+                  height={112}
+                  className="rounded-full"
+                />
+                <span className="avatar-status" aria-hidden />
+              </Link>
+              <dl className="hero-stats">
+                <div>
+                  <dt>Global experience</dt>
+                  <dd>
+                    8+ <span>years</span>
+                  </dd>
+                </div>
+                <div className="stat-availability">
+                  <dt>
+                    <HeroIcon name="bolt" size={12} strokeWidth={2} />I can
+                    start immediately
+                  </dt>
+                  <dd>
+                    40h<span>/wk</span>
+                  </dd>
+                </div>
+                <div>
+                  <dt>Upwork • LinkedIn</dt>
+                  <dd>
+                    10+ <span>reviews</span>
+                  </dd>
+                </div>
+              </dl>
+            </div>
           </div>
           <IntelligenceExperience />
           <div className="hero-footnote">
@@ -89,7 +96,15 @@ export default function HomeExperience({
           </div>
         </section>
         <div className="tech-ribbon" aria-label="Selected tools">
-          {["Python", "LangChain", "n8n", "Next.js", "AWS", "DBT"].map((t) => (
+          {[
+            "FastAPI",
+            "LangGraph",
+            "n8n",
+            "Cloud (AWS, GCP, Azure)",
+            "DBT",
+            "Snowflake",
+            "BigQuery",
+          ].map((t) => (
             <span key={t}>{t}</span>
           ))}
         </div>

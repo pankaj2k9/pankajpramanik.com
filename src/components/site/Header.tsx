@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -73,19 +72,6 @@ export default function Header() {
           >
             <span aria-hidden>{open ? "✕" : "☰"}</span>
           </button>
-          <Link
-            href="/about"
-            className="header-avatar rounded-full"
-            aria-label="About Pankaj"
-          >
-            <Image
-              src={site.photo}
-              alt=""
-              width={80}
-              height={80}
-              className="rounded-full"
-            />
-          </Link>
         </div>
       </div>
       {open && (
