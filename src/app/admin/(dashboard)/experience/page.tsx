@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatMonthYear } from "@/lib/utils";
@@ -5,6 +6,7 @@ import { deleteExperience } from "@/actions/experiences";
 import { DeleteButton } from "@/components/admin/ui";
 
 export default async function AdminExperiencePage() {
+  await requireAdmin();
   const experiences = await prisma.experience.findMany({
     orderBy: { order: "asc" },
   });
@@ -32,8 +34,19 @@ export default async function AdminExperiencePage() {
             </tr>
           </thead>
           <tbody>
+            {experiences.length === 0 && (
+              <tr>
+                <td colSpan={4} className="p-8 text-center text-muted">
+                  No experience yet. Use the create button to add your first
+                  item.
+                </td>
+              </tr>
+            )}
             {experiences.map((e) => (
-              <tr key={e.id} className="border-b border-border/60 last:border-0">
+              <tr
+                key={e.id}
+                className="border-b border-border/60 last:border-0"
+              >
                 <td className="px-5 py-3">
                   <p className="font-medium">{e.role}</p>
                   <p className="text-xs text-faint">{e.company}</p>

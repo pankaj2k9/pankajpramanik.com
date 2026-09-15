@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import { marked } from "marked";
 import { prisma } from "@/lib/prisma";
@@ -8,6 +9,7 @@ export default async function EditPostPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await requireAdmin();
   const { id } = await params;
   const [post, categories] = await Promise.all([
     prisma.post.findUnique({

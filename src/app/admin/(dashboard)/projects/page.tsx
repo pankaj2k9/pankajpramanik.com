@@ -1,9 +1,11 @@
+import { requireAdmin } from "@/lib/auth";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { deleteProject } from "@/actions/projects";
 import { DeleteButton } from "@/components/admin/ui";
 
 export default async function AdminProjectsPage() {
+  await requireAdmin();
   const projects = await prisma.project.findMany({
     orderBy: [{ featured: "desc" }, { order: "asc" }],
   });
@@ -32,8 +34,18 @@ export default async function AdminProjectsPage() {
             </tr>
           </thead>
           <tbody>
+            {projects.length === 0 && (
+              <tr>
+                <td colSpan={5} className="p-8 text-center text-muted">
+                  No projects yet. Use the create button to add your first item.
+                </td>
+              </tr>
+            )}
             {projects.map((p) => (
-              <tr key={p.id} className="border-b border-border/60 last:border-0">
+              <tr
+                key={p.id}
+                className="border-b border-border/60 last:border-0"
+              >
                 <td className="px-5 py-3">
                   <p className="font-medium">{p.title}</p>
                   <p className="text-xs text-faint">/{p.slug}</p>

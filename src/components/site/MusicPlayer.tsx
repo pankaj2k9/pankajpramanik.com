@@ -11,9 +11,7 @@ import { useEffect, useRef, useSyncExternalStore } from "react";
  * element there is only ever ONE playback pipeline, so pause always
  * pauses the sound the visitor hears.
  *
- * Music is on by default (like the original WordPress site). Browsers
- * block unmuted autoplay, so playback starts on the first interaction;
- * an explicit pause is remembered in localStorage.
+ * Music is opt-in and downloaded only when the visitor presses play.
  *
  * Pause and mute are separate on purpose. Pausing stops the track and
  * remembers the position; muting silences it while it keeps running, which is
@@ -35,7 +33,7 @@ function getAudio(): HTMLAudioElement {
     audio = new Audio("/audio/bg.mp3");
     audio.loop = true;
     audio.volume = 0.35;
-    audio.preload = "auto";
+    audio.preload = "none";
     audio.muted = localStorage.getItem("bg-music-muted") === "yes";
     for (const ev of ["play", "pause", "volumechange"] as const) {
       audio.addEventListener(ev, () => listeners.forEach((l) => l()));
@@ -48,12 +46,13 @@ function getAudio(): HTMLAudioElement {
         () => {
           if (audio && saved < audio.duration) audio.currentTime = saved;
         },
-        { once: true }
+        { once: true },
       );
     }
     // persist position so a reload resumes instead of restarting
     audio.addEventListener("timeupdate", () => {
-      if (audio) localStorage.setItem("bg-music-pos", String(audio.currentTime));
+      if (audio)
+        localStorage.setItem("bg-music-pos", String(audio.currentTime));
     });
   }
   return audio;
@@ -110,29 +109,7 @@ export default function MusicPlayer() {
   const [playing, muted] = state.split("|").map((v) => v === "true");
   const barsRef = useRef<HTMLDivElement>(null);
 
-  // autoplay attempt + first-gesture fallback (once per page load)
-  useEffect(() => {
-    const el = getAudio();
-    if (localStorage.getItem("bg-music") === "off") return;
-    if (!el.paused) return;
-
-    el.play().catch(() => {
-      const start = () => {
-        if (localStorage.getItem("bg-music") !== "off" && el.paused) {
-          el.play().catch(() => {});
-        }
-        cleanup();
-      };
-      const cleanup = () => {
-        window.removeEventListener("pointerdown", start, true);
-        window.removeEventListener("keydown", start, true);
-      };
-      // capture phase so a click on the pause button itself still counts
-      window.addEventListener("pointerdown", start, true);
-      window.addEventListener("keydown", start, true);
-      return cleanup;
-    });
-  }, []);
+  // Audio starts only from the explicit play button.
 
   // Drive the meter from real audio levels while playing.
   //
@@ -197,14 +174,16 @@ export default function MusicPlayer() {
 
   return (
     <div
-      className="fixed bottom-5 right-5 z-50 flex items-center gap-1 rounded-full border border-border-strong bg-surface/95 p-1 shadow-lg shadow-accent-strong/10 backdrop-blur
+      className="fixed bottom-5 left-5 z-50 flex items-center gap-1 rounded-full border border-border-strong bg-surface/95 p-1 shadow-lg shadow-accent-strong/10 backdrop-blur
                  supports-[backdrop-filter]:bg-surface/80"
     >
       <button
         type="button"
         onClick={toggle}
         data-cursor={playing ? "Pause" : "Play"}
-        aria-label={playing ? "Pause background music" : "Play background music"}
+        aria-label={
+          playing ? "Pause background music" : "Play background music"
+        }
         aria-pressed={playing}
         title={playing ? "Pause music" : "Play music"}
         className="flex h-10 w-10 items-center justify-center rounded-full text-accent transition hover:bg-accent-strong hover:text-white"
@@ -226,7 +205,17 @@ export default function MusicPlayer() {
             ))}
           </div>
         ) : (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
             <path d="M9 18V5l12-2v13" />
             <circle cx="6" cy="18" r="3" />
             <circle cx="18" cy="16" r="3" />
@@ -254,7 +243,17 @@ export default function MusicPlayer() {
         title={muted ? "Unmute" : "Mute"}
         className="flex h-8 w-8 items-center justify-center rounded-full text-faint transition hover:bg-surface-raised hover:text-foreground"
       >
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+        >
           <path d="M11 5 6 9H2v6h4l5 4z" />
           {muted ? (
             <path d="m22 9-6 6M16 9l6 6" />

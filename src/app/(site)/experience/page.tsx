@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import {
   getCertifications,
@@ -10,12 +10,11 @@ import { formatMonthYear } from "@/lib/utils";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Work Experience",
-  description:
-    "8+ years of professional experience — AI engineering, LLM/RAG systems, MLOps, 3D graphics, and full-stack development across global teams.",
-  alternates: { canonical: "/experience" },
-};
+export const metadata = pageMetadata(
+  "Work Experience",
+  "8+ years of professional experience \u2014 AI engineering, LLM/RAG systems, MLOps, 3D graphics, and full-stack development across global teams.",
+  "/experience",
+);
 
 export default async function ExperiencePage() {
   const [experiences, education, certifications, testimonials] =
@@ -29,9 +28,7 @@ export default async function ExperiencePage() {
   return (
     <div className="container-site py-16">
       <header className="max-w-2xl">
-        <p className="micro-label">
-          Experience
-        </p>
+        <p className="micro-label">Experience</p>
         <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">
           Where I&apos;ve worked
         </h1>
@@ -44,7 +41,17 @@ export default async function ExperiencePage() {
           download
           className="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent-strong px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
         >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
           </svg>
           Download CV
@@ -70,7 +77,9 @@ export default async function ExperiencePage() {
               ) : (
                 formatMonthYear(e.endDate)
               )}
-              <span className="mx-2" aria-hidden>·</span>
+              <span className="mx-2" aria-hidden>
+                ·
+              </span>
               {e.location}
             </p>
             <h2 className="mt-1.5 font-display text-xl font-semibold">
@@ -82,7 +91,7 @@ export default async function ExperiencePage() {
                     href={e.companyUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-accent"
+                    className="underline underline-offset-4 hover:text-accent"
                   >
                     {e.company}
                   </a>

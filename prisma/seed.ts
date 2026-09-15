@@ -13,6 +13,10 @@ import bcrypt from "bcryptjs";
 import fs from "node:fs";
 import path from "node:path";
 
+// Use local configuration when present; CI can supply variables directly.
+try { process.loadEnvFile(); } catch (error) {
+  if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+}
 const prisma = new PrismaClient();
 
 const EXTRACTED = path.join(__dirname, "..", "migration", "extracted");
@@ -121,6 +125,10 @@ async function seedProjects() {
     seoTitle: string | null;
     seoDescription: string | null;
     order: number;
+    problem?: string;
+    approach?: string;
+    outcome?: string;
+    evidenceUrl?: string | null;
   };
   // Migrated from the WordPress `portfolio` custom post type
   // (migration/extract-portfolio.mjs) — rich Overview + Case Study content
@@ -148,6 +156,10 @@ async function seedProjects() {
         seoTitle: p.seoTitle,
         seoDescription: p.seoDescription,
         order: p.order,
+        problem: p.problem ?? "",
+        approach: p.approach ?? "",
+        outcome: p.outcome ?? "",
+        evidenceUrl: p.evidenceUrl ?? null,
         status: ContentStatus.PUBLISHED,
       },
     });

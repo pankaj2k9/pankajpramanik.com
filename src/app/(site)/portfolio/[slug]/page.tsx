@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -36,15 +37,27 @@ export async function generateMetadata({
   const description =
     project.seoDescription ?? project.description.slice(0, 160);
   return {
-    title,
-    description,
-    alternates: { canonical: `/portfolio/${project.slug}` },
-    openGraph: {
-      title,
-      description: project.seoDescription ?? project.tagline,
-      url: absoluteUrl(`/portfolio/${project.slug}`),
-      images: project.coverImage ? [{ url: project.coverImage }] : undefined,
-    },
+    ...pageMetadata(title, description, `/portfolio/${project.slug}`),
+    ...(project.coverImage
+      ? {
+          openGraph: {
+            ...pageMetadata(title, description, `/portfolio/${project.slug}`)
+              .openGraph,
+            images: [
+              {
+                url: project.coverImage,
+                alt: `${project.title} — project preview`,
+              },
+            ],
+          },
+          twitter: {
+            card: "summary_large_image",
+            title,
+            description,
+            images: [project.coverImage],
+          },
+        }
+      : {}),
   };
 }
 
@@ -74,7 +87,38 @@ export default async function ProjectPage({
 
   const overview = (
     <div className="space-y-6">
-      <p className="text-lg leading-relaxed text-muted">{project.description}</p>
+      <p className="text-lg leading-relaxed text-muted">
+        {project.description}
+      </p>
+      <details className="case-study" open>
+        <summary>Project case study</summary>
+        <dl>
+          <dt>Problem &amp; scope</dt>
+          <dd>{project.problem || project.tagline}</dd>
+          <dt>Approach</dt>
+          <dd>{project.approach || project.description}</dd>
+          <dt>Technology stack</dt>
+          <dd>{project.techStack.join(", ")}</dd>
+          <dt>Verified outcomes</dt>
+          <dd>
+            {project.outcome && project.evidenceUrl ? (
+              <>
+                {project.outcome}{" "}
+                <a
+                  className="underline"
+                  href={project.evidenceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Supporting evidence ↗
+                </a>
+              </>
+            ) : (
+              "No measured outcome has been published with supporting evidence."
+            )}
+          </dd>
+        </dl>
+      </details>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="card p-5">
           <p className="text-xs font-semibold uppercase tracking-wider text-faint">
@@ -140,7 +184,7 @@ export default async function ProjectPage({
                 className="prose-content"
                 dangerouslySetInnerHTML={{
                   __html: upgradeCtaLinks(
-                    renderContent(project.content, project.contentFormat)
+                    renderContent(project.content, project.contentFormat),
                   ),
                 }}
               />

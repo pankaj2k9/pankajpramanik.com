@@ -27,11 +27,13 @@ services:
       REDIS_URL: redis://redis:6379
       HOSTNAME: 0.0.0.0
       PORT: "3000"
-    # NOTE: public/uploads (migrated media) is baked into the image and the
-    # admin references images by URL, so nothing writes there at runtime —
-    # we intentionally do NOT mount a volume over it (an empty volume would
-    # hide the baked files). If you later add file uploads, use object
-    # storage (S3 / OVH Object Storage) rather than a host volume.
+    # All media (migrated + admin uploads in uploads/YYYY/MM/DD) lives in
+    # /opt/pankajpramanik/storage on the host. It is a bind mount, not a named
+    # volume, so it is plain files you can see, back up and rsync — and no
+    # image, `compose up`, or container replacement can remove it. The deploy
+    # workflow merges the repo's storage/ into it without overwriting anything.
+    volumes:
+      - ./storage:/app/storage
     depends_on:
       db:
         condition: service_healthy

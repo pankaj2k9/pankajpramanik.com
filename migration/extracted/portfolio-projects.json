@@ -1,5 +1,39 @@
 [
   {
+    "slug": "journeymesh-multi-agent-ai-travel-planner-langgraph-mcp-llmops",
+    "title": "JourneyMesh — Multi-Agent AI Travel Planner (LangGraph + MCP + LLMOps)",
+    "tagline": "Supervisor-routed multi-agent travel planning with guardrails, evaluation and human review",
+    "description": "JourneyMesh is a production-shaped multi-agent AI travel planner. A single sentence such as “plan a relaxing 5-day family trip from Dhaka to Singapore with a budget of $2,000” becomes a reviewable plan: routes, a hotel shortlist, a forecast, a cost breakdown that separates confirmed prices from estimates, and a day-by-day itinerary. A LangGraph supervisor picks only the specialist agents a request needs, every external call goes through an MCP client and an authorisation guard, every draft is guarded and evaluated, and nothing is final until a human approves it — with request-changes re-running only the affected agents.",
+    "content": "<h2>Overview</h2>\n<p><strong>JourneyMesh — every journey, intelligently connected.</strong> It is built as an agentic system rather than a chatbot: a supervisor decides which specialists a request actually needs, every external call is authorised before it leaves the process, every draft is measured, and nothing is final until a human approves it.</p>\n<p>The whole workflow runs end to end with no third-party credentials: without an API key each provider falls back to a deterministic adapter whose output is labelled <code>ESTIMATE</code>, so nothing is ever presented as a live price unless a provider confirmed it.</p>\n<p><img src=\"/uploads/2026/09/16/journeymesh-multiagent-travel-planner.webp\" alt=\"JourneyMesh trip planner interface\" /></p>\n<h2>Architecture</h2>\n<ul>\n<li><strong>Interface:</strong> React 18, TypeScript, Vite, TanStack Query, Tailwind CSS, i18next (English, Bengali, Hindi)</li>\n<li><strong>API:</strong> FastAPI and Pydantic v2 behind security middleware (request id, size limit, rate limit, headers)</li>\n<li><strong>Orchestration:</strong> LangGraph + LangChain with PostgreSQL checkpoints, so the workflow pauses at review and resumes later</li>\n<li><strong>Tools:</strong> Model Context Protocol client with aviation, search and custom weather MCP servers</li>\n<li><strong>Storage:</strong> PostgreSQL, SQLAlchemy 2.0 and Alembic for trips, results, reviews, conversations and audit events</li>\n<li><strong>Delivery:</strong> one multi-stage Docker image, GitHub Actions quality gate → GHCR → OVHcloud VPS behind a shared Caddy proxy</li>\n</ul>\n<h2>Dynamic supervisor</h2>\n<p>The supervisor reads the request and returns a routing decision; it never plans the trip itself. A weather question runs one agent, a full journey runs five. A stated budget pulls in flights and hotels, a multi-night itinerary pulls in hotels, and weather is opt-in. Routing is deterministic by default; a configured model may widen or narrow the selection but only within the known agent set.</p>\n<h2>Specialist agents</h2>\n<ul>\n<li><strong>Flight agent</strong> — resolves airports and normalises routes, never inventing flight numbers or fares; every price is labelled <code>LIVE</code>, <code>SEARCH_DERIVED</code>, <code>ESTIMATE</code> or <code>UNAVAILABLE</code>.</li>\n<li><strong>Hotel agent</strong> — derives a nightly ceiling from budget, trip length and travel style, then ranks candidates on price fit, rating, party size, distance and interests.</li>\n<li><strong>Weather agent</strong> — forecast for the travel window turned into packing and activity guidance.</li>\n<li><strong>Budget agent</strong> — structured cost picture with per-line provenance and <code>within_budget</code> / <code>near_limit</code> / <code>over_budget</code> status.</li>\n<li><strong>Itinerary agent</strong> — deterministic day structure with pacing, rest and indoor swaps when rain or heat is likely.</li>\n<li><strong>Final response agent</strong> — assembles the approved slices into one validated journey in the traveller's language.</li>\n</ul>\n<h2>Human-in-the-loop and selective re-execution</h2>\n<p>Each specialist owns exactly one slice of a shared <code>TravelState</code> and agents never call each other. When the reviewer requests a change (“find a cheaper hotel but keep my flights”), the supervisor re-runs only the affected agents — hotel, budget, itinerary — and every other slice stays byte-for-byte identical, up to a revision limit.</p>\n<h2>Guardrails and security</h2>\n<ul>\n<li>Input guard: payload size, unsafe markup, weighted prompt-injection rules, unlawful-intent screening, travel relevance and semantic checks.</li>\n<li>PII redaction (passports, IDs, Luhn-checked card numbers, IBANs, emails, phones) before anything reaches a model, MCP server, log or audit trail.</li>\n<li>MCP tool guard on every call: allowlist, calling agent, arguments, risk and budget.</li>\n<li>Output guard: schema validation, completeness, credential and unsafe-URL detection, budget arithmetic and itinerary length.</li>\n</ul>\n<h2>LLMOps: evaluation and observability</h2>\n<p>A ten-dimension evaluation module — relevance, completeness, groundedness, consistency, tool correctness, schema validity, safety, language correctness, itinerary feasibility and budget consistency — decides everything decidable by rule and uses an LLM-as-judge only where necessary. Structured JSON logs with PII redaction, in-process tracing and metrics are always on; optional LangSmith tracing shows each graph run, agent, model call and MCP tool call as one nested trace, named by revision.</p>\n<h2>Quality</h2>\n<p>218 pytest tests, 21 Vitest + React Testing Library tests and an offline evaluation suite, enforced by a GitHub Actions gate before any release.</p>\n<p><a href=\"http://51.79.166.97\">Try the live demo</a> · <a href=\"https://github.com/pankaj2k9/journeymesh-multiagent-LLMOps\">View the source on GitHub</a></p>",
+    "contentFormat": "HTML",
+    "coverImage": "/uploads/2026/09/16/journeymesh-multiagent-travel-planner.webp",
+    "techStack": [
+      "Python",
+      "LangGraph",
+      "LangChain",
+      "MCP",
+      "FastAPI",
+      "Groq",
+      "PostgreSQL",
+      "React",
+      "TypeScript",
+      "Docker",
+      "GitHub Actions",
+      "LangSmith"
+    ],
+    "category": "AI / LLM",
+    "repoUrl": "https://github.com/pankaj2k9/journeymesh-multiagent-LLMOps",
+    "liveUrl": "http://51.79.166.97",
+    "featured": true,
+    "seoTitle": "JourneyMesh — Multi-Agent AI Travel Planner with LangGraph, MCP & LLMOps",
+    "seoDescription": "Multi-agent AI travel planner: LangGraph supervisor, MCP tools, guardrails, 10-dimension evaluation, human-in-the-loop review. FastAPI, React, PostgreSQL.",
+    "problem": "Turn a free-text trip request into a trustworthy, editable travel plan without hallucinated prices or flights, without running agents a request does not need, and without leaking PII or letting a model act unchecked.",
+    "approach": "A LangGraph supervisor routes each request to only the specialist agents it needs (flight, hotel, weather, budget, itinerary). Every external call passes an MCP tool guard; input and output guardrails screen prompt injection, unlawful intent and PII; a ten-dimension evaluator scores each draft; a human approves or requests changes, and only the affected agents re-run. State is checkpointed in PostgreSQL, traced with structured logs and optional LangSmith, and shipped as one Docker image through GitHub Actions to an OVHcloud VPS.",
+    "outcome": "Deployed live with an open-source codebase covered by 218 backend tests, 21 frontend tests and an offline evaluation suite gated in CI.",
+    "evidenceUrl": "https://github.com/pankaj2k9/journeymesh-multiagent-LLMOps",
+    "order": 0
+  },
+  {
     "slug": "ai-automation-engineer-n8n-gohighlevel-ai-automation-engineer",
     "title": "AI Automation Engineer | n8n, GoHighLevel, AI Automation Engineer",
     "tagline": "",
@@ -25,7 +59,7 @@
     "featured": true,
     "seoTitle": "AI Automation Engineer | n8n, GoHighLevel, AI Automation Engineer",
     "seoDescription": null,
-    "order": 0
+    "order": 1
   },
   {
     "slug": "medical-rag-chatbot-langchain-pinecone-flask",
@@ -49,7 +83,7 @@
     "featured": true,
     "seoTitle": "Medical RAG Chatbot (LangChain + Pinecone + Flask)",
     "seoDescription": null,
-    "order": 1
+    "order": 2
   },
   {
     "slug": "bird-disease-prediction-end-to-end-mlops-deep-learning",
@@ -72,7 +106,7 @@
     "featured": true,
     "seoTitle": "Bird Disease Prediction - End-to-End MLOps (Deep Learning)",
     "seoDescription": null,
-    "order": 2
+    "order": 3
   },
   {
     "slug": "end-to-end-mlops-classification-aws-fastapi-ci-cd",
@@ -98,7 +132,7 @@
     "featured": true,
     "seoTitle": "End-to-End MLOps Classification (AWS + FastAPI + CI/CD)",
     "seoDescription": null,
-    "order": 3
+    "order": 4
   },
   {
     "slug": "moviemate-tf-idf-cosine-similarity-movie-recommender",
@@ -122,7 +156,7 @@
     "featured": true,
     "seoTitle": "MovieMate - TF-IDF & Cosine Similarity Movie Recommender",
     "seoDescription": null,
-    "order": 4
+    "order": 5
   },
   {
     "slug": "uber-data-engineering-etl-project",
@@ -148,7 +182,7 @@
     "featured": true,
     "seoTitle": "Uber Data Engineering ETL Project",
     "seoDescription": null,
-    "order": 5
+    "order": 6
   },
   {
     "slug": "angular-app-development",
@@ -168,7 +202,7 @@
     "featured": false,
     "seoTitle": "Angular App Development",
     "seoDescription": null,
-    "order": 6
+    "order": 7
   },
   {
     "slug": "react-app-development",
@@ -191,7 +225,7 @@
     "featured": false,
     "seoTitle": "React App Development",
     "seoDescription": null,
-    "order": 7
+    "order": 8
   },
   {
     "slug": "full-stack-developer-at-bydesign",
@@ -214,7 +248,7 @@
     "featured": false,
     "seoTitle": "Full Stack Developer At ByDesign",
     "seoDescription": null,
-    "order": 8
+    "order": 9
   },
   {
     "slug": "full-stack-engineer-at-crewfare-com",
@@ -242,7 +276,7 @@
     "featured": false,
     "seoTitle": "Full Stack Engineer At Crewfare.com",
     "seoDescription": null,
-    "order": 9
+    "order": 10
   },
   {
     "slug": "full-stack-engineer-at-prime-lab",
@@ -270,7 +304,7 @@
     "featured": false,
     "seoTitle": "Full Stack Engineer At Prime Lab",
     "seoDescription": null,
-    "order": 10
+    "order": 11
   },
   {
     "slug": "blockchain-developer-at-xr-foundation",
@@ -293,7 +327,7 @@
     "featured": false,
     "seoTitle": "Blockchain Developer At XR FOUNDATION",
     "seoDescription": null,
-    "order": 11
+    "order": 12
   },
   {
     "slug": "blockchain-developer-at-vircadia",
@@ -319,7 +353,7 @@
     "featured": false,
     "seoTitle": "Blockchain Developer At Vircadia",
     "seoDescription": null,
-    "order": 12
+    "order": 13
   },
   {
     "slug": "front-end-developer-at-podscribe",
@@ -345,7 +379,7 @@
     "featured": false,
     "seoTitle": "Front-End Developer At Podscribe",
     "seoDescription": null,
-    "order": 13
+    "order": 14
   },
   {
     "slug": "full-stack-developer-at-spotter-labs",
@@ -373,7 +407,7 @@
     "featured": false,
     "seoTitle": "Full Stack Developer At Spotter Labs",
     "seoDescription": null,
-    "order": 14
+    "order": 15
   },
   {
     "slug": "full-stack-engineer-at-breaker-nation",
@@ -394,7 +428,7 @@
     "featured": false,
     "seoTitle": "Full Stack Engineer At Breaker Nation",
     "seoDescription": null,
-    "order": 15
+    "order": 16
   },
   {
     "slug": "full-stack-developer-at-anekonnect-incorporated",
@@ -420,7 +454,7 @@
     "featured": false,
     "seoTitle": "Full Stack Developer At Anekonnect Incorporated",
     "seoDescription": null,
-    "order": 16
+    "order": 17
   },
   {
     "slug": "full-stack-developer-at-nivan-tech",
@@ -447,7 +481,7 @@
     "featured": false,
     "seoTitle": "Full Stack Developer At Nivan Tech",
     "seoDescription": null,
-    "order": 17
+    "order": 18
   },
   {
     "slug": "full-stack-developer-at-naked-media",
@@ -474,6 +508,6 @@
     "featured": false,
     "seoTitle": "Full Stack Developer at Naked Media",
     "seoDescription": null,
-    "order": 18
+    "order": 19
   }
 ]

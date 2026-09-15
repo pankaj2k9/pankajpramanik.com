@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
+import ServiceFinder from "@/components/site/ServiceFinder";
 import Link from "next/link";
 import { getServices } from "@/lib/queries";
 import { serviceArt } from "@/lib/service-art";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Services",
-  description:
-    "AI engineering, LLM/RAG systems, agentic AI, data engineering, MLOps, workflow automation, and full-stack development services.",
-  alternates: { canonical: "/services" },
-};
+export const metadata = pageMetadata(
+  "AI, Data & Automation Services",
+  "Practical AI engineering, document retrieval, data pipelines, MLOps, and workflow automation. Find the right service and discuss a clear project scope.",
+  "/services",
+);
 
 export default async function ServicesPage() {
   const services = await getServices();
@@ -18,20 +18,22 @@ export default async function ServicesPage() {
   return (
     <div className="container-site py-16">
       <header className="max-w-3xl">
-        <p className="micro-label">
-          Services
-        </p>
+        <p className="micro-label">Services</p>
         <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">
-          What I can <span className="text-gradient">do for you</span>
+          Make your next idea <span className="text-gradient">work.</span>
         </h1>
         <p className="mt-4 text-lg leading-relaxed text-muted">
-          From LLM &amp; RAG systems to data pipelines and full-stack apps —
-          {" "}{services.length} specialized services, each backed by production
-          experience. Click any service for details.
+          Bring me a business problem, an early prototype, or a system that
+          needs to improve. I help design and build the data pipelines, AI
+          applications, and integrations that connect your tools to your goals.
         </p>
       </header>
 
-      <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div id="service-finder" className="mt-12">
+        <ServiceFinder />
+      </div>
+      <h2 className="mt-16 text-2xl font-medium">Explore the capabilities</h2>
+      <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((s) => (
           <Link
             key={s.id}
@@ -42,7 +44,7 @@ export default async function ServicesPage() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={serviceArt(s.slug)}
-                alt=""
+                alt={`${s.label} — service illustration`}
                 loading="lazy"
                 width={800}
                 height={500}
@@ -70,7 +72,8 @@ export default async function ServicesPage() {
             Have a project in mind?
           </h2>
           <p className="mt-1 text-muted">
-            Tell me what you&apos;re building — I&apos;ll reply within 24 hours.
+            Share your goals, current setup, and timeline. We’ll define a useful
+            next step.
           </p>
         </div>
         <Link

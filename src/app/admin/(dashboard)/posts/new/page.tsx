@@ -1,7 +1,9 @@
+import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import PostForm from "@/components/admin/PostForm";
 
 export default async function NewPostPage() {
+  await requireAdmin();
   const categories = await prisma.category.findMany({
     orderBy: { name: "asc" },
   });

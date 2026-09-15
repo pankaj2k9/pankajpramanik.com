@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
@@ -5,6 +6,7 @@ import { deletePost } from "@/actions/posts";
 import { DeleteButton } from "@/components/admin/ui";
 
 export default async function AdminPostsPage() {
+  await requireAdmin();
   const posts = await prisma.post.findMany({
     orderBy: [{ status: "asc" }, { publishedAt: "desc" }],
     include: { categories: true },
@@ -33,8 +35,18 @@ export default async function AdminPostsPage() {
             </tr>
           </thead>
           <tbody>
+            {posts.length === 0 && (
+              <tr>
+                <td colSpan={4} className="p-8 text-center text-muted">
+                  No posts yet. Use the create button to add your first item.
+                </td>
+              </tr>
+            )}
             {posts.map((p) => (
-              <tr key={p.id} className="border-b border-border/60 last:border-0">
+              <tr
+                key={p.id}
+                className="border-b border-border/60 last:border-0"
+              >
                 <td className="px-5 py-3">
                   <p className="font-medium">{p.title}</p>
                   <p className="text-xs text-faint">

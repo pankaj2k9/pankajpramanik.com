@@ -88,8 +88,13 @@ fi
 # --- 2. stack directory ------------------------------------------------------
 
 say "Stack directory $APP_DIR"
-mkdir -p "$APP_DIR"
-ok "ready"
+mkdir -p "$APP_DIR" "$APP_DIR/storage/uploads"
+ok "ready (media storage: $APP_DIR/storage — persistent, never deleted by deploys)"
+
+if ! command -v rsync >/dev/null 2>&1; then
+  warn "rsync is not installed — the deploy workflow needs it to sync media:"
+  warn "  sudo apt-get install -y rsync"
+fi
 
 if [ ! -f "$APP_DIR/docker-compose.prod.yml" ]; then
   warn "docker-compose.prod.yml is not there yet — copy it from the repo:"
@@ -237,10 +242,11 @@ Remaining steps, in order:
        docker compose -f $PROXY_DIR/docker-compose.yml exec $PROXY_SERVICE \\
          caddy reload --config /etc/caddy/Caddyfile
 
-  5. Seed the database once, from a repo checkout
-       DATABASE_URL="postgresql://appuser:PASS@localhost:5432/pankajpramanik" \\
-         npm run db:seed
+  5. Nothing to seed by hand. On start the container applies migrations,
+     imports prisma/content/snapshot.json and creates the admin from
+     ADMIN_EMAIL / ADMIN_PASSWORD in .env. Media arrives with the first
+     GitHub Actions deploy (or rsync the repo's storage/ into $APP_DIR/storage).
 
-  6. Change the seeded admin password at first login.
+  6. Change the admin password at first login.
 
 EOF

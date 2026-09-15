@@ -40,7 +40,11 @@ export default function ExperienceForm({
   >(action, undefined);
 
   return (
-    <form action={formAction} className="max-w-3xl space-y-6">
+    <form
+      action={formAction}
+      onReset={(event) => event.preventDefault()}
+      className="max-w-3xl space-y-6"
+    >
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label htmlFor="role" className={labelCls}>

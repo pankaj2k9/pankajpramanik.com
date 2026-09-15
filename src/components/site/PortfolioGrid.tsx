@@ -1,10 +1,7 @@
 "use client";
-
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
-
 export type PortfolioProject = {
   id: string;
   slug: string;
@@ -15,98 +12,182 @@ export type PortfolioProject = {
   category: string;
   featured: boolean;
   coverImage: string | null;
+  problem?: string;
+  approach?: string;
+  outcome?: string;
+  evidenceUrl?: string | null;
 };
-
-/** Tabbed category filter + project card grid for /portfolio. */
 export default function PortfolioGrid({
   projects,
 }: {
   projects: PortfolioProject[];
 }) {
-  const categories = ["All", ...new Set(projects.map((p) => p.category))];
-  const [active, setActive] = useState("All");
-  const shown =
-    active === "All" ? projects : projects.filter((p) => p.category === active);
-
+  const [category, setCategory] = useState("All");
+  const [technology, setTechnology] = useState("All");
+  const [query, setQuery] = useState("");
+  const categories = useMemo(
+    () => [...new Set(projects.map((p) => p.category))].sort(),
+    [projects],
+  );
+  const technologies = useMemo(
+    () => [...new Set(projects.flatMap((p) => p.techStack))].sort(),
+    [projects],
+  );
+  const shown = projects.filter(
+    (p) =>
+      (category === "All" || p.category === category) &&
+      (technology === "All" || p.techStack.includes(technology)) &&
+      `${p.title} ${p.description} ${p.techStack.join(" ")}`
+        .toLowerCase()
+        .includes(query.toLowerCase().trim()),
+  );
+  const reset = () => {
+    setCategory("All");
+    setTechnology("All");
+    setQuery("");
+  };
   return (
     <div>
-      {/* category tabs */}
-      <div
-        role="tablist"
-        aria-label="Filter projects by category"
-        className="flex flex-wrap gap-2 border-b border-border pb-px"
-      >
-        {categories.map((c) => (
-          <button
-            key={c}
-            role="tab"
-            aria-selected={active === c}
-            onClick={() => setActive(c)}
-            className={cn(
-              "-mb-px rounded-t-lg border-b-2 px-4 py-2.5 text-sm font-semibold transition-colors",
-              active === c
-                ? "border-accent-strong text-accent"
-                : "border-transparent text-muted hover:text-foreground"
-            )}
+      <div className="project-filters">
+        <label>
+          Service area
+          <select
+            aria-label="Service area"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
           >
-            {c}
-            <span className="ml-1.5 text-xs text-faint">
-              {c === "All"
-                ? projects.length
-                : projects.filter((p) => p.category === c).length}
-            </span>
-          </button>
-        ))}
+            <option value="All">All services</option>
+            {categories.map((c) => (
+              <option key={c}>{c}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Technology
+          <select
+            aria-label="Technology"
+            value={technology}
+            onChange={(e) => setTechnology(e.target.value)}
+          >
+            <option value="All">All technologies</option>
+            {technologies.map((t) => (
+              <option key={t}>{t}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Search projects
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by name or topic"
+          />
+        </label>
+        <button className="text-link" onClick={reset}>
+          Reset filters ↺
+        </button>
       </div>
-
-      <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <p role="status" className="text-sm text-muted">
+        {shown.length} {shown.length === 1 ? "project" : "projects"}
+        {shown.length !== projects.length ? ` of ${projects.length}` : ""}
+      </p>
+      {!shown.length && (
+        <div className="card mt-6 p-8">
+          <h2 className="text-xl font-semibold">
+            {projects.length
+              ? "No matching projects"
+              : "Project stories are on their way"}
+          </h2>
+          <p className="mt-2 text-muted">
+            {projects.length
+              ? "Try another service, technology, or search term."
+              : "Get in touch to discuss relevant work and your project requirements."}
+          </p>
+          {projects.length > 0 ? (
+            <button onClick={reset} className="text-link">
+              Show all projects →
+            </button>
+          ) : (
+            <Link href="/contact" className="text-link">
+              Discuss your project →
+            </Link>
+          )}
+        </div>
+      )}
+      <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {shown.map((p) => (
-          <article
-            key={p.id}
-            className="card card-hover group relative overflow-hidden"
-          >
+          <article key={p.id} className="card overflow-hidden">
             {p.coverImage && (
-              <div className="relative aspect-[2/1] overflow-hidden border-b border-border bg-surface-raised">
+              <div className="relative aspect-[2/1] bg-surface-raised">
                 <Image
                   src={p.coverImage}
-                  alt={p.title}
+                  alt={`${p.title} — project preview`}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  className="object-cover"
                 />
               </div>
             )}
             <div className="p-6">
-              {p.featured && (
-                <span className="absolute right-4 top-4 rounded-full bg-black/50 px-2.5 py-0.5 text-[11px] font-semibold text-white backdrop-blur">
-                  ★ Featured
-                </span>
-              )}
-              <p className="text-xs font-medium uppercase tracking-wider text-faint">
-                {p.category}
-              </p>
-              <h3 className="mt-2 font-display text-lg font-semibold leading-snug">
-                <Link
-                  href={`/portfolio/${p.slug}`}
-                  className="after:absolute after:inset-0 group-hover:text-accent"
-                >
+              <p className="eyebrow text-muted">{p.category}</p>
+              <h2 className="mt-3 text-xl font-semibold">
+                <Link href={`/portfolio/${p.slug}`} className="hover:underline">
                   {p.title}
                 </Link>
-              </h3>
-              <p className="mt-1 text-sm text-accent/90">{p.tagline}</p>
-              <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-muted">
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-muted">
                 {p.description}
               </p>
-              <ul className="mt-4 flex flex-wrap gap-1.5">
-                {p.techStack.slice(0, 4).map((t) => (
+              <ul
+                className="mt-4 flex flex-wrap gap-2"
+                aria-label="Technology stack"
+              >
+                {p.techStack.map((t) => (
                   <li
                     key={t}
-                    className="rounded-md border border-border bg-surface-raised px-2 py-0.5 text-[11px] text-muted"
+                    className="rounded-md border border-border px-2 py-1 text-xs text-muted"
                   >
                     {t}
                   </li>
                 ))}
               </ul>
+              <details className="case-study">
+                <summary>Explore case study</summary>
+                <dl>
+                  <dt>Problem &amp; scope</dt>
+                  <dd>
+                    {p.problem ||
+                      p.tagline ||
+                      "Project context is available in the full overview."}
+                  </dd>
+                  <dt>Approach</dt>
+                  <dd>{p.approach || p.description}</dd>
+                  <dt>Technology stack</dt>
+                  <dd>{p.techStack.join(", ") || "Not documented yet."}</dd>
+                  <dt>Verified outcomes</dt>
+                  <dd>
+                    {p.outcome && p.evidenceUrl ? (
+                      <>
+                        {p.outcome}{" "}
+                        <a
+                          className="underline"
+                          href={p.evidenceUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Supporting evidence ↗
+                        </a>
+                      </>
+                    ) : (
+                      "No measured outcome has been published with supporting evidence. Explore the implementation for technical details."
+                    )}
+                  </dd>
+                </dl>
+                <Link className="text-link" href={`/portfolio/${p.slug}`}>
+                  Full project details ↗
+                </Link>
+              </details>
             </div>
           </article>
         ))}

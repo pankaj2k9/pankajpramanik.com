@@ -1,309 +1,198 @@
-"use client";
-
-import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import gsap from "gsap";
-import SocialLinks from "@/components/site/SocialLinks";
-import Ticker from "@/components/site/Ticker";
-import Counter from "@/components/site/Counter";
+import Image from "next/image";
+import IntelligenceExperience from "./IntelligenceExperience";
+import ServiceFinder from "@/components/site/ServiceFinder";
+import { servicePaths } from "@/lib/services";
 import { site } from "@/lib/site";
-import { scrollToTarget } from "@/lib/lenis";
-import { cn } from "@/lib/utils";
+import type { PortfolioProject } from "@/components/site/PortfolioGrid";
 
-const NeuralScene = dynamic(() => import("./NeuralScene"), {
-  ssr: false,
-  loading: () => null,
-});
-
-const SLIDES = ["intro", "work", "contact"] as const;
-
-const AVAILABILITY = [
-  "Available for new projects",
-  "AI & Data Engineering",
-  "LLM · RAG · Agentic systems",
-  "Remote worldwide",
-  "Open to contract & full-time",
-];
-
-/** Headline numbers for the "what I build" section. */
-const STATS = [
-  { value: 8, suffix: "+", label: "years shipping production systems" },
-  { value: 40, suffix: "+", label: "data & AI pipelines delivered" },
-  { value: 20, suffix: "+", label: "services offered end to end" },
-];
-
-const CAPABILITIES = [
-  { label: "LLM & RAG Systems", href: "/services/llm-rag-developer-hire" },
-  { label: "Agentic AI", href: "/services/ai-chatbot-agent-designer" },
-  { label: "MLOps Pipelines", href: "/services/hire-the-perfect-mlops-developer" },
-  { label: "Data Engineering", href: "/services/data-engineering-excellence" },
-  { label: "Machine Learning", href: "/services/data-science-and-machine-learning" },
-];
-
-/**
- * Full-viewport homepage experience: a persistent Three.js neural scene fixed
- * behind three full-screen sections. GSAP animates each section's copy in as it
- * becomes active, and the scene's palette follows the active section.
- *
- * The sections used to live in their own scroll-snapped `overflow-y-auto`
- * element. Lenis attaches to the window, so it never touched that scroller and
- * the landing page silently had no smooth scrolling at all while every other
- * page did. Snap and momentum smoothing also pull against each other. The page
- * now scrolls normally, through the same Lenis instance as everywhere else.
- */
-const motionQuery = "(prefers-reduced-motion: reduce)";
-function subscribeMotion(onChange: () => void) {
-  const mql = window.matchMedia(motionQuery);
-  mql.addEventListener("change", onChange);
-  return () => mql.removeEventListener("change", onChange);
-}
-
-export default function HomeExperience() {
-  const scroller = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
-  // false during SSR; real preference on the client
-  const sceneOn = useSyncExternalStore(
-    subscribeMotion,
-    () => !window.matchMedia(motionQuery).matches,
-    () => false
-  );
-
-  // track which slide is in view
-  useEffect(() => {
-    const root = scroller.current;
-    if (!root) return;
-    const panels = Array.from(root.querySelectorAll<HTMLElement>("[data-slide]"));
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) {
-            setActive(Number((e.target as HTMLElement).dataset.slide));
-          }
-        }
-      },
-      { threshold: 0.55 }
-    );
-    panels.forEach((p) => io.observe(p));
-    return () => io.disconnect();
-  }, []);
-
-  // animate the active slide's copy in
-  useEffect(() => {
-    const root = scroller.current;
-    if (!root) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const panel = root.querySelector<HTMLElement>(`[data-slide="${active}"]`);
-    if (!panel) return;
-    const targets = panel.querySelectorAll("[data-fx]");
-    gsap.fromTo(
-      targets,
-      { y: 34, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.9, stagger: 0.09, ease: "power3.out" }
-    );
-  }, [active]);
-
-  function goTo(i: number) {
-    const panel = scroller.current?.querySelector<HTMLElement>(
-      `[data-slide="${i}"]`
-    );
-    if (panel) scrollToTarget(panel);
-  }
-
+export default function HomeExperience({
+  projects,
+}: {
+  projects: PortfolioProject[];
+}) {
   return (
-    <div className="force-dark relative bg-background text-foreground">
-      {/* persistent 3D scene */}
-      <div className="fixed inset-0 z-0" aria-hidden>
-        <div
-          className="absolute left-1/2 top-1/2 h-[46rem] w-[46rem] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 blur-3xl"
-          style={{
-            background:
-              "radial-gradient(closest-side, #6366f1 0%, #8b5cf6 50%, transparent 100%)",
-          }}
-        />
-        {sceneOn && <NeuralScene slide={active} />}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(7,8,15,0.85)_100%)]" />
-      </div>
-
-      {/* slide dots */}
-      <nav
-        className="fixed right-5 top-1/2 z-20 flex -translate-y-1/2 flex-col gap-3 sm:right-8"
-        aria-label="Homepage sections"
-      >
-        {SLIDES.map((s, i) => (
-          <button
-            key={s}
-            onClick={() => goTo(i)}
-            aria-label={`Go to ${s}`}
-            aria-current={active === i}
-            className={cn(
-              "h-2.5 w-2.5 rounded-full border transition-all",
-              active === i
-                ? "scale-125 border-accent bg-accent"
-                : "border-border-strong bg-transparent hover:border-accent"
-            )}
-          />
-        ))}
-      </nav>
-
-      {/* scroll hint */}
-      {active < SLIDES.length - 1 && (
-        <button
-          onClick={() => goTo(active + 1)}
-          className="fixed bottom-6 left-1/2 z-20 -translate-x-1/2 text-faint transition hover:text-accent"
-          aria-label="Scroll to next section"
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-bounce" aria-hidden>
-            <path d="M12 5v14M19 12l-7 7-7-7" />
-          </svg>
-        </button>
-      )}
-
-      {/* slides */}
-      <div
-        ref={scroller}
-        className="relative z-10"
-      >
-        {/* ---- slide 1: intro ---- */}
-        <section
-          data-slide="0"
-          className="flex h-dvh flex-col items-center justify-center px-6 text-center"
-        >
-          <p
-            data-fx
-            className="inline-flex items-center gap-2 rounded-full border border-emerald/30 bg-emerald/10 px-4 py-1.5 text-sm font-medium text-emerald"
-          >
-            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald" />
-            Available for new projects
+    <main id="main-content" className="home-page">
+      <section className="home-hero" aria-labelledby="hero-title">
+        <div className="hero-copy">
+          <p className="eyebrow">
+            <span className="tiny-cross" aria-hidden>
+              ✳
+            </span>{" "}
+            Pankaj Pramanik / AI &amp; Data Engineer
           </p>
-          <h1
-            data-fx
-            className="mt-8 max-w-5xl font-display text-5xl font-bold leading-[1.02] tracking-tight sm:text-7xl lg:text-8xl"
-          >
-            Data Scientist
+          <h1 id="hero-title">
+            YOUR DATA.
             <br />
-            <span className="text-gradient">&amp; AI Engineer</span>
+            REAL
+            <br />
+            <span>INTELLIGENCE.</span>
+            <br />
+            IN ACTION<span className="coral-dot">.</span>
           </h1>
-          <p data-fx className="mt-7 max-w-xl text-lg leading-relaxed text-muted">
-            I&apos;m {site.name.split(" ")[0]} — I turn raw data into
-            intelligent, production-ready systems. Agentic AI, LLM &amp; RAG
-            applications, MLOps, and modern data platforms.
+          <p className="hero-description">
+            I connect data, AI, and automation to build systems that make your
+            work flow better.
           </p>
-          <div data-fx className="mt-9 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              href="/portfolio"
-              data-magnetic
-              className="rounded-xl bg-accent-strong px-7 py-3.5 font-semibold text-white shadow-lg shadow-accent-strong/25 transition hover:opacity-90"
-            >
-              View My Work
+          <div className="hero-actions">
+            <Link href="/contact" className="button-primary">
+              Let’s build something <span aria-hidden>↗</span>
             </Link>
-            <Link
-              href="/about"
-              className="rounded-xl border border-border-strong px-7 py-3.5 font-semibold transition hover:border-accent hover:text-accent"
-            >
-              About Me
+            <Link href="/portfolio" className="text-link">
+              Explore my work <span aria-hidden>↗</span>
             </Link>
           </div>
-
-          <div data-fx className="mt-14 w-screen">
-            <Ticker items={AVAILABILITY} />
+          <div className="hero-signature">
+            <Image
+              src={site.photo}
+              alt="Pankaj Kumar Pramanik"
+              width={40}
+              height={40}
+            />
+            <span>
+              Engineering with purpose.
+              <br />
+              <strong>Built around your business.</strong>
+            </span>
           </div>
-        </section>
-
-        {/* ---- slide 2: what I build ---- */}
-        <section
-          data-slide="1"
-          className="flex h-dvh flex-col justify-center px-6"
-        >
-          <div className="mx-auto w-full max-w-4xl">
-            <p data-fx className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald">
-              What I build
-            </p>
-            <ul className="mt-8 space-y-2">
-              {CAPABILITIES.map((c, i) => (
-                <li key={c.href} data-fx>
-                  <Link
-                    href={c.href}
-                    className="group flex items-baseline gap-4 border-b border-border/60 py-4 transition-colors hover:border-accent"
-                  >
-                    <span className="font-mono text-sm text-faint">
-                      0{i + 1}
-                    </span>
-                    <span className="font-display text-3xl font-bold tracking-tight text-muted transition-colors group-hover:text-foreground sm:text-5xl">
-                      {c.label}
-                    </span>
-                    <span className="ml-auto hidden text-accent opacity-0 transition-opacity group-hover:opacity-100 sm:block">
-                      →
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <dl
-              data-fx
-              className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-3"
+        </div>
+        <IntelligenceExperience />
+        <div className="hero-footnote">
+          <span>01 — FROM DATA TO POSSIBILITY</span>
+          <a href="#expertise">
+            Scroll to discover <span aria-hidden>↓</span>
+          </a>
+          <span>HUMAN IDEAS. INTELLIGENT SYSTEMS.</span>
+        </div>
+      </section>
+      <div className="tech-ribbon" aria-label="Selected tools">
+        <span>THE TOOLS. THE POSSIBILITIES.</span>
+        {["Python", "LangChain", "n8n", "Next.js", "AWS", "Docker"].map((t) => (
+          <span key={t}>{t}</span>
+        ))}
+      </div>
+      <section
+        id="expertise"
+        className="home-section"
+        aria-labelledby="expertise-title"
+      >
+        <div className="section-heading" data-reveal>
+          <div>
+            <p className="eyebrow">01 / What I do</p>
+            <h2 id="expertise-title">
+              Complex challenges.
+              <br />
+              <span>Thoughtful solutions.</span>
+            </h2>
+          </div>
+          <p>
+            From the first data source to the last automated step, I help turn a
+            useful idea into a system your team can work with.
+          </p>
+        </div>
+        <div className="service-triptych">
+          {servicePaths.map((s, i) => (
+            <Link
+              key={s.id}
+              href={`/services/${s.slug}`}
+              className="service-panel"
+              data-reveal
             >
-              {STATS.map((stat) => (
-                <div key={stat.label} className="bg-background p-5">
-                  <dt className="sr-only">{stat.label}</dt>
-                  <dd>
-                    <Counter
-                      value={stat.value}
-                      suffix={stat.suffix}
-                      className="font-display text-3xl font-bold tabular-nums tracking-tight sm:text-4xl"
-                    />
-                    <span className="mt-1 block text-sm text-muted">
-                      {stat.label}
-                    </span>
-                  </dd>
+              <div className={`service-art service-art-${i}`} aria-hidden>
+                <i />
+                <i />
+                <i />
+                <span>{["⊞", "✳", "↗"][i]}</span>
+              </div>
+              <div className="service-panel-top">
+                <span>
+                  0{i + 1} / {s.label}
+                </span>
+                <span aria-hidden>↗</span>
+              </div>
+              <h3>{s.title}</h3>
+              <p>{s.description}</p>
+              <span className="service-tools">{s.technologies}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+      <section
+        className="home-section selected-work"
+        aria-labelledby="work-heading"
+      >
+        <div className="section-heading" data-reveal>
+          <div>
+            <p className="eyebrow">02 / Selected work</p>
+            <h2 id="work-heading">
+              Ideas made <span>tangible.</span>
+            </h2>
+          </div>
+          <Link className="text-link" href="/portfolio">
+            All projects <span aria-hidden>↗</span>
+          </Link>
+        </div>
+        <div className="home-projects">
+          {projects.length ? (
+            projects.slice(0, 3).map((p, i) => (
+              <Link
+                href={`/portfolio/${p.slug}`}
+                key={p.id}
+                className="home-project"
+                data-reveal
+              >
+                <div className={`project-diagram diagram-${i}`} aria-hidden>
+                  <span>
+                    {p.category === "Data Engineering"
+                      ? "DATA → PIPELINE → INSIGHT"
+                      : p.category === "MLOps"
+                        ? "TRAIN → TRACK → DEPLOY"
+                        : "CONNECT → REASON → ACT"}
+                  </span>
+                  <div>
+                    <i />
+                    <i />
+                    <i />
+                  </div>
+                  <span>{p.techStack.slice(0, 3).join(" / ")}</span>
                 </div>
-              ))}
-            </dl>
-            <p data-fx className="mt-6 text-sm text-faint">
-              Production systems for AI, SaaS, and data-driven teams —{" "}
-              <Link href="/services" className="text-accent hover:underline">
-                all services
+                <p className="eyebrow">{p.category}</p>
+                <h3>
+                  {p.title}
+                  <span aria-hidden>↗</span>
+                </h3>
+                <p>{p.description}</p>
+              </Link>
+            ))
+          ) : (
+            <p>
+              Project case studies are being prepared.{" "}
+              <Link className="text-link" href={site.github}>
+                Explore the source code on GitHub ↗
               </Link>
             </p>
-          </div>
-        </section>
-
-        {/* ---- slide 3: contact ---- */}
-        <section
-          data-slide="2"
-          className="flex h-dvh flex-col items-center justify-center px-6 text-center"
-        >
-          <p data-fx className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald">
-            Have data? Let&apos;s make it think.
-          </p>
-          <h2
-            data-fx
-            className="mt-6 max-w-4xl font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl"
-          >
-            Let&apos;s build something{" "}
-            <span className="text-gradient">intelligent</span> together
-          </h2>
-          <div data-fx className="mt-9 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              href="/contact"
-              data-magnetic
-              className="rounded-xl bg-accent-strong px-8 py-3.5 font-semibold text-white shadow-lg shadow-accent-strong/25 transition hover:opacity-90"
-            >
-              Start a Project
-            </Link>
-            <a
-              href={site.cv}
-              download
-              className="rounded-xl border border-border-strong px-8 py-3.5 font-semibold transition hover:border-accent hover:text-accent"
-            >
-              Download CV
-            </a>
-          </div>
-          <div data-fx className="mt-10">
-            <SocialLinks size="lg" className="justify-center" />
-          </div>
-        </section>
+          )}
+        </div>
+      </section>
+      <div className="home-section">
+        <ServiceFinder />
       </div>
-    </div>
+      <section className="home-section collaboration-note" data-reveal>
+        <p className="eyebrow">A practical partnership</p>
+        <h2>
+          Good systems start
+          <br />
+          with <span>good conversations.</span>
+        </h2>
+        <p>
+          Tell me what’s getting in the way, what you want to build, and what
+          success would look like. We’ll start with a clear scope and the next
+          useful step.
+        </p>
+        <Link href="/contact" className="button-primary">
+          Let’s talk about your idea <span aria-hidden>↗</span>
+        </Link>
+      </section>
+    </main>
   );
 }

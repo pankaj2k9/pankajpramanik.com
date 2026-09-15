@@ -139,16 +139,46 @@ docker compose -f /opt/proxy/docker-compose.yml exec caddy \
   caddy reload --config /etc/caddy/Caddyfile
 ```
 
-## 7. Seed once
+## 7. Content and media — nothing to seed by hand
 
-The runtime image is slim and carries neither `tsx` nor the migrated content, so
-seeding runs from a repo checkout pointed at the production database.
+Content and media flow from your laptop to production through git:
 
 ```sh
-DATABASE_URL="postgresql://appuser:PASS@localhost:5432/pankajpramanik" npm run db:seed
+# locally, after editing content in the local admin (http://localhost:3000/admin)
+npm run content:export        # local DB → prisma/content/snapshot.json (+ media check)
+git add prisma/content storage && git commit -m "content: update" && git push
 ```
 
-The seed is idempotent. Change the seeded admin password at first login.
+On push the deploy workflow:
+
+1. uploads `storage/` and merges it into `/opt/pankajpramanik/storage` —
+   file by file, **never overwriting or deleting** anything, so media uploaded
+   in the production admin is safe;
+2. restarts the app, whose entrypoint runs `prisma migrate deploy`, then imports
+   the snapshot. The import is skipped when that snapshot was already applied,
+   so production admin edits survive restarts — until you deploy a *new*
+   snapshot, which then wins for posts, projects, pages, experience, skills,
+   education, certifications and testimonials. Users and contact messages are
+   never touched.
+
+The admin user from `ADMIN_EMAIL` / `ADMIN_PASSWORD` is created on first start
+if missing. Set `CONTENT_SYNC=false` in `.env` to freeze production content.
+
+### Media storage
+
+| Where | Path |
+| --- | --- |
+| Repo | `storage/uploads/` (served at `/uploads/*`) |
+| Container | `/app/storage` (`STORAGE_DIR`) |
+| VPS | `/opt/pankajpramanik/storage` — bind mount, survives every redeploy |
+| Backup | `/var/backups/pankajpramanik/storage` (+ `REMOTE`) via `backup.sh` |
+
+Admin uploads land in `uploads/YYYY/MM/DD/<name>-<random>.<ext>`. To pull
+production uploads back into the repo so git holds them too:
+
+```sh
+rsync -av <user>@<host>:/opt/pankajpramanik/storage/ storage/
+```
 
 ---
 
@@ -157,16 +187,23 @@ The seed is idempotent. Change the seeded admin password at first login.
 Two workflows, one of which deploys.
 
 **`.github/workflows/ci.yml`** runs on every push and pull request to `main`:
-lint, typecheck, migrate, seed, build. It never touches the server.
+lint, typecheck, migrate, seed, import the content snapshot, build. It never
+touches the server.
 
 **`.github/workflows/docker.yml`** runs on pushes to `main` and on version tags:
 
-1. Starts a throwaway Postgres, migrates and seeds it.
+1. Starts a throwaway Postgres, migrates, seeds and imports the content
+   snapshot into it, and fails if any `/uploads/…` file the content references
+   is missing from `storage/`.
 2. Builds the image against that database and pushes to
    `ghcr.io/pankaj2k9/pankajpramanik`, tagged `latest`, `sha-<short>`, and the
    git tag when there is one.
-3. SSHes to the VPS, pulls, restarts this stack, and waits for the app to answer
-   before reporting success.
+3. Rsyncs `storage/` and `docker-compose.prod.yml` to `/opt/pankajpramanik/.deploy`,
+   then SSHes in, installs the compose file (keeping a `.bak-*` copy), merges
+   media into persistent storage without overwriting, pulls, restarts this
+   stack, and waits for the app to answer before reporting success.
+
+The server needs `rsync` installed (`sudo apt-get install -y rsync`).
 
 The build needs a live database because `next build` prerenders pages that read
 Postgres. CI provides one as a service container, and Buildx reaches it over the
@@ -188,8 +225,9 @@ Written down because this VPS is shared:
   container are never eligible, so another app's image cannot be collected.
 - It never edits `/opt/proxy`. Proxy configuration happens once, by hand, in
   step 4.
-- It aborts if the stack directory, the compose file, the `.env`, or the shared
-  network is missing, rather than recreating any of them.
+- It aborts if the stack directory, the `.env`, or the shared network is
+  missing, rather than recreating any of them.
+- It never deletes or overwrites a file in `/opt/pankajpramanik/storage`.
 
 ---
 

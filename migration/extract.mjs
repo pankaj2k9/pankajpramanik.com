@@ -5,7 +5,7 @@
  *
  * Also builds a media manifest of every image referenced by post
  * content or featured images, so download-media.mjs can mirror them
- * into public/uploads/ and content URLs can be rewritten to local paths.
+ * into storage/uploads/ and content URLs can be rewritten to local paths.
  *
  * Usage: node migration/extract.mjs
  */

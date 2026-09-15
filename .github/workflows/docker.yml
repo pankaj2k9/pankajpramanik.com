@@ -61,10 +61,22 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Migrate & seed build database
+      # The build DB must hold exactly the content production will serve, so
+      # prerendered pages match: seed the baseline, then apply the committed
+      # snapshot exported from the local database.
+      - name: Migrate, seed & import content snapshot
         run: |
           npx prisma migrate deploy
           npm run db:seed
+          npm run content:import
+
+      - name: Check referenced media exists in storage/
+        run: |
+          missing=0
+          for ref in $(grep -oE '/uploads/[^"'"'"'[:space:])<>?#\\]+' prisma/content/snapshot.json | sort -u); do
+            [ -f "storage$ref" ] || { echo "::error::missing storage$ref"; missing=1; }
+          done
+          exit $missing
 
       - name: Log in to GHCR
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
@@ -108,6 +120,31 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
+      - uses: actions/checkout@v4
+
+      # Media is persistent server-side storage, not part of the image. Upload
+      # the repo's storage/ to a staging directory the deploy user owns; the
+      # server script below merges it into the live storage WITHOUT
+      # overwriting or deleting anything, so files uploaded in production are
+      # never touched. The compose file is shipped too, so changes to it
+      # deploy with the code.
+      - name: Upload media storage and compose file
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          SSH="ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes"
+          $SSH "$DEPLOY_USER@$DEPLOY_HOST" 'command -v rsync >/dev/null || { echo "rsync missing on server: sudo apt-get install -y rsync"; exit 1; }; mkdir -p /opt/pankajpramanik/.deploy/storage'
+          rsync -rtz --partial -e "$SSH" storage/ "$DEPLOY_USER@$DEPLOY_HOST:/opt/pankajpramanik/.deploy/storage/"
+          rsync -tz -e "$SSH" docker-compose.prod.yml "$DEPLOY_USER@$DEPLOY_HOST:/opt/pankajpramanik/.deploy/docker-compose.prod.yml"
+          rm -f ~/.ssh/deploy_key
+
       # This VPS is shared. Other applications run behind the same Caddy at
       # /opt/proxy, so this job is deliberately narrow:
       #   * it only ever names docker-compose.prod.yml in /opt/pankajpramanik
@@ -140,8 +177,14 @@ jobs:
             # Fail loudly rather than bootstrapping half a stack from CI.
             test -d "$APP_DIR" || { echo "::error::$APP_DIR missing — run deploy/ovh-bootstrap.sh first"; exit 1; }
             cd "$APP_DIR"
-            test -f docker-compose.prod.yml || { echo "::error::docker-compose.prod.yml missing in $APP_DIR"; exit 1; }
             test -f .env || { echo "::error::.env missing in $APP_DIR"; exit 1; }
+
+            # Ship the compose file from the repo, keeping the previous copy.
+            if ! cmp -s .deploy/docker-compose.prod.yml docker-compose.prod.yml; then
+              [ -f docker-compose.prod.yml ] && cp docker-compose.prod.yml "docker-compose.prod.yml.bak-$(date +%Y%m%d%H%M%S)"
+              cp .deploy/docker-compose.prod.yml docker-compose.prod.yml
+              echo "docker-compose.prod.yml updated"
+            fi
 
             # Created by the bootstrap script and shared with the other apps.
             # Never recreated here — recreating it would detach them from Caddy.
@@ -156,21 +199,39 @@ jobs:
             echo "Deploying: ${IMAGE_REF:-latest tag}"
 
             $COMPOSE pull app
-            # `up -d` recreates only what changed. Migrations run from the
-            # container entrypoint (prisma migrate deploy) on start.
+
+            # Merge repo media into persistent storage: no-clobber copy, never
+            # a delete, then hand ownership to the container user (uid 1001).
+            # Runs inside the app image as root, so the deploy user needs no sudo.
+            mkdir -p storage
+            docker run --rm --user 0 --entrypoint sh \
+              -v "$APP_DIR/.deploy/storage:/src:ro" -v "$APP_DIR/storage:/dst" \
+              "${IMAGE_REF:-ghcr.io/pankaj2k9/pankajpramanik:latest}" \
+              -c 'set -e; mkdir -p /dst/uploads; cd /src
+                  # busybox cp -n / tar -k abort or skip whole trees on the
+                  # first existing file, so copy file by file instead.
+                  find . -type d -exec mkdir -p "/dst/{}" ";"
+                  find . -type f | while IFS= read -r f; do
+                    [ -e "/dst/$f" ] || cp "$f" "/dst/$f"
+                  done
+                  chown -R 1001:1001 /dst'
+            echo "Media in storage: $(find storage -type f | wc -l) files"
+            # `up -d` recreates only what changed. On start the entrypoint runs
+            # prisma migrate deploy, then imports prisma/content/snapshot.json
+            # (skipped when that snapshot was already imported).
             $COMPOSE up -d
 
             docker logout ghcr.io
 
             # Wait for the app to answer before calling this a success.
-            for i in $(seq 1 30); do
+            for i in $(seq 1 60); do
               if $COMPOSE exec -T app node -e \
                    "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"; then
                 echo "App is serving."
                 break
               fi
-              if [ "$i" = "30" ]; then
-                echo "::error::App did not become healthy in 60s. Recent logs:"
+              if [ "$i" = "60" ]; then
+                echo "::error::App did not become healthy in 120s. Recent logs:"
                 $COMPOSE logs --tail=60 app
                 exit 1
               fi

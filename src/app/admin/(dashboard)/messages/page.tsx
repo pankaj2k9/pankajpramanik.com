@@ -1,9 +1,11 @@
+import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 import { deleteMessage, markMessageRead } from "@/actions/messages";
 import { DeleteButton } from "@/components/admin/ui";
 
 export default async function AdminMessagesPage() {
+  await requireAdmin();
   const messages = await prisma.contactMessage.findMany({
     orderBy: { createdAt: "desc" },
   });
@@ -17,10 +19,7 @@ export default async function AdminMessagesPage() {
       ) : (
         <ul className="mt-6 space-y-4">
           {messages.map((m) => (
-            <li
-              key={m.id}
-              className={`card p-5 ${m.read ? "opacity-70" : ""}`}
-            >
+            <li key={m.id} className={`card p-5 ${m.read ? "opacity-70" : ""}`}>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="font-semibold">

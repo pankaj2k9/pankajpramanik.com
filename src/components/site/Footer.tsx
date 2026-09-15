@@ -14,26 +14,64 @@ export default function Footer() {
             AI &amp; Data Engineer — building agentic systems, LLM/RAG
             applications, and production data platforms.
           </p>
+          <a
+            className="mt-4 inline-block text-sm font-semibold hover:underline"
+            href={site.whatsapp}
+          >
+            {site.phone} · WhatsApp ↗
+          </a>
           <SocialLinks className="mt-5" />
         </div>
 
         <div>
           <p className="text-sm font-semibold text-foreground">Explore</p>
           <ul className="mt-3 space-y-2 text-sm text-muted">
-            <li><Link className="hover:text-foreground" href="/services">Services</Link></li>
-            <li><Link className="hover:text-foreground" href="/portfolio">Portfolio</Link></li>
-            <li><Link className="hover:text-foreground" href="/experience">Experience</Link></li>
-            <li><Link className="hover:text-foreground" href="/skills">Skills</Link></li>
-            <li><Link className="hover:text-foreground" href="/blog">Blog</Link></li>
+            <li>
+              <Link className="hover:text-foreground" href="/services">
+                Services
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-foreground" href="/portfolio">
+                Projects
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-foreground" href="/experience">
+                Experience
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-foreground" href="/skills">
+                Skills
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-foreground" href="/blog">
+                Blog
+              </Link>
+            </li>
           </ul>
         </div>
 
         <div>
           <p className="text-sm font-semibold text-foreground">Site</p>
           <ul className="mt-3 space-y-2 text-sm text-muted">
-            <li><Link className="hover:text-foreground" href="/about">About</Link></li>
-            <li><Link className="hover:text-foreground" href="/contact">Contact</Link></li>
-            <li><Link className="hover:text-foreground" href="/privacy-policy">Privacy Policy</Link></li>
+            <li>
+              <Link className="hover:text-foreground" href="/about">
+                About
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-foreground" href="/contact">
+                Contact
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-foreground" href="/privacy-policy">
+                Privacy Policy
+              </Link>
+            </li>
           </ul>
         </div>
 
@@ -106,7 +144,15 @@ export default function Footer() {
                 href={`mailto:${site.email}`}
                 aria-label="Email me"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  aria-hidden
+                >
                   <rect x="2" y="4" width="20" height="16" rx="2" />
                   <path d="m22 7-10 6L2 7" />
                 </svg>

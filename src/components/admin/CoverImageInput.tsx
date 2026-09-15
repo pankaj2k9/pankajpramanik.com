@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { inputCls, labelCls } from "./ui";
+import { UPLOAD_ACCEPT, uploadMedia } from "./upload";
 
-/** Cover image URL input with live preview. */
+/** Cover image URL input with upload and live preview. */
 export default function CoverImageInput({
   name = "coverImage",
   defaultValue = "",
@@ -15,26 +16,63 @@ export default function CoverImageInput({
 }) {
   const [url, setUrl] = useState(defaultValue);
   const [broken, setBroken] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  async function onFile(file: File | undefined) {
+    if (!file) return;
+    setUploading(true);
+    setError("");
+    try {
+      setUrl(await uploadMedia(file));
+      setBroken(false);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Upload failed.");
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  }
 
   return (
     <div>
       <label htmlFor={name} className={labelCls}>
         {label}{" "}
         <span className="text-faint">
-          (/uploads/… or https://…)
+          (upload, /uploads/… or https://…)
         </span>
       </label>
-      <input
-        id={name}
-        name={name}
-        value={url}
-        onChange={(e) => {
-          setUrl(e.target.value);
-          setBroken(false);
-        }}
-        className={inputCls}
-        placeholder="/uploads/2026/06/cover.jpg"
-      />
+      <div className="flex gap-2">
+        <input
+          id={name}
+          name={name}
+          value={url}
+          onChange={(e) => {
+            setUrl(e.target.value);
+            setBroken(false);
+          }}
+          className={inputCls}
+          placeholder="/uploads/2026/06/cover.jpg"
+        />
+        <button
+          type="button"
+          disabled={uploading}
+          onClick={() => fileRef.current?.click()}
+          className="shrink-0 rounded-xl border border-border px-4 text-sm font-medium transition hover:border-accent disabled:opacity-60"
+        >
+          {uploading ? "Uploading…" : "Upload"}
+        </button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept={UPLOAD_ACCEPT}
+          className="hidden"
+          aria-label={`Upload ${label.toLowerCase()}`}
+          onChange={(e) => onFile(e.target.files?.[0])}
+        />
+      </div>
+      {error && <p className="mt-2 text-xs text-pink">{error}</p>}
       {url && !broken && (
         // eslint-disable-next-line @next/next/no-img-element
         <img

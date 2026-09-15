@@ -1,5 +1,6 @@
 "use server";
 
+import { formError } from "@/lib/form-error";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -31,34 +32,42 @@ function revalidateCerts() {
 
 export async function createCertification(
   _prev: CertFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<CertFormState> {
   await requireAdmin();
   const parsed = parseForm(formData);
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
-  await prisma.certification.create({
-    data: { ...parsed.data, url: parsed.data.url || null },
-  });
-  revalidateCerts();
-  redirect("/admin/certifications");
+  try {
+    await prisma.certification.create({
+      data: { ...parsed.data, url: parsed.data.url || null },
+    });
+    revalidateCerts();
+    redirect("/admin/certifications");
+  } catch (error) {
+    return formError(error);
+  }
 }
 
 export async function updateCertification(
   id: string,
   _prev: CertFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<CertFormState> {
   await requireAdmin();
   const parsed = parseForm(formData);
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
-  await prisma.certification.update({
-    where: { id },
-    data: { ...parsed.data, url: parsed.data.url || null },
-  });
-  revalidateCerts();
-  redirect("/admin/certifications");
+  try {
+    await prisma.certification.update({
+      where: { id },
+      data: { ...parsed.data, url: parsed.data.url || null },
+    });
+    revalidateCerts();
+    redirect("/admin/certifications");
+  } catch (error) {
+    return formError(error);
+  }
 }
 
 export async function deleteCertification(id: string) {

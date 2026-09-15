@@ -1,6 +1,6 @@
 /**
  * Mirror every media file listed in migration/extracted/media-manifest.json
- * from the live WordPress site into public/uploads/, preserving the
+ * from the live WordPress site into storage/uploads/, preserving the
  * wp-content/uploads/<year>/<month>/<file> path structure so rewritten
  * content URLs (/uploads/...) resolve locally.
  *
@@ -14,7 +14,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const manifest = JSON.parse(
   fs.readFileSync(path.join(__dirname, "extracted/media-manifest.json"), "utf8")
 );
-const PUBLIC = path.join(__dirname, "..", "public");
+// Media lives in persistent storage (served at /uploads/* by the app).
+const PUBLIC = path.join(__dirname, "..", "storage");
 
 const entries = Object.entries(manifest);
 let ok = 0,

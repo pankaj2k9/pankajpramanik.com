@@ -16,14 +16,20 @@ type SkillGroupData = {
 };
 
 export default function SkillGroupForm({ group }: { group?: SkillGroupData }) {
-  const action = group ? updateSkillGroup.bind(null, group.id) : createSkillGroup;
+  const action = group
+    ? updateSkillGroup.bind(null, group.id)
+    : createSkillGroup;
   const [state, formAction, pending] = useActionState<SkillFormState, FormData>(
     action,
-    undefined
+    undefined,
   );
 
   return (
-    <form action={formAction} className="max-w-2xl space-y-6">
+    <form
+      action={formAction}
+      onReset={(event) => event.preventDefault()}
+      className="max-w-2xl space-y-6"
+    >
       <div className="grid gap-6 sm:grid-cols-[1fr_8rem]">
         <div>
           <label htmlFor="category" className={labelCls}>

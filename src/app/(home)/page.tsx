@@ -1,12 +1,18 @@
+import { getFeaturedProjects } from "@/lib/queries";
+import { pageMetadata } from "@/lib/seo";
 import HomeExperience from "@/components/home/HomeExperience";
 import { site, absoluteUrl } from "@/lib/site";
 import { jsonLdScript } from "@/lib/utils";
 
-export const metadata = {
-  alternates: { canonical: "/" },
-};
+export const metadata = pageMetadata(
+  "AI, Data & Automation Engineering",
+  site.description,
+  "/",
+);
+export const revalidate = 300;
 
-export default function HomePage() {
+export default async function HomePage() {
+  const projects = await getFeaturedProjects(3);
   const personJsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -14,6 +20,7 @@ export default function HomePage() {
     url: site.url,
     email: `mailto:${site.email}`,
     image: absoluteUrl(site.photo),
+    telephone: site.phone,
     jobTitle: "Data Scientist & AI Engineer",
     sameAs: [
       site.github,
@@ -32,7 +39,7 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(personJsonLd) }}
       />
-      <HomeExperience />
+      <HomeExperience projects={projects} />
     </>
   );
 }

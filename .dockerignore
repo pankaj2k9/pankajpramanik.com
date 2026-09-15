@@ -13,6 +13,11 @@ out
 # next.config redirects + the seed)
 migration/wp-export
 
+# Media storage — bind-mounted at runtime, synced to the server by the deploy
+# workflow, never baked into the image
+storage
+dist
+
 # Raw service-thumbnail sources — only the optimized .webp outputs are served
 public/services-art/source
 

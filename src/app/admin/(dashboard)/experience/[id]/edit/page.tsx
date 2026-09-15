@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import ExperienceForm from "@/components/admin/ExperienceForm";
@@ -7,6 +8,7 @@ export default async function EditExperiencePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await requireAdmin();
   const { id } = await params;
   const experience = await prisma.experience.findUnique({ where: { id } });
   if (!experience) notFound();

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Nightly PostgreSQL dump for pankajpramanik.com.
+# Nightly PostgreSQL dump + media mirror for pankajpramanik.com.
 #
 # Install as a cron on the VPS:
 #
@@ -73,6 +73,21 @@ if [ -n "$REMOTE" ]; then
 else
   echo "[$(date -Is)] WARNING: REMOTE is unset — this dump lives only on this VPS."
   echo "                       If the VPS is lost, so is the backup."
+fi
+
+# --- Media ---------------------------------------------------------------------
+# storage/ holds every uploaded file. Mirror it WITHOUT --delete: a file removed
+# on the server (by mistake or otherwise) stays in the backup.
+MEDIA_SRC="$APP_DIR/storage/"
+MEDIA_DST="$BACKUP_DIR/storage"
+if [ -d "$MEDIA_SRC" ]; then
+  echo "[$(date -Is)] mirroring media to $MEDIA_DST"
+  mkdir -p "$MEDIA_DST"
+  rsync -a "$MEDIA_SRC" "$MEDIA_DST/"
+  if [ -n "$REMOTE" ]; then
+    rsync -az --partial "$MEDIA_SRC" "$REMOTE/storage/"
+    echo "[$(date -Is)] media copied to $REMOTE/storage"
+  fi
 fi
 
 # Retention runs last, so a failure above never deletes anything.

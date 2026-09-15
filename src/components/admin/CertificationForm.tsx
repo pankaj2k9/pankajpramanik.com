@@ -22,11 +22,15 @@ export default function CertificationForm({ cert }: { cert?: CertData }) {
     : createCertification;
   const [state, formAction, pending] = useActionState<CertFormState, FormData>(
     action,
-    undefined
+    undefined,
   );
 
   return (
-    <form action={formAction} className="max-w-2xl space-y-6">
+    <form
+      action={formAction}
+      onReset={(event) => event.preventDefault()}
+      className="max-w-2xl space-y-6"
+    >
       <div>
         <label htmlFor="title" className={labelCls}>
           Title *

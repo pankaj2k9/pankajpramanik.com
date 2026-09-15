@@ -17,7 +17,8 @@ export const authConfig = {
       const { pathname } = request.nextUrl;
       const isAdminArea =
         pathname.startsWith("/admin") && !pathname.startsWith("/admin/login");
-      if (isAdminArea) return !!auth?.user;
+      if (isAdminArea)
+        return (auth?.user as { role?: string } | undefined)?.role === "ADMIN";
       return true;
     },
     jwt({ token, user }) {

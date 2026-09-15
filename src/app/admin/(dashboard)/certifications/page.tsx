@@ -1,9 +1,11 @@
+import { requireAdmin } from "@/lib/auth";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { deleteCertification } from "@/actions/certifications";
 import { DeleteButton } from "@/components/admin/ui";
 
 export default async function AdminCertificationsPage() {
+  await requireAdmin();
   const certs = await prisma.certification.findMany({
     orderBy: { order: "asc" },
   });
@@ -31,8 +33,19 @@ export default async function AdminCertificationsPage() {
             </tr>
           </thead>
           <tbody>
+            {certs.length === 0 && (
+              <tr>
+                <td colSpan={4} className="p-8 text-center text-muted">
+                  No certifications yet. Add a certification and its
+                  verification link.
+                </td>
+              </tr>
+            )}
             {certs.map((c) => (
-              <tr key={c.id} className="border-b border-border/60 last:border-0">
+              <tr
+                key={c.id}
+                className="border-b border-border/60 last:border-0"
+              >
                 <td className="px-5 py-3 font-medium">{c.title}</td>
                 <td className="px-5 py-3 text-muted">{c.issuer}</td>
                 <td className="px-5 py-3">
@@ -57,7 +70,9 @@ export default async function AdminCertificationsPage() {
                     >
                       Edit
                     </Link>
-                    <DeleteButton action={deleteCertification.bind(null, c.id)} />
+                    <DeleteButton
+                      action={deleteCertification.bind(null, c.id)}
+                    />
                   </div>
                 </td>
               </tr>

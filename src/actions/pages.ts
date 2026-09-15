@@ -1,5 +1,6 @@
 "use server";
 
+import { formError } from "@/lib/form-error";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -21,7 +22,7 @@ export type PageFormState = { error?: string } | undefined;
 export async function updatePage(
   id: string,
   _prev: PageFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<PageFormState> {
   await requireAdmin();
   const parsed = pageSchema.safeParse({
@@ -35,18 +36,22 @@ export async function updatePage(
   });
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
-  const page = await prisma.page.update({
-    where: { id },
-    data: {
-      ...parsed.data,
-      seoTitle: parsed.data.seoTitle || null,
-      seoDescription: parsed.data.seoDescription || null,
-    },
-  });
+  try {
+    const page = await prisma.page.update({
+      where: { id },
+      data: {
+        ...parsed.data,
+        seoTitle: parsed.data.seoTitle || null,
+        seoDescription: parsed.data.seoDescription || null,
+      },
+    });
 
-  revalidatePath("/services");
-  revalidatePath(`/services/${page.slug}`);
-  revalidatePath(`/${page.slug}`);
-  revalidatePath("/sitemap.xml");
-  redirect("/admin/pages");
+    revalidatePath("/services");
+    revalidatePath(`/services/${page.slug}`);
+    revalidatePath(`/${page.slug}`);
+    revalidatePath("/sitemap.xml");
+    redirect("/admin/pages");
+  } catch (error) {
+    return formError(error);
+  }
 }

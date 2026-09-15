@@ -21,11 +21,15 @@ type PageData = {
 export default function PageForm({ page }: { page: PageData }) {
   const [state, formAction, pending] = useActionState<PageFormState, FormData>(
     updatePage.bind(null, page.id),
-    undefined
+    undefined,
   );
 
   return (
-    <form action={formAction} className="max-w-3xl space-y-6">
+    <form
+      action={formAction}
+      onReset={(event) => event.preventDefault()}
+      className="max-w-3xl space-y-6"
+    >
       <div>
         <label htmlFor="title" className={labelCls}>
           Title *
@@ -43,7 +47,8 @@ export default function PageForm({ page }: { page: PageData }) {
         <div className="grid gap-6 sm:grid-cols-2">
           <div>
             <label htmlFor="label" className={labelCls}>
-              Card label <span className="text-faint">(short name in grids)</span>
+              Card label{" "}
+              <span className="text-faint">(short name in grids)</span>
             </label>
             <input
               id="label"

@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import CertificationForm from "@/components/admin/CertificationForm";
@@ -7,6 +8,7 @@ export default async function EditCertificationPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await requireAdmin();
   const { id } = await params;
   const cert = await prisma.certification.findUnique({ where: { id } });
   if (!cert) notFound();

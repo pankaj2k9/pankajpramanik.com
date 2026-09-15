@@ -1,7 +1,9 @@
+import { requireAdmin } from "@/lib/auth";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
 export default async function AdminPagesPage() {
+  await requireAdmin();
   const pages = await prisma.page.findMany({
     orderBy: [{ kind: "asc" }, { label: "asc" }, { slug: "asc" }],
   });
@@ -46,9 +48,14 @@ export default async function AdminPagesPage() {
   return (
     <div>
       <h1 className="font-display text-2xl font-bold">Pages &amp; services</h1>
+      <p className="mt-3 text-sm text-muted">
+        Manage database-backed content here. The current homepage and About
+        introduction are maintained in the application source; the migrated
+        About Me entry is an archive.
+      </p>
       <p className="mt-1 text-sm text-muted">
-        Edit content, card labels, and SEO metadata for service pages and
-        static pages.
+        Edit content, card labels, and SEO metadata for service pages and static
+        pages.
       </p>
 
       <h2 className="mt-8 font-display text-lg font-semibold">
@@ -64,6 +71,14 @@ export default async function AdminPagesPage() {
             </tr>
           </thead>
           <tbody>
+            {services.length === 0 && (
+              <tr>
+                <td colSpan={3} className="p-8 text-muted">
+                  No service pages. Run the documented content seed for a fresh
+                  database.
+                </td>
+              </tr>
+            )}
             {services.map((p) => (
               <Row key={p.id} p={p} />
             ))}
@@ -84,6 +99,13 @@ export default async function AdminPagesPage() {
             </tr>
           </thead>
           <tbody>
+            {generic.length === 0 && (
+              <tr>
+                <td colSpan={3} className="p-8 text-muted">
+                  No stored pages yet.
+                </td>
+              </tr>
+            )}
             {generic.map((p) => (
               <Row key={p.id} p={p} />
             ))}

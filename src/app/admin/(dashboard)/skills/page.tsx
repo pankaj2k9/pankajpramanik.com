@@ -1,10 +1,14 @@
+import { requireAdmin } from "@/lib/auth";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { deleteSkillGroup } from "@/actions/skills";
 import { DeleteButton } from "@/components/admin/ui";
 
 export default async function AdminSkillsPage() {
-  const groups = await prisma.skillGroup.findMany({ orderBy: { order: "asc" } });
+  await requireAdmin();
+  const groups = await prisma.skillGroup.findMany({
+    orderBy: { order: "asc" },
+  });
 
   return (
     <div>
@@ -19,6 +23,11 @@ export default async function AdminSkillsPage() {
       </div>
 
       <div className="mt-6 space-y-4">
+        {groups.length === 0 && (
+          <p className="card p-8 text-muted">
+            No skill groups yet. Add a group to organize your technologies.
+          </p>
+        )}
         {groups.map((g) => (
           <div key={g.id} className="card p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">

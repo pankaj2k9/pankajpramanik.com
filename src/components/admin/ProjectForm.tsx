@@ -21,6 +21,10 @@ type ProjectData = {
   repoUrl: string | null;
   liveUrl: string | null;
   coverImage: string | null;
+  problem: string;
+  approach: string;
+  outcome: string;
+  evidenceUrl: string | null;
   category: string;
   featured: boolean;
   order: number;
@@ -37,7 +41,11 @@ export default function ProjectForm({ project }: { project?: ProjectData }) {
   >(action, undefined);
 
   return (
-    <form action={formAction} className="max-w-3xl space-y-6">
+    <form
+      action={formAction}
+      onReset={(event) => event.preventDefault()}
+      className="max-w-3xl space-y-6"
+    >
       <input type="hidden" name="contentFormat" value="HTML" />
 
       <div>
@@ -114,6 +122,50 @@ export default function ProjectForm({ project }: { project?: ProjectData }) {
         />
       </div>
 
+      <fieldset className="space-y-5 rounded-xl border border-border p-5">
+        <legend className="px-2 font-semibold">Expandable case study</legend>
+        <p className="text-sm text-muted">
+          Describe the actual project. Publish outcomes only with evidence;
+          leave blank when not measured.
+        </p>
+        {(
+          [
+            { name: "problem", label: "Problem / scope", limit: 2000 },
+            { name: "approach", label: "Approach", limit: 4000 },
+            { name: "outcome", label: "Verified outcome", limit: 2000 },
+          ] as const
+        ).map((field) => (
+          <div key={field.name}>
+            <label htmlFor={field.name} className={labelCls}>
+              {field.label}
+            </label>
+            <textarea
+              id={field.name}
+              name={field.name}
+              rows={3}
+              maxLength={field.limit}
+              defaultValue={project?.[field.name] ?? ""}
+              className={inputCls}
+            />
+          </div>
+        ))}
+        <div>
+          <label htmlFor="evidenceUrl" className={labelCls}>
+            Evidence URL (required for an outcome)
+          </label>
+          <input
+            id="evidenceUrl"
+            name="evidenceUrl"
+            type="url"
+            defaultValue={project?.evidenceUrl ?? ""}
+            className={inputCls}
+          />
+          <p className="mt-2 text-xs text-muted">
+            Link to a report, reproducible benchmark, repository, or approved
+            case study that supports the claim.
+          </p>
+        </div>
+      </fieldset>
       <CoverImageInput defaultValue={project?.coverImage ?? ""} />
 
       <div>

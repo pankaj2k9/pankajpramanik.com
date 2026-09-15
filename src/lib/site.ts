@@ -2,8 +2,10 @@ export const site = {
   name: "Pankaj Kumar Pramanik",
   title: "Pankaj Kumar Pramanik — AI & Data Engineer",
   description:
-    "AI & Data Engineer specializing in Generative AI, AI agents, LLM/RAG systems, MLOps, and workflow automation. 8+ years building production systems.",
+    "AI and data engineering by Pankaj Kumar Pramanik. Build useful AI applications, reliable data pipelines, and connected automation for your business.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://pankajpramanik.com",
+  phone: "+8801716121009",
+  whatsapp: "https://wa.me/8801716121009",
   email: "pkp2.me2k9@gmail.com",
   github: "https://github.com/pankaj2k9",
   githubUsername: "pankaj2k9",

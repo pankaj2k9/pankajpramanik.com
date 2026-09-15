@@ -1,15 +1,14 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { getServices, getSkillGroups } from "@/lib/queries";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Skills & Tech Stack",
-  description:
-    "Technical skills across Generative AI, LLM/RAG systems, data science, MLOps, frontend, backend, and cloud — Python, LangChain, Next.js, AWS, and more.",
-  alternates: { canonical: "/skills" },
-};
+export const metadata = pageMetadata(
+  "Skills & Tech Stack",
+  "Technical skills across Generative AI, LLM/RAG systems, data science, MLOps, frontend, backend, and cloud \u2014 Python, LangChain, Next.js, AWS, and more.",
+  "/skills",
+);
 
 export default async function SkillsPage() {
   const [groups, services] = await Promise.all([
@@ -20,9 +19,7 @@ export default async function SkillsPage() {
   return (
     <div className="container-site py-16">
       <header className="max-w-2xl">
-        <p className="micro-label">
-          Skills
-        </p>
+        <p className="micro-label">Skills</p>
         <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">
           Tech stack &amp; capabilities
         </h1>
@@ -54,9 +51,7 @@ export default async function SkillsPage() {
       <section className="mt-20">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="micro-label">
-              Services
-            </p>
+            <p className="micro-label">Services</p>
             <h2 className="mt-2 font-display text-3xl font-bold tracking-tight">
               Hire me for
             </h2>
@@ -83,9 +78,7 @@ export default async function SkillsPage() {
       </section>
 
       <div className="mt-16 text-center">
-        <p className="text-muted">
-          Need one of these skills on your project?
-        </p>
+        <p className="text-muted">Need one of these skills on your project?</p>
         <Link
           href="/contact"
           className="mt-4 inline-block rounded-xl bg-accent-strong px-8 py-3.5 font-semibold text-white shadow-lg shadow-accent-strong/25 transition hover:opacity-90"

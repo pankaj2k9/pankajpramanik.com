@@ -78,6 +78,10 @@ model Project {
   description   String        @default("")
   content       String        @default("") // optional long-form case study
   contentFormat ContentFormat @default(MARKDOWN)
+  problem     String        @default("")
+  approach    String        @default("")
+  outcome     String        @default("")
+  evidenceUrl String?
   techStack   String[]      @default([])
   repoUrl     String?
   liveUrl     String?
@@ -176,4 +180,12 @@ model Page {
   updatedAt      DateTime      @updatedAt
 
   @@index([kind])
+}
+
+// Records which content snapshot (prisma/content/snapshot.json) was last
+// imported, so deploys only overwrite content when the snapshot changed.
+model ContentSync {
+  id        String   @id
+  hash      String
+  appliedAt DateTime @default(now()) @updatedAt
 }

@@ -34,6 +34,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN npx prisma generate
 RUN npm run build
+# Self-contained content importer (prisma/content/snapshot.json → database),
+# run by the entrypoint on every start.
+RUN npm run content:bundle
 
 # ---- runner: minimal standalone image ----
 FROM node:22-alpine AS runner
@@ -46,9 +49,9 @@ ENV HOSTNAME=0.0.0.0
 
 RUN addgroup -g 1001 -S nodejs && adduser -u 1001 -S nextjs -G nodejs
 
-# standalone server + static assets + migrated media (public/uploads is
-# baked in — the admin references images by URL, nothing writes to it at
-# runtime, so no volume is mounted over it in production)
+# standalone server + static assets. Media is NOT in the image: it lives in
+# /app/storage, a host bind mount in production (see docker-compose.prod.yml),
+# so uploads survive every redeploy.
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
@@ -60,8 +63,11 @@ COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
+COPY --from=builder /app/dist/content-import.cjs ./scripts/content-import.cjs
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
-RUN chmod +x docker-entrypoint.sh && chown -R nextjs:nodejs /app/.next
+ENV STORAGE_DIR=/app/storage
+RUN chmod +x docker-entrypoint.sh && chown -R nextjs:nodejs /app/.next \
+  && mkdir -p /app/storage/uploads && chown -R nextjs:nodejs /app/storage
 
 USER nextjs
 EXPOSE 3000

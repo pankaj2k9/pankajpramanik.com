@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { PostCard } from "@/components/site/cards";
 import { getCategoriesWithCounts, getPublishedPosts } from "@/lib/queries";
@@ -6,12 +6,11 @@ import { cn } from "@/lib/utils";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Blog",
-  description:
-    "Articles on AI engineering, LLM/RAG systems, MLOps, data engineering, and full-stack development.",
-  alternates: { canonical: "/blog" },
-};
+export const metadata = pageMetadata(
+  "Blog",
+  "Articles on AI engineering, LLM/RAG systems, MLOps, data engineering, and full-stack development.",
+  "/blog",
+);
 
 export default async function BlogPage({
   searchParams,
@@ -27,9 +26,7 @@ export default async function BlogPage({
   return (
     <div className="container-site py-16">
       <header className="max-w-2xl">
-        <p className="micro-label">
-          Blog
-        </p>
+        <p className="micro-label">Blog</p>
         <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">
           Writing on AI, data &amp; engineering
         </h1>
@@ -46,7 +43,7 @@ export default async function BlogPage({
             "rounded-full border px-4 py-1.5 text-sm transition-colors",
             !category
               ? "border-accent-strong bg-accent-strong/15 text-accent"
-              : "border-border text-muted hover:text-foreground"
+              : "border-border text-muted hover:text-foreground",
           )}
         >
           All
@@ -59,11 +56,10 @@ export default async function BlogPage({
               "rounded-full border px-4 py-1.5 text-sm transition-colors",
               category === c.slug
                 ? "border-accent-strong bg-accent-strong/15 text-accent"
-                : "border-border text-muted hover:text-foreground"
+                : "border-border text-muted hover:text-foreground",
             )}
           >
-            {c.name}{" "}
-            <span className="text-faint">({c._count.posts})</span>
+            {c.name} <span className="text-faint">({c._count.posts})</span>
           </Link>
         ))}
       </div>

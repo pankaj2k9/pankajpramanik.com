@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -31,16 +32,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const page = await getPageBySlug(slug);
   if (!page || page.kind !== "SERVICE") return {};
-  return {
-    title: page.label || page.title,
-    description: page.seoDescription ?? page.summary,
-    alternates: { canonical: `/services/${page.slug}` },
-    openGraph: {
-      title: page.label || page.title,
-      description: page.seoDescription ?? page.summary,
-      url: absoluteUrl(`/services/${page.slug}`),
-    },
-  };
+  return pageMetadata(
+    page.seoTitle || page.label || page.title,
+    page.seoDescription || page.summary,
+    `/services/${page.slug}`,
+  );
 }
 
 type Feature = { icon: string; title: string; desc: string };
@@ -106,7 +102,7 @@ function organizeArticle(html: string): {
       const desc =
         stripTags(body.match(/<p>([\s\S]*?)<\/p>/)?.[1] ?? "").replace(
           /Explore Project.*$/i,
-          ""
+          "",
         ) || text.replace(/Explore Project.*$/i, "");
       showcases.push({ img, title, desc, href });
       continue;
@@ -135,7 +131,7 @@ function extractFeatures(html: string): { features: Feature[]; rest: string } {
     (_m, icon: string, title: string, desc: string) => {
       features.push({ icon, title, desc });
       return "";
-    }
+    },
   );
   return { features, rest };
 }
@@ -148,10 +144,30 @@ const BANNER_STATS = [
 ];
 
 const PROCESS = [
-  { n: "01", color: "#6366f1", title: "Discuss", desc: "Your goals, constraints, and success criteria." },
-  { n: "02", color: "#8b5cf6", title: "Design", desc: "Architecture, data flow, and a concrete plan." },
-  { n: "03", color: "#ec4899", title: "Develop", desc: "Iterative builds with tests and check-ins." },
-  { n: "04", color: "#10b981", title: "Launch", desc: "Production deploy, monitoring, and handoff." },
+  {
+    n: "01",
+    color: "#6366f1",
+    title: "Discuss",
+    desc: "Your goals, constraints, and success criteria.",
+  },
+  {
+    n: "02",
+    color: "#8b5cf6",
+    title: "Design",
+    desc: "Architecture, data flow, and a concrete plan.",
+  },
+  {
+    n: "03",
+    color: "#ec4899",
+    title: "Develop",
+    desc: "Iterative builds with tests and check-ins.",
+  },
+  {
+    n: "04",
+    color: "#10b981",
+    title: "Launch",
+    desc: "Production deploy, monitoring, and handoff.",
+  },
 ];
 
 export default async function ServicePage({
@@ -190,11 +206,15 @@ export default async function ServicePage({
         <div className="pointer-events-none absolute inset-0" aria-hidden>
           <div
             className="absolute -left-24 -top-24 h-96 w-96 rounded-full opacity-30 blur-3xl"
-            style={{ background: "radial-gradient(closest-side, #6366f1, transparent)" }}
+            style={{
+              background: "radial-gradient(closest-side, #6366f1, transparent)",
+            }}
           />
           <div
             className="absolute -right-24 top-1/3 h-[28rem] w-[28rem] rounded-full opacity-25 blur-3xl"
-            style={{ background: "radial-gradient(closest-side, #ec4899, transparent)" }}
+            style={{
+              background: "radial-gradient(closest-side, #ec4899, transparent)",
+            }}
           />
           <div
             className="absolute inset-0 opacity-[0.07]"
@@ -210,9 +230,13 @@ export default async function ServicePage({
 
         <div className="container-site relative py-16 sm:py-24">
           <nav className="text-sm text-faint" aria-label="Breadcrumb">
-            <Link href="/" className="hover:text-accent">Home</Link>{" "}
+            <Link href="/" className="hover:text-accent">
+              Home
+            </Link>{" "}
             <span aria-hidden>/</span>{" "}
-            <Link href="/services" className="hover:text-accent">Services</Link>{" "}
+            <Link href="/services" className="hover:text-accent">
+              Services
+            </Link>{" "}
             <span aria-hidden>/</span>{" "}
             <span className="text-muted">{page.label || page.title}</span>
           </nav>
@@ -284,16 +308,20 @@ export default async function ServicePage({
           {/* feature cards */}
           {features.length > 0 && (
             <section>
-              <p className="micro-label">
-                What&apos;s included
-              </p>
+              <p className="micro-label">What&apos;s included</p>
               <h2 className="mt-3 font-display text-2xl font-bold tracking-tight sm:text-3xl">
                 Capabilities in this service
               </h2>
               <div className="mt-8 grid gap-5 sm:grid-cols-2">
                 {features.map((f, i) => (
-                  <div key={f.title} className="card card-hover relative overflow-hidden p-6">
-                    <span className="absolute right-5 top-4 font-display text-4xl font-bold text-border" aria-hidden>
+                  <div
+                    key={f.title}
+                    className="card card-hover relative overflow-hidden p-6"
+                  >
+                    <span
+                      className="absolute right-5 top-4 font-display text-4xl font-bold text-border"
+                      aria-hidden
+                    >
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -323,11 +351,15 @@ export default async function ServicePage({
           {stripTags(intro).length > 0 && (
             <section
               data-reveal
-              className={features.length ? "mt-14 border-t border-border pt-12" : ""}
+              className={
+                features.length ? "mt-14 border-t border-border pt-12" : ""
+              }
             >
               <div
                 className="prose-content text-lg"
-                dangerouslySetInnerHTML={{ __html: stripInlineImages(upgradeCtaLinks(intro)) }}
+                dangerouslySetInnerHTML={{
+                  __html: stripInlineImages(upgradeCtaLinks(intro)),
+                }}
               />
             </section>
           )}
@@ -346,7 +378,9 @@ export default async function ServicePage({
                   </h2>
                   <div
                     className="prose-content min-w-0 [&>:first-child]:mt-0"
-                    dangerouslySetInnerHTML={{ __html: stripInlineImages(upgradeCtaLinks(s.body)) }}
+                    dangerouslySetInnerHTML={{
+                      __html: stripInlineImages(upgradeCtaLinks(s.body)),
+                    }}
                   />
                 </div>
               ))}
@@ -356,9 +390,7 @@ export default async function ServicePage({
           {/* project showcases pulled from the article */}
           {showcases.length > 0 && (
             <section className="mt-14 border-t border-border pt-12">
-              <p className="micro-label">
-                Proof of work
-              </p>
+              <p className="micro-label">Proof of work</p>
               <h2 className="mt-3 font-display text-2xl font-bold tracking-tight sm:text-3xl">
                 Case studies &amp; related projects
               </h2>
@@ -384,7 +416,9 @@ export default async function ServicePage({
                         {p.href ? (
                           <a
                             href={p.href}
-                            target={p.href.startsWith("http") ? "_blank" : undefined}
+                            target={
+                              p.href.startsWith("http") ? "_blank" : undefined
+                            }
                             rel="noopener noreferrer"
                             className="after:absolute after:inset-0 group-hover:text-accent"
                           >
@@ -411,9 +445,7 @@ export default async function ServicePage({
 
           {/* mini process */}
           <section className="mt-14 border-t border-border pt-12">
-            <p className="micro-label">
-              How we&apos;ll work
-            </p>
+            <p className="micro-label">How we&apos;ll work</p>
             <h2 className="mt-3 font-display text-2xl font-bold tracking-tight">
               From first call to production
             </h2>
@@ -482,7 +514,7 @@ export default async function ServicePage({
                         "flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors",
                         active
                           ? "bg-accent-strong/15 font-semibold text-accent"
-                          : "text-muted hover:bg-surface-raised hover:text-foreground"
+                          : "text-muted hover:bg-surface-raised hover:text-foreground",
                       )}
                     >
                       {s.label}
@@ -515,7 +547,17 @@ export default async function ServicePage({
               download
               className="mt-3 flex items-center justify-center gap-2 rounded-xl border border-border-strong px-5 py-3 text-sm font-semibold transition hover:border-accent hover:text-accent"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
               </svg>
               Download CV

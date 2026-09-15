@@ -37,7 +37,7 @@ export async function generateMetadata({
   const description = post.seoDescription ?? post.excerpt.slice(0, 160);
 
   return {
-    title: post.title,
+    title,
     description,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
@@ -47,13 +47,18 @@ export async function generateMetadata({
       url: absoluteUrl(`/blog/${post.slug}`),
       publishedTime: post.publishedAt?.toISOString(),
       modifiedTime: post.updatedAt.toISOString(),
-      images: post.coverImage ? [{ url: post.coverImage }] : undefined,
+      images: [
+        {
+          url: post.coverImage || absoluteUrl("/opengraph-image"),
+          alt: post.title,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: post.coverImage ? [post.coverImage] : undefined,
+      images: [post.coverImage || absoluteUrl("/opengraph-image")],
     },
   };
 }
@@ -71,7 +76,7 @@ export default async function BlogPostPage({
   const minutes = readingTimeMinutes(post.content, post.contentFormat);
   const related = await getRelatedPosts(
     post.id,
-    post.categories.map((c) => c.slug)
+    post.categories.map((c) => c.slug),
   );
 
   const articleJsonLd = {

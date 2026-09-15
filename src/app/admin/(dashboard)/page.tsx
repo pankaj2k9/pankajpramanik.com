@@ -1,8 +1,10 @@
+import { requireAdmin } from "@/lib/auth";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 
 export default async function AdminDashboard() {
+  await requireAdmin();
   const [posts, drafts, projects, experiences, messages, unread, recent] =
     await Promise.all([
       prisma.post.count(),
@@ -18,10 +20,30 @@ export default async function AdminDashboard() {
     ]);
 
   const stats = [
-    { label: "Blog posts", value: posts, hint: `${drafts} draft${drafts === 1 ? "" : "s"}`, href: "/admin/posts" },
-    { label: "Projects", value: projects, hint: "portfolio items", href: "/admin/projects" },
-    { label: "Experiences", value: experiences, hint: "timeline entries", href: "/admin/experience" },
-    { label: "Messages", value: messages, hint: `${unread} unread`, href: "/admin/messages" },
+    {
+      label: "Blog posts",
+      value: posts,
+      hint: `${drafts} draft${drafts === 1 ? "" : "s"}`,
+      href: "/admin/posts",
+    },
+    {
+      label: "Projects",
+      value: projects,
+      hint: "portfolio items",
+      href: "/admin/projects",
+    },
+    {
+      label: "Experiences",
+      value: experiences,
+      hint: "timeline entries",
+      href: "/admin/experience",
+    },
+    {
+      label: "Messages",
+      value: messages,
+      hint: `${unread} unread`,
+      href: "/admin/messages",
+    },
   ];
 
   return (
@@ -79,7 +101,9 @@ export default async function AdminDashboard() {
                       </span>
                     )}
                   </p>
-                  <p className="text-xs text-faint">{formatDate(m.createdAt)}</p>
+                  <p className="text-xs text-faint">
+                    {formatDate(m.createdAt)}
+                  </p>
                 </div>
                 {m.subject && (
                   <p className="mt-1 text-sm text-foreground">{m.subject}</p>

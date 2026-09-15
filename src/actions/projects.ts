@@ -1,29 +1,45 @@
 "use server";
 
+import { formError } from "@/lib/form-error";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
+import {
+  slugSchema,
+  coverImageSchema,
+  publicUrlSchema,
+} from "@/lib/validation";
 import { slugify } from "@/lib/utils";
 
-const projectSchema = z.object({
-  title: z.string().trim().min(3).max(200),
-  slug: z.string().trim().max(120).optional().default(""),
-  tagline: z.string().trim().max(200).optional().default(""),
-  description: z.string().trim().max(2000).optional().default(""),
-  content: z.string().optional().default(""),
-  contentFormat: z.enum(["HTML", "MARKDOWN"]).default("HTML"),
-  techStack: z.string().optional().default(""), // comma separated
-  repoUrl: z.string().trim().url().optional().or(z.literal("")),
-  liveUrl: z.string().trim().url().optional().or(z.literal("")),
-  category: z.string().trim().max(60).optional().default("General"),
-  featured: z.coerce.boolean().default(false),
-  order: z.coerce.number().int().default(0),
-  status: z.enum(["DRAFT", "PUBLISHED"]).default("PUBLISHED"),
-  seoTitle: z.string().trim().max(200).optional().default(""),
-  seoDescription: z.string().trim().max(300).optional().default(""),
-});
+const projectSchema = z
+  .object({
+    title: z.string().trim().min(3).max(200),
+    slug: slugSchema,
+    tagline: z.string().trim().max(200).optional().default(""),
+    description: z.string().trim().max(2000).optional().default(""),
+    content: z.string().optional().default(""),
+    contentFormat: z.enum(["HTML", "MARKDOWN"]).default("HTML"),
+    techStack: z.string().optional().default(""), // comma separated
+    repoUrl: publicUrlSchema,
+    liveUrl: publicUrlSchema,
+    coverImage: coverImageSchema,
+    problem: z.string().trim().max(2000).default(""),
+    approach: z.string().trim().max(4000).default(""),
+    outcome: z.string().trim().max(2000).default(""),
+    evidenceUrl: publicUrlSchema,
+    category: z.string().trim().max(60).optional().default("General"),
+    featured: z.coerce.boolean().default(false),
+    order: z.coerce.number().int().default(0),
+    status: z.enum(["DRAFT", "PUBLISHED"]).default("PUBLISHED"),
+    seoTitle: z.string().trim().max(200).optional().default(""),
+    seoDescription: z.string().trim().max(300).optional().default(""),
+  })
+  .refine((d) => !d.outcome || !!d.evidenceUrl, {
+    message: "Add a supporting evidence URL before publishing an outcome.",
+    path: ["evidenceUrl"],
+  });
 
 export type ProjectFormState = { error?: string } | undefined;
 
@@ -36,6 +52,11 @@ function parseForm(formData: FormData) {
     content: formData.get("content"),
     contentFormat: formData.get("contentFormat"),
     techStack: formData.get("techStack"),
+    coverImage: formData.get("coverImage") ?? "",
+    problem: formData.get("problem") ?? "",
+    approach: formData.get("approach") ?? "",
+    outcome: formData.get("outcome") ?? "",
+    evidenceUrl: formData.get("evidenceUrl") ?? "",
     repoUrl: formData.get("repoUrl"),
     liveUrl: formData.get("liveUrl"),
     category: formData.get("category"),
@@ -55,7 +76,15 @@ function toData(d: z.infer<typeof projectSchema>, slug: string) {
     description: d.description,
     content: d.content,
     contentFormat: d.contentFormat,
-    techStack: d.techStack.split(",").map((t) => t.trim()).filter(Boolean),
+    techStack: d.techStack
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean),
+    coverImage: d.coverImage || null,
+    problem: d.problem,
+    approach: d.approach,
+    outcome: d.outcome,
+    evidenceUrl: d.evidenceUrl || null,
     repoUrl: d.repoUrl || null,
     liveUrl: d.liveUrl || null,
     category: d.category || "General",
@@ -70,49 +99,70 @@ function toData(d: z.infer<typeof projectSchema>, slug: string) {
 function revalidateProjects(slug?: string) {
   revalidatePath("/");
   revalidatePath("/portfolio");
+  revalidatePath("/admin");
+  revalidatePath("/admin/projects");
   if (slug) revalidatePath(`/portfolio/${slug}`);
   revalidatePath("/sitemap.xml");
 }
 
 export async function createProject(
   _prev: ProjectFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ProjectFormState> {
   await requireAdmin();
   const parsed = parseForm(formData);
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
-  const slug = parsed.data.slug || slugify(parsed.data.title);
-  if (await prisma.project.findUnique({ where: { slug } }))
-    return { error: `Slug "${slug}" is already in use.` };
+  try {
+    const slug = parsed.data.slug || slugify(parsed.data.title);
+    if (!slug || !slugSchema.safeParse(slug).success)
+      return {
+        error: "Enter a valid URL slug using lowercase letters and numbers.",
+      };
+    if (await prisma.project.findUnique({ where: { slug } }))
+      return { error: `Slug "${slug}" is already in use.` };
 
-  await prisma.project.create({ data: toData(parsed.data, slug) });
-  revalidateProjects(slug);
-  redirect("/admin/projects");
+    await prisma.project.create({ data: toData(parsed.data, slug) });
+    revalidateProjects(slug);
+    redirect("/admin/projects");
+  } catch (error) {
+    return formError(error);
+  }
 }
 
 export async function updateProject(
   id: string,
   _prev: ProjectFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ProjectFormState> {
   await requireAdmin();
   const parsed = parseForm(formData);
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
-  const current = await prisma.project.findUnique({ where: { id } });
-  if (!current) return { error: "Project not found." };
+  try {
+    const current = await prisma.project.findUnique({ where: { id } });
+    if (!current) return { error: "Project not found." };
 
-  const slug = parsed.data.slug || slugify(parsed.data.title);
-  const clash = await prisma.project.findFirst({
-    where: { slug, id: { not: id } },
-  });
-  if (clash) return { error: `Slug "${slug}" is already in use.` };
+    const slug = parsed.data.slug || slugify(parsed.data.title);
+    if (!slug || !slugSchema.safeParse(slug).success)
+      return {
+        error: "Enter a valid URL slug using lowercase letters and numbers.",
+      };
+    const clash = await prisma.project.findFirst({
+      where: { slug, id: { not: id } },
+    });
+    if (clash) return { error: `Slug "${slug}" is already in use.` };
 
-  await prisma.project.update({ where: { id }, data: toData(parsed.data, slug) });
-  revalidateProjects(slug);
-  if (current.slug !== slug) revalidatePath(`/portfolio/${current.slug}`);
-  redirect("/admin/projects");
+    await prisma.project.update({
+      where: { id },
+      data: toData(parsed.data, slug),
+    });
+    revalidateProjects(slug);
+    if (current.slug !== slug) revalidatePath(`/portfolio/${current.slug}`);
+    redirect("/admin/projects");
+  } catch (error) {
+    return formError(error);
+  }
 }
 
 export async function deleteProject(id: string) {

@@ -1,170 +1,278 @@
 [
   {
+    "slug": "journeymesh-multiagent-llmops",
+    "title": "JourneyMesh — Multi-Agent AI Travel Planner",
+    "tagline": "Supervisor-routed multi-agent travel planning with guardrails, evaluation and human review",
+    "description": "JourneyMesh is a production-shaped multi-agent AI travel planner. A single sentence such as “plan a relaxing 5-day family trip from Dhaka to Singapore with a budget of $2,000” becomes a reviewable plan: routes, a hotel shortlist, a forecast, a cost breakdown that separates confirmed prices from estimates, and a day-by-day itinerary. A LangGraph supervisor picks only the specialist agents a request needs, every external call goes through an MCP client and an authorisation guard, every draft is guarded and evaluated, and nothing is final until a human approves it — with request-changes re-running only the affected agents.",
+    "techStack": [
+      "Python",
+      "LangGraph",
+      "LangChain",
+      "MCP",
+      "FastAPI",
+      "Groq",
+      "PostgreSQL",
+      "React",
+      "TypeScript",
+      "Docker",
+      "GitHub Actions",
+      "LangSmith"
+    ],
+    "repoUrl": "https://github.com/pankaj2k9/journeymesh-multiagent-LLMOps",
+    "liveUrl": "http://51.79.166.97",
+    "category": "AI / LLM",
+    "featured": true,
+    "order": 0
+  },
+  {
     "slug": "uber-data-engineering-etl",
     "title": "Uber Data Engineering ETL Pipeline",
     "tagline": "Production-grade trip-data pipeline on Google Cloud",
     "description": "End-to-end data engineering pipeline for Uber trip data on GCP. Raw trip data lands in Google Cloud Storage, is orchestrated and transformed with Mage.ai running on Compute Engine, modeled into a star schema, and loaded into BigQuery for analytics with a Looker Studio dashboard on top.",
-    "techStack": ["Python", "Mage.ai", "GCP", "BigQuery", "Cloud Storage", "Compute Engine", "Looker Studio"],
+    "techStack": [
+      "Python",
+      "Mage.ai",
+      "GCP",
+      "BigQuery",
+      "Cloud Storage",
+      "Compute Engine",
+      "Looker Studio"
+    ],
     "repoUrl": "https://github.com/pankaj2k9/uber-data-engineering-etl-project",
     "liveUrl": null,
     "category": "Data Engineering",
     "featured": true,
-    "order": 1
+    "order": 2
   },
   {
     "slug": "bird-disease-classification-mlops",
     "title": "Bird Disease Classification — MLOps E2E",
     "tagline": "Deep learning classifier with full MLOps lifecycle",
     "description": "End-to-end MLOps project for bird disease classification using deep learning: reproducible training pipelines, DVC data versioning, MLflow experiment tracking, Dockerized serving, and CI/CD deployment automation.",
-    "techStack": ["Python", "TensorFlow", "DVC", "MLflow", "Docker", "CI/CD"],
+    "techStack": [
+      "Python",
+      "TensorFlow",
+      "DVC",
+      "MLflow",
+      "Docker",
+      "CI/CD"
+    ],
     "repoUrl": "https://github.com/pankaj2k9/MLOpsE2EBirdDiseaseClassificationDeepLearningProject",
     "liveUrl": null,
     "category": "MLOps",
     "featured": true,
-    "order": 2
+    "order": 3
   },
   {
     "slug": "caresage-medical-rag-chatbot",
     "title": "CareSage — Medical RAG Chatbot",
     "tagline": "LangChain + Pinecone retrieval-augmented medical Q&A",
     "description": "Medical question-answering chatbot built on Retrieval-Augmented Generation: documents are chunked and embedded into Pinecone, retrieved with semantic search, and answered by an LLM through LangChain with source-grounded responses.",
-    "techStack": ["Python", "LangChain", "Pinecone", "OpenAI", "RAG", "Flask"],
+    "techStack": [
+      "Python",
+      "LangChain",
+      "Pinecone",
+      "OpenAI",
+      "RAG",
+      "Flask"
+    ],
     "repoUrl": "https://github.com/pankaj2k9/caresage-rag-langchain-pinecone",
-    "liveUrl": null,
-    "category": "AI / LLM",
-    "featured": true,
-    "order": 3
-  },
-  {
-    "slug": "ai-fullstack-langchain-app",
-    "title": "AI Full-Stack App with LangChain",
-    "tagline": "PDF-powered RAG chatbot for medical Q&A",
-    "description": "Full-stack RAG application answering questions over PDF documents: chunking and embedding with semantic search, vector storage, and an LLM answering layer — packaged as a deployable web app.",
-    "techStack": ["Python", "LangChain", "Vector DB", "OpenAI", "Full-Stack"],
-    "repoUrl": "https://github.com/pankaj2k9/ai-full-stack-app-with-langchain",
     "liveUrl": null,
     "category": "AI / LLM",
     "featured": true,
     "order": 4
   },
   {
+    "slug": "ai-fullstack-langchain-app",
+    "title": "AI Full-Stack App with LangChain",
+    "tagline": "PDF-powered RAG chatbot for medical Q&A",
+    "description": "Full-stack RAG application answering questions over PDF documents: chunking and embedding with semantic search, vector storage, and an LLM answering layer — packaged as a deployable web app.",
+    "techStack": [
+      "Python",
+      "LangChain",
+      "Vector DB",
+      "OpenAI",
+      "Full-Stack"
+    ],
+    "repoUrl": "https://github.com/pankaj2k9/ai-full-stack-app-with-langchain",
+    "liveUrl": null,
+    "category": "AI / LLM",
+    "featured": true,
+    "order": 5
+  },
+  {
     "slug": "moviemate-recommender",
     "title": "MovieMate — Personalized Movie Recommender",
     "tagline": "Content-based recommendation engine",
     "description": "Personalized movie recommendation system that combines content-based filtering with popularity signals to suggest films tailored to each user's taste, with an interactive web UI.",
-    "techStack": ["Python", "Pandas", "scikit-learn", "Streamlit"],
+    "techStack": [
+      "Python",
+      "Pandas",
+      "scikit-learn",
+      "Streamlit"
+    ],
     "repoUrl": "https://github.com/pankaj2k9/moviemate-personalized-movie-recommender",
     "liveUrl": null,
     "category": "Machine Learning",
     "featured": false,
-    "order": 5
+    "order": 6
   },
   {
     "slug": "audience-sentiment-analysis-mlops",
     "title": "Audience Sentiment Analysis — MLOps",
     "tagline": "Sentiment model with automated build/deploy/retrain",
     "description": "Machine learning operations project for building, deploying, and continuously retraining an audience sentiment analysis model with pipeline automation and monitoring.",
-    "techStack": ["Python", "NLP", "MLOps", "Docker", "CI/CD"],
+    "techStack": [
+      "Python",
+      "NLP",
+      "MLOps",
+      "Docker",
+      "CI/CD"
+    ],
     "repoUrl": "https://github.com/pankaj2k9/audience-sentiment-analysis-mlops",
     "liveUrl": null,
     "category": "MLOps",
     "featured": false,
-    "order": 6
+    "order": 7
   },
   {
     "slug": "rag-chat-nextjs-langchain",
     "title": "RAG Chat App — Next.js + LangChain",
     "tagline": "GPT-4 chat over your own documents",
     "description": "Retrieval-augmented chat application built with Next.js and LangChain.js: document ingestion, embeddings, and GPT-4 answering — containerized with Docker for one-command deployment.",
-    "techStack": ["TypeScript", "Next.js", "LangChain", "OpenAI GPT-4", "Docker"],
+    "techStack": [
+      "TypeScript",
+      "Next.js",
+      "LangChain",
+      "OpenAI GPT-4",
+      "Docker"
+    ],
     "repoUrl": "https://github.com/pankaj2k9/rag-chat-app-with-nextjs-langchain",
     "liveUrl": null,
     "category": "AI / LLM",
     "featured": true,
-    "order": 7
+    "order": 8
   },
   {
     "slug": "langchain-voice-bot",
     "title": "LangChain Voice Bot",
     "tagline": "Voice-activated AI assistant for service intake",
     "description": "Voice-activated AI assistant that handles appliance repair requests end-to-end: speech input, LLM-driven conversation flow with LangChain, and structured intake output.",
-    "techStack": ["Python", "LangChain", "Speech-to-Text", "OpenAI"],
+    "techStack": [
+      "Python",
+      "LangChain",
+      "Speech-to-Text",
+      "OpenAI"
+    ],
     "repoUrl": "https://github.com/pankaj2k9/langchain-voice-bot",
     "liveUrl": null,
     "category": "AI / LLM",
     "featured": false,
-    "order": 8
+    "order": 9
   },
   {
     "slug": "n8n-integration-manager",
     "title": "n8n Integration Manager",
     "tagline": "Workflow automation tooling for n8n and Make.com",
     "description": "TypeScript tooling for managing n8n and Make.com workflow integrations, with Dockerized local development and deployment.",
-    "techStack": ["TypeScript", "n8n", "Make.com", "Docker"],
+    "techStack": [
+      "TypeScript",
+      "n8n",
+      "Make.com",
+      "Docker"
+    ],
     "repoUrl": "https://github.com/pankaj2k9/n8n-Integration-Manager",
     "liveUrl": null,
     "category": "Automation",
     "featured": false,
-    "order": 9
+    "order": 10
   },
   {
     "slug": "threejs-ai-character-scene",
     "title": "Three.js Scene with AI Character",
     "tagline": "React Three Fiber + Gaussian splatting + Hugging Face",
     "description": "Interactive 3D scene combining React Three Fiber, drei, and Gaussian splatting (gsplat) with a Hugging Face-powered AI character — exploring the intersection of real-time 3D and generative AI.",
-    "techStack": ["React", "React Three Fiber", "drei", "gsplat", "Hugging Face"],
+    "techStack": [
+      "React",
+      "React Three Fiber",
+      "drei",
+      "gsplat",
+      "Hugging Face"
+    ],
     "repoUrl": "https://github.com/pankaj2k9/threejs-scene-with-ai-character",
     "liveUrl": null,
     "category": "3D / WebGL",
     "featured": true,
-    "order": 10
+    "order": 11
   },
   {
     "slug": "r3f-car-racing-game",
     "title": "React Three Fiber Car Racing Game",
     "tagline": "Physics-based browser racing game",
     "description": "Browser-based 3D car racing game built with React Three Fiber, drei helpers, and cannon physics — real-time vehicle dynamics and collision in WebGL.",
-    "techStack": ["JavaScript", "React Three Fiber", "cannon.js", "WebGL"],
+    "techStack": [
+      "JavaScript",
+      "React Three Fiber",
+      "cannon.js",
+      "WebGL"
+    ],
     "repoUrl": "https://github.com/pankaj2k9/react-three-fiber-car-racing-game",
-    "liveUrl": null,
-    "category": "3D / WebGL",
-    "featured": false,
-    "order": 11
-  },
-  {
-    "slug": "animated-galaxy-webgl",
-    "title": "Animated Galaxy — Custom WebGL Shaders",
-    "tagline": "GLSL particle galaxy generator",
-    "description": "Procedural galaxy generator animated entirely in custom GLSL shaders with Three.js — tens of thousands of particles animated on the GPU.",
-    "techStack": ["JavaScript", "Three.js", "GLSL", "WebGL"],
-    "repoUrl": "https://github.com/pankaj2k9/animted-galaxy-by-webgl",
     "liveUrl": null,
     "category": "3D / WebGL",
     "featured": false,
     "order": 12
   },
   {
+    "slug": "animated-galaxy-webgl",
+    "title": "Animated Galaxy — Custom WebGL Shaders",
+    "tagline": "GLSL particle galaxy generator",
+    "description": "Procedural galaxy generator animated entirely in custom GLSL shaders with Three.js — tens of thousands of particles animated on the GPU.",
+    "techStack": [
+      "JavaScript",
+      "Three.js",
+      "GLSL",
+      "WebGL"
+    ],
+    "repoUrl": "https://github.com/pankaj2k9/animted-galaxy-by-webgl",
+    "liveUrl": null,
+    "category": "3D / WebGL",
+    "featured": false,
+    "order": 13
+  },
+  {
     "slug": "nft-marketplace-kryptobirdz",
     "title": "NFT Marketplace — KryptoBirdz",
     "tagline": "Full-stack Web3 marketplace DApp",
     "description": "NFT marketplace DApp with Solidity smart contracts, Web3.js integration, and a React frontend — minting, listing, and purchasing NFTs on Ethereum.",
-    "techStack": ["Solidity", "Web3.js", "React", "Node.js", "Ethereum"],
+    "techStack": [
+      "Solidity",
+      "Web3.js",
+      "React",
+      "Node.js",
+      "Ethereum"
+    ],
     "repoUrl": "https://github.com/pankaj2k9/nft-marketpalce-kryptobirdz",
     "liveUrl": null,
     "category": "Web3",
     "featured": false,
-    "order": 13
+    "order": 14
   },
   {
     "slug": "python-fullstack-apps",
     "title": "Python Full-Stack Apps Collection",
     "tagline": "Django, Flask, FastAPI + React reference apps",
     "description": "Collection of full-stack reference applications pairing Python backends (Django, Flask, FastAPI) with React frontends — patterns for auth, APIs, and deployment.",
-    "techStack": ["Python", "Django", "Flask", "FastAPI", "React"],
+    "techStack": [
+      "Python",
+      "Django",
+      "Flask",
+      "FastAPI",
+      "React"
+    ],
     "repoUrl": "https://github.com/pankaj2k9/python-django-flask-fastapi-react-fullstack-apps",
     "liveUrl": null,
     "category": "Full-Stack",
     "featured": false,
-    "order": 14
+    "order": 15
   }
 ]

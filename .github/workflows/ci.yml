@@ -63,7 +63,9 @@ jobs:
           ADMIN_EMAIL: ci@example.com
           ADMIN_NAME: CI
           ADMIN_PASSWORD: ci-only-placeholder-pw
-        run: npm run db:seed
+        run: |
+          npm run db:seed
+          npm run content:import
 
       - name: Build
         run: npm run build

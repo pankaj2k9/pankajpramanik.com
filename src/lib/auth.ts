@@ -1,3 +1,5 @@
+import { cache } from "react";
+import { redirect } from "next/navigation";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
@@ -42,8 +44,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 });
 
 /** Throws if there is no authenticated admin — use at the top of server actions. */
-export async function requireAdmin() {
+export const requireAdmin = cache(async () => {
   const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
+  if (
+    !session?.user?.id ||
+    (session.user as { role?: string }).role !== "ADMIN"
+  )
+    redirect("/admin/login");
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true },
+  });
+  if (user?.role !== "ADMIN") redirect("/admin/login");
   return session;
-}
+});

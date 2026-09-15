@@ -4,7 +4,11 @@ import { useEffect, useRef, useState } from "react";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
-export default function ContactForm() {
+export default function ContactForm({
+  initialSubject = "",
+}: {
+  initialSubject?: string;
+}) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   // captured on mount — the spam time-trap measures form-open → submit
@@ -39,24 +43,30 @@ export default function ContactForm() {
 
   if (status === "sent") {
     return (
-      <div className="card p-8 text-center">
+      <div className="card p-8 text-center" role="status">
         <p className="text-3xl">✅</p>
         <h3 className="mt-3 font-display text-xl font-semibold">
           Message sent!
         </h3>
         <p className="mt-2 text-muted">
-          Thanks for reaching out — I&apos;ll get back to you within 24 hours.
+          Thanks for the brief. I’ll review your message and follow up by email.
         </p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5" noValidate>
+    <form onSubmit={onSubmit} className="space-y-5">
       {/* Honeypot — hidden from humans, tempting for bots */}
       <div className="absolute -left-[9999px]" aria-hidden="true">
         <label htmlFor="website">Website</label>
-        <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+        <input
+          id="website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+        />
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
@@ -66,6 +76,7 @@ export default function ContactForm() {
           </label>
           <input
             id="name"
+            autoComplete="name"
             name="name"
             required
             minLength={2}
@@ -80,6 +91,7 @@ export default function ContactForm() {
           </label>
           <input
             id="email"
+            autoComplete="email"
             name="email"
             type="email"
             required
@@ -96,6 +108,7 @@ export default function ContactForm() {
         </label>
         <input
           id="subject"
+          defaultValue={initialSubject}
           name="subject"
           maxLength={150}
           placeholder="Project inquiry, collaboration…"
@@ -120,11 +133,21 @@ export default function ContactForm() {
       </div>
 
       {error && (
-        <p role="alert" className="rounded-lg border border-pink/40 bg-pink/10 px-4 py-3 text-sm text-pink">
+        <p
+          role="alert"
+          className="rounded-lg border border-pink/40 bg-pink/10 px-4 py-3 text-sm text-pink"
+        >
           {error}
         </p>
       )}
 
+      <p className="text-xs leading-relaxed text-muted">
+        Your details are used to respond to your inquiry.{" "}
+        <a href="/privacy-policy" className="underline">
+          Privacy policy
+        </a>
+        .
+      </p>
       <button
         type="submit"
         disabled={status === "sending"}

@@ -1,11 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import {
-  createPost,
-  updatePost,
-  type PostFormState,
-} from "@/actions/posts";
+import { createPost, updatePost, type PostFormState } from "@/actions/posts";
 import { FormError, SubmitButton, inputCls, labelCls } from "./ui";
 import RichTextEditor from "./RichTextEditor";
 import CoverImageInput from "./CoverImageInput";
@@ -34,12 +30,16 @@ export default function PostForm({
   const action = post ? updatePost.bind(null, post.id) : createPost;
   const [state, formAction, pending] = useActionState<PostFormState, FormData>(
     action,
-    undefined
+    undefined,
   );
   const selected = new Set(post?.categories.map((c) => c.id));
 
   return (
-    <form action={formAction} className="max-w-3xl space-y-6">
+    <form
+      action={formAction}
+      onReset={(event) => event.preventDefault()}
+      className="max-w-3xl space-y-6"
+    >
       {/* the WYSIWYG editor always emits HTML */}
       <input type="hidden" name="contentFormat" value="HTML" />
 
