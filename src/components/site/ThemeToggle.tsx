@@ -26,7 +26,12 @@ export default function ThemeToggle() {
 
   function toggle() {
     const next = theme === "light" ? "dark" : "light";
-    document.documentElement.dataset.theme = next;
+    const root = document.documentElement;
+    // Opt pages into a short colour crossfade for this switch only, so normal
+    // hovers keep their own timing.
+    root.classList.add("theme-switching");
+    window.setTimeout(() => root.classList.remove("theme-switching"), 450);
+    root.dataset.theme = next;
     try {
       localStorage.setItem("theme", next);
     } catch {
@@ -54,6 +59,8 @@ export default function ThemeToggle() {
           strokeWidth="2"
           strokeLinecap="round"
           aria-hidden
+          className="theme-icon"
+          key="moon"
         >
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg>
@@ -67,6 +74,8 @@ export default function ThemeToggle() {
           strokeWidth="2"
           strokeLinecap="round"
           aria-hidden
+          className="theme-icon"
+          key="sun"
         >
           <circle cx="12" cy="12" r="4" />
           <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />

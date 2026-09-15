@@ -1,5 +1,5 @@
 import Header from "@/components/site/Header";
-import Footer from "@/components/site/Footer";
+import HomeFooter from "@/components/home/HomeFooter";
 import WhatsAppButton from "@/components/site/WhatsAppButton";
 import MusicPlayer from "@/components/site/MusicPlayer";
 export default function HomeLayout({
@@ -11,8 +11,8 @@ export default function HomeLayout({
     <div className="home-shell">
       <Header />
       {children}
-      <Footer />
-      <MusicPlayer />
+      <HomeFooter />
+      <MusicPlayer expandable />
       <WhatsAppButton />
     </div>
   );

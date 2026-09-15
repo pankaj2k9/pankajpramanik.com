@@ -32,7 +32,8 @@ function getAudio(): HTMLAudioElement {
   if (!audio) {
     audio = new Audio("/audio/bg.mp3");
     audio.loop = true;
-    audio.volume = 0.35;
+    const savedVolume = Number(localStorage.getItem("bg-music-vol"));
+    audio.volume = savedVolume > 0 && savedVolume <= 1 ? savedVolume : 0.35;
     audio.preload = "none";
     audio.muted = localStorage.getItem("bg-music-muted") === "yes";
     for (const ev of ["play", "pause", "volumechange"] as const) {
@@ -84,7 +85,9 @@ function getAnalyser(): AnalyserNode | null {
     audioCtx = new Ctor();
     // resume() settles asynchronously; re-render so the meter attaches once
     // the context is actually running.
-    audioCtx.addEventListener("statechange", () => listeners.forEach((l) => l()));
+    audioCtx.addEventListener("statechange", () =>
+      listeners.forEach((l) => l()),
+    );
     const source = audioCtx.createMediaElementSource(el);
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 64;
@@ -110,9 +113,22 @@ function readState() {
   return `${!!el && !el.paused}|${!!el && el.muted}|${audioCtx?.state === "running"}`;
 }
 
-export default function MusicPlayer() {
-  const state = useSyncExternalStore(subscribe, readState, () => "false|false|false");
-  const [playing, muted, graphRunning] = state.split("|").map((v) => v === "true");
+/**
+ * `expandable` (homepage) reveals a volume slider while the loop plays.
+ */
+export default function MusicPlayer({
+  expandable = false,
+}: {
+  expandable?: boolean;
+}) {
+  const state = useSyncExternalStore(
+    subscribe,
+    readState,
+    () => "false|false|false",
+  );
+  const [playing, muted, graphRunning] = state
+    .split("|")
+    .map((v) => v === "true");
   const barsRef = useRef<HTMLDivElement>(null);
 
   // Audio starts only from the explicit play button.
@@ -196,7 +212,8 @@ export default function MusicPlayer() {
 
   return (
     <div
-      className="fixed bottom-5 left-5 z-50 flex items-center gap-1 rounded-full border border-border-strong bg-surface/95 p-1 shadow-lg shadow-accent-strong/10 backdrop-blur
+      data-playing={playing || undefined}
+      className="music-pill fixed bottom-5 left-5 z-50 flex items-center gap-1 rounded-full border border-border-strong bg-surface/95 p-1 shadow-lg shadow-accent-strong/10 backdrop-blur
                  supports-[backdrop-filter]:bg-surface/80"
     >
       <button
@@ -255,6 +272,26 @@ export default function MusicPlayer() {
           {TRACK.subtitle}
         </span>
       </span>
+
+      {expandable && playing && (
+        <label className="music-volume">
+          <span className="sr-only">Background music volume</span>
+          <input
+            type="range"
+            min={0}
+            max={100}
+            ref={(el) => {
+              if (el && audio)
+                el.value = String(Math.round(audio.volume * 100));
+            }}
+            onInput={(event) => {
+              const el = getAudio();
+              el.volume = Number(event.currentTarget.value) / 100;
+              localStorage.setItem("bg-music-vol", String(el.volume));
+            }}
+          />
+        </label>
+      )}
 
       <button
         type="button"

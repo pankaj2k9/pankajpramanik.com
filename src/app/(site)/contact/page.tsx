@@ -3,7 +3,7 @@ import ContactForm from "@/components/site/ContactForm";
 import SocialLinks from "@/components/site/SocialLinks";
 import { site } from "@/lib/site";
 import { pageMetadata } from "@/lib/seo";
-import { servicePaths } from "@/lib/services";
+import { homeServices } from "@/lib/services";
 export const metadata = pageMetadata(
   "Contact — Let's Build Something Useful",
   "Discuss your AI application, data pipeline, or automation project with Pankaj Kumar Pramanik. Send a project brief, email, or connect on WhatsApp.",
@@ -15,7 +15,7 @@ export default async function ContactPage({
   searchParams: Promise<{ service?: string }>;
 }) {
   const { service: id } = await searchParams;
-  const service = servicePaths.find((s) => s.id === id);
+  const service = homeServices.find((s) => s.id === id);
   return (
     <div className="container-site py-16">
       <div className="grid gap-12 lg:grid-cols-[1fr_1.15fr]">

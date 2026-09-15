@@ -112,3 +112,83 @@ export const heroNiches = [
     href: "/services/hire-the-perfect-mlops-developer",
   },
 ] as const;
+
+/**
+ * Homepage "What I do" cards and service selector, in story order:
+ * data → intelligence → automation → analytics → production.
+ * `tone` picks the card's accent; `visual` picks its abstract system drawing.
+ */
+export const homeServices = [
+  {
+    id: "data",
+    label: "Data",
+    title: "Give your data direction.",
+    description:
+      "Connect scattered sources, build dependable pipelines, and make the information your team needs ready to use.",
+    technologies: "Python · SQL · Cloud platforms",
+    slug: "data-engineering-excellence",
+    tone: "blue",
+    visual: "pipeline",
+    need: "Make sense of my data",
+    deliverable:
+      "A clear data model, tested pipelines, usable reporting, and production-ready infrastructure.",
+  },
+  {
+    id: "intelligence",
+    label: "Intelligence",
+    title: "Turn knowledge into answers.",
+    description:
+      "Build AI applications that work with your documents and tools, with retrieval, evaluation, agents, and human oversight built in.",
+    technologies: "LangChain · RAG · Vector databases",
+    slug: "llm-rag-developer-hire",
+    tone: "peach",
+    visual: "knowledge",
+    need: "Build an AI-powered product",
+    deliverable:
+      "A working prototype, evaluation criteria, and a practical deployment plan.",
+  },
+  {
+    id: "automation",
+    label: "Automation",
+    title: "Make room for better work.",
+    description:
+      "Connect applications and automate repetitive tasks with observable workflows, clear boundaries, and useful failure recovery.",
+    technologies: "n8n · APIs · Agent workflows",
+    slug: "ai-automation",
+    tone: "mint",
+    visual: "workflow",
+    need: "Automate repetitive work",
+    deliverable:
+      "An integrated workflow with monitoring, handoff notes, and recovery steps.",
+  },
+  {
+    id: "analytics",
+    label: "Data Analytics",
+    title: "Turn data into decisions.",
+    description:
+      "Define the metrics that matter, then build dashboards and analysis your team can trust and act on.",
+    technologies: "SQL · BI dashboards · Python",
+    slug: "hire-data-analytics-visualization-expert",
+    tone: "orange",
+    visual: "analytics",
+    need: "Understand my business data",
+    deliverable:
+      "Agreed metrics, trustworthy dashboards, and analysis that points to the next decision.",
+  },
+  {
+    id: "production",
+    label: "LLMOps / MLOps",
+    title: "Move AI safely into production.",
+    description:
+      "Evaluate, deploy, and monitor models and LLM applications with tracing, versioning, cost controls, and rollback plans.",
+    technologies: "Evaluation · CI/CD · Monitoring",
+    slug: "llmops",
+    tone: "violet",
+    visual: "production",
+    need: "Deploy / monitor AI systems",
+    deliverable:
+      "A deployment pipeline, an evaluation suite, monitoring dashboards, and runbooks.",
+  },
+] as const;
+
+export type HomeService = (typeof homeServices)[number];
