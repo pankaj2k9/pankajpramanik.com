@@ -1,5 +1,5 @@
 "use client";
-import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -23,7 +23,7 @@ const NODE_COLORS = ["#3b6cf0", "#7c4dff", "#ff6a3d", "#ff8a3d", "#2bb3a0", "#6a
 const SIGNAL = new THREE.Color("#ff2414");
 const EMBER = new THREE.Color("#ff9a3c");
 
-/** Node positions (scene space) at the brain-facing edge of each HTML card. */
+/** Fallback node positions (scene space), used until the cards are measured. */
 const NODES: [number, number, number][] = [
   [-1.75, 1.3, 0.6], // Data
   [-2.6, 0.05, 0.6], // AI / ML
@@ -41,7 +41,13 @@ const REGION_ANCHORS: [number, number, number][] = [
   [0.6, -0.55, 0.6],
   [-0.4, -0.6, 0.6],
 ];
+const CAMERA = { position: [0, 0.2, 7.8] as [number, number, number], fov: 43 };
 const PARTICLES_PER_PATH = 14;
+/** Depth of the plane the nodes sit on, just in front of the brain. */
+const NODE_Z = 0.9;
+
+/** Normalised device coordinates from the HTML cards: [x, y] in -1..1. */
+export type NodeAnchors = [number, number][];
 const DOTS_PER_PATH = 28;
 
 // Per-frame mutable state lives at module scope: the hero mounts one scene,
@@ -206,15 +212,32 @@ function Signals({
   selected,
   onSelect,
   playing,
+  anchors,
 }: {
   selected: number;
   onSelect: (i: number) => void;
   playing: boolean;
+  anchors?: NodeAnchors;
 }) {
   const particles = useRef<THREE.Points>(null);
   const time = useRef(0);
+  const aspect = useThree((s) => s.size.width / s.size.height);
+  // Project each card's brain-facing edge onto the node plane, so every card
+  // gets its own sphere wherever the layout puts it.
+  const nodes = useMemo(() => {
+    if (!anchors || anchors.length !== NODES.length) return NODES;
+    // A private copy of the scene camera, so the shared one is never mutated.
+    const camera = new THREE.PerspectiveCamera(CAMERA.fov, aspect, 0.1, 100);
+    camera.position.set(...CAMERA.position);
+    camera.updateMatrixWorld();
+    return anchors.map(([x, y]) => {
+      const ray = new THREE.Vector3(x, y, 0.5).unproject(camera).sub(camera.position).normalize();
+      const t = (NODE_Z - camera.position.z) / ray.z;
+      return camera.position.clone().addScaledVector(ray, t).toArray() as [number, number, number];
+    });
+  }, [anchors, aspect]);
   const { curves, lines, positions, colors } = useMemo(() => {
-    const curves = NODES.map((n, i) => {
+    const curves = nodes.map((n, i) => {
       const start = new THREE.Vector3(...n);
       const end = new THREE.Vector3(...REGION_ANCHORS[i]);
       const bend = start.x < 0 ? -0.35 : 0.35;
@@ -231,7 +254,7 @@ function Signals({
       positions: new Float32Array(count * 3),
       colors: new Float32Array(count * 3),
     };
-  }, []);
+  }, [nodes]);
 
   useFrame((_, delta) => {
     if (playing) time.current += Math.min(delta, 0.05);
@@ -286,24 +309,38 @@ function Signals({
           sizeAttenuation
         />
       </points>
-      {NODES.map((position, i) => (
-        <mesh
-          key={i}
-          position={position}
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelect(i);
-          }}
-        >
-          <sphereGeometry args={[selected === i ? 0.13 : 0.1, 24, 18]} />
-          <meshPhysicalMaterial
-            color={NODE_COLORS[i]}
-            emissive={NODE_COLORS[i]}
-            emissiveIntensity={selected === i ? 0.7 : 0.25}
-            roughness={0.2}
-            clearcoat={1}
-          />
-        </mesh>
+      {nodes.map((position, i) => (
+        <group key={i} position={position}>
+          <mesh
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(i);
+            }}
+          >
+            <sphereGeometry args={[selected === i ? 0.14 : 0.115, 32, 24]} />
+            <meshPhysicalMaterial
+              color={NODE_COLORS[i]}
+              emissive={NODE_COLORS[i]}
+              emissiveIntensity={selected === i ? 0.6 : 0.25}
+              roughness={0.18}
+              clearcoat={1}
+              clearcoatRoughness={0.1}
+            />
+          </mesh>
+          {/* glass ring, so each node reads as a lit bead in a socket */}
+          <mesh>
+            <torusGeometry args={[selected === i ? 0.21 : 0.18, 0.012, 12, 48]} />
+            <meshPhysicalMaterial
+              color="#ffffff"
+              emissive={NODE_COLORS[i]}
+              emissiveIntensity={selected === i ? 0.35 : 0.1}
+              transparent
+              opacity={selected === i ? 0.9 : 0.55}
+              roughness={0.15}
+              clearcoat={1}
+            />
+          </mesh>
+        </group>
       ))}
       {/* orbit ring around the brain */}
       <mesh rotation={[1.25, 0.2, -0.35]}>
@@ -331,12 +368,13 @@ export default function NeuralScene(props: {
   onSelect: (i: number) => void;
   playing: boolean;
   onReady?: () => void;
+  anchors?: NodeAnchors;
 }) {
   const [supported, setSupported] = useState(supportsWebGL2);
   if (!supported) return null;
   return (
     <Canvas
-      camera={{ position: [0, 0.2, 7.8], fov: 43 }}
+      camera={CAMERA}
       dpr={[1, 1.5]}
       frameloop={props.playing ? "always" : "demand"}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
@@ -357,7 +395,12 @@ export default function NeuralScene(props: {
       <Suspense fallback={null}>
         <Brain region={props.region} playing={props.playing} onReady={props.onReady} />
       </Suspense>
-      <Signals selected={props.selected} onSelect={props.onSelect} playing={props.playing} />
+      <Signals
+        selected={props.selected}
+        onSelect={props.onSelect}
+        playing={props.playing}
+        anchors={props.anchors}
+      />
     </Canvas>
   );
 }

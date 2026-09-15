@@ -11,6 +11,29 @@ import {
 } from "react";
 import { heroNiches, heroServices } from "@/lib/services";
 import HeroIcon from "./HeroIcons";
+import type { NodeAnchors } from "./NeuralScene";
+
+/** Gap (px) between a card's edge and its sphere. */
+const NODE_GAP = 28;
+
+/**
+ * For each card, the point on its outline closest to the canvas centre, pushed
+ * a little toward the brain — in the canvas's normalised device coordinates.
+ */
+function measureAnchors(canvas: HTMLElement, cards: HTMLElement[]): NodeAnchors {
+  const c = canvas.getBoundingClientRect();
+  const cx = c.left + c.width / 2;
+  const cy = c.top + c.height / 2;
+  return cards.map((card) => {
+    const r = card.getBoundingClientRect();
+    let px = Math.min(Math.max(cx, r.left), r.right);
+    let py = Math.min(Math.max(cy, r.top), r.bottom);
+    const len = Math.hypot(cx - px, cy - py) || 1;
+    px += ((cx - px) / len) * NODE_GAP;
+    py += ((cy - py) / len) * NODE_GAP;
+    return [((px - c.left) / c.width) * 2 - 1, -(((py - c.top) / c.height) * 2 - 1)];
+  });
+}
 
 const NeuralScene = dynamic(() => import("./NeuralScene"), { ssr: false });
 class SceneBoundary extends Component<
@@ -40,7 +63,22 @@ export default function IntelligenceExperience() {
   const [visible, setVisible] = useState(true);
   const [paused, setPaused] = useState(false);
   const [ready, setReady] = useState(false);
+  const [anchors, setAnchors] = useState<NodeAnchors>();
   const root = useRef<HTMLDivElement>(null);
+  const canvasBox = useRef<HTMLDivElement>(null);
+  const selector = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const canvas = canvasBox.current;
+    const group = selector.current;
+    if (!canvas || !group) return;
+    const observer = new ResizeObserver(() => {
+      const cards = Array.from(group.children) as HTMLElement[];
+      setAnchors(measureAnchors(canvas, cards));
+    });
+    observer.observe(canvas);
+    observer.observe(group);
+    return () => observer.disconnect();
+  }, []);
   useEffect(() => {
     const media = matchMedia(
       "(min-width: 800px) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
@@ -82,22 +120,13 @@ export default function IntelligenceExperience() {
         <br />
         23° N / 90° E
       </div>
-      <p className="scene-note" aria-hidden>
-        From possibility
-        <br />
-        to something useful.
-        <svg viewBox="0 0 70 44" fill="none" stroke="currentColor">
-          <path d="M66 6C44 4 20 14 6 38" strokeWidth="1.3" />
-          <path d="M5 26l1 12 11-4" strokeWidth="1.3" />
-        </svg>
-      </p>
       <div className="neural-fallback" aria-hidden>
         <div className="fallback-core" />
         {[0, 1, 2, 3, 4, 5].map((i) => (
           <i key={i} style={{ transform: `rotate(${i * 30}deg)` }} />
         ))}
       </div>
-      <div className="neural-canvas" aria-hidden="true">
+      <div className="neural-canvas" aria-hidden="true" ref={canvasBox}>
         {enabled && (
           <SceneBoundary>
             <NeuralScene
@@ -106,21 +135,15 @@ export default function IntelligenceExperience() {
               onSelect={setSelected}
               playing={visible && !paused}
               onReady={markReady}
+              anchors={anchors}
             />
           </SceneBoundary>
         )}
       </div>
-      <p className="scene-flow" aria-hidden>
-        <span>
-          Data <b>→</b> Intelligence
-        </span>
-        <span>
-          <b>→</b> Real Impact
-        </span>
-      </p>
       <div
         className="scene-selector"
         role="group"
+        ref={selector}
         aria-label="Explore the connected services"
       >
         {heroServices.map((s, i) => (
@@ -131,16 +154,16 @@ export default function IntelligenceExperience() {
             onClick={() => setSelected(i)}
           >
             <span className="node-icon">
-              <HeroIcon name={s.id} size={30} />
+              <HeroIcon name={s.id} size={24} />
             </span>
             <span className="node-text">
               <small>0{i + 1}</small>
               <strong>{s.label}</strong>
-              <span>{s.tags}</span>
             </span>
             <span className="node-chevron" aria-hidden>
               ›
             </span>
+            <span className="node-tags">{s.tags}</span>
           </button>
         ))}
       </div>
