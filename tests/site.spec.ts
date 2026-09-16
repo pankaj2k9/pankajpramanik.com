@@ -19,14 +19,16 @@ for (const path of [
     const response = await page.goto(path);
     expect(response?.status()).toBe(200);
     // Reveal effects fade content in; measuring contrast mid-fade reports the
-    // partially transparent colour. Wait for every finite animation/transition
-    // (infinite ones such as marquees never finish and do not affect contrast).
+    // partially transparent colour. Wait for time-based animations/transitions
+    // to finish. Infinite ones (marquees) and scroll-driven ones (parallax on a
+    // ViewTimeline) never finish on their own and do not fade text.
     await page.waitForFunction(() =>
       document
         .getAnimations()
         .every(
           (a) =>
             a.playState !== "running" ||
+            !(a.timeline instanceof DocumentTimeline) ||
             a.effect?.getTiming().iterations === Infinity,
         ),
     );
