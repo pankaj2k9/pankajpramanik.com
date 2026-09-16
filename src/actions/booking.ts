@@ -12,6 +12,7 @@ import { bookingDetailsSchema } from "@/lib/booking/validation";
 import {
   BookingError,
   cancelBooking,
+  confirmPendingBooking,
   createBooking,
   deleteBooking,
   getBookingSettings,
@@ -20,7 +21,6 @@ import {
   SlotTakenError,
 } from "@/lib/booking/service";
 import { disconnectGoogle, clearBusyCache } from "@/lib/booking/google";
-import { notify, scheduleReminders } from "@/lib/booking/notifications";
 import {
   addDays,
   DATE_KEY_RE,
@@ -212,7 +212,6 @@ export async function saveBookingSettings(_prev: BookingFormState, formData: For
           checkBusy: checkbox(formData, "checkBusy"),
           createEvents: checkbox(formData, "createEvents"),
           createMeetLinks: checkbox(formData, "createMeetLinks"),
-          sendGoogleInvites: checkbox(formData, "sendGoogleInvites"),
           calendarId: String(formData.get("calendarId") || "primary").slice(0, 200),
         },
       });
@@ -407,12 +406,10 @@ export async function changeBookingStatus(id: string, status: BookingStatus) {
   await requireAdmin();
   if (!QUICK_STATUSES.includes(status)) throw new Error("Use cancel or reschedule for this status.");
   const before = await prisma.booking.findUnique({ where: { id }, select: { status: true } });
-  const booking = await setBookingStatus(id, status);
-  // Approving a pending request sends the confirmation and schedules reminders.
-  if (before?.status === "PENDING" && status === "CONFIRMED") {
-    await scheduleReminders(booking);
-    await notify(id, ["VISITOR_CONFIRMATION"]);
-  }
+  // Approving a pending request sends the confirmation (Google invitation or
+  // Resend email) and schedules reminders.
+  if (before?.status === "PENDING" && status === "CONFIRMED") await confirmPendingBooking(id);
+  else await setBookingStatus(id, status);
   revalidateBooking();
 }
 

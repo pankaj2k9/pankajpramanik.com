@@ -128,12 +128,10 @@ export default async function BookingSettingsPage({ searchParams }: { searchPara
               <label className="bka-check">
                 <input type="checkbox" name="createMeetLinks" defaultChecked={google.createMeetLinks} /> Generate Google Meet links for Google Meet meeting types
               </label>
-              <label className="bka-check">
-                <input type="checkbox" name="sendGoogleInvites" defaultChecked={google.sendGoogleInvites} /> Also let Google Calendar email its own invitation and updates to the attendee
-              </label>
               <p className="bka-muted">
-                The site always sends its own confirmation (with reschedule and cancel links) to the attendee and a notification to you. Google&apos;s
-                invitation adds an Accept/Decline calendar invite; enable it if you want both.
+                When events are created, the attendee is invited from Google Calendar and Google&apos;s invitation, update or cancellation
+                replaces the site&apos;s own booking email (no duplicates). If Google is disconnected, event creation is off or the Google
+                request fails, the site sends its confirmation email instead. Your new-booking notification and reminders are always sent by the site.
               </p>
             </>
           ) : (

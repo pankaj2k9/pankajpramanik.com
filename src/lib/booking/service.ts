@@ -15,6 +15,7 @@ import {
   deleteGoogleEvent,
   googleBusy,
   updateGoogleEvent,
+  type CalendarSyncResult,
 } from "./google";
 import { ACTIVE_STATUSES, SLOT_TAKEN_MESSAGE } from "./labels";
 import { notify, scheduleReminders } from "./notifications";
@@ -151,21 +152,39 @@ async function assertNoConflict(tx: Tx, meetingType: MeetingType, start: Date, e
   return input;
 }
 
-async function syncCalendarAfterWrite(booking: Booking & { meetingType: MeetingType }, mode: "create" | "update") {
+/**
+ * Writes the booking to Google Calendar: moves its existing event, or creates
+ * one when there is none (or it was deleted in Google). `attendeeNotified`
+ * tells the caller Google emailed the visitor, so the Resend visitor email
+ * must be skipped; on any failure it is false and Resend sends it instead.
+ */
+async function syncCalendar(
+  booking: Booking & { meetingType: MeetingType },
+  { notify }: { notify: boolean },
+): Promise<{ booking: Booking & { meetingType: MeetingType }; attendeeNotified: boolean }> {
+  let result: CalendarSyncResult | null = null;
   try {
-    const result = mode === "update" && booking.calendarEventId ? await updateGoogleEvent(booking) : await createGoogleEvent(booking);
-    if (result)
-      return prisma.booking.update({
-        where: { id: booking.id },
-        data: { calendarEventId: result.eventId, meetingUrl: result.meetingUrl ?? booking.meetingUrl },
-        include: { meetingType: true },
-      });
+    if (booking.calendarEventId) result = await updateGoogleEvent(booking, { notify });
+    if (!result) result = await createGoogleEvent(booking, { notify });
   } catch (error) {
     console.error("Calendar sync failed:", error instanceof Error ? error.message : error);
   } finally {
     clearBusyCache();
   }
-  return booking;
+  if (!result) return { booking, attendeeNotified: false };
+  // Google has already sent its email at this point, so a failed save below
+  // must not turn into a second email through Resend.
+  try {
+    const saved = await prisma.booking.update({
+      where: { id: booking.id },
+      data: { calendarEventId: result.eventId, meetingUrl: result.meetingUrl ?? booking.meetingUrl },
+      include: { meetingType: true },
+    });
+    return { booking: saved, attendeeNotified: result.attendeeNotified };
+  } catch (error) {
+    console.error("Saving calendar event id failed:", error instanceof Error ? error.message : error);
+    return { booking, attendeeNotified: result.attendeeNotified };
+  }
 }
 
 export async function createBooking(
@@ -217,9 +236,14 @@ export async function createBooking(
     });
   });
 
-  const synced = await syncCalendarAfterWrite(booking, "create");
+  // Google Calendar's invitation is the visitor's confirmation when the event
+  // was created with them as attendee; otherwise Resend sends it.
+  const { booking: synced, attendeeNotified } = await syncCalendar(booking, { notify: sendEmails });
   await scheduleReminders(synced);
-  if (sendEmails) await notify(synced.id, source === "PUBLIC" ? ["VISITOR_CONFIRMATION", "ADMIN_NEW_BOOKING"] : ["VISITOR_CONFIRMATION"]);
+  if (sendEmails) {
+    await notify(synced.id, ["VISITOR_CONFIRMATION"], { sentByGoogle: attendeeNotified });
+    if (source === "PUBLIC") await notify(synced.id, ["ADMIN_NEW_BOOKING"]);
+  }
   return synced;
 }
 
@@ -281,9 +305,9 @@ export async function rescheduleBooking(
   });
 
   await prisma.bookingNotification.deleteMany({ where: { bookingId, kind: "REMINDER", sentAt: null } });
-  const synced = await syncCalendarAfterWrite(moved, "update");
+  const { booking: synced, attendeeNotified } = await syncCalendar(moved, { notify: sendEmails });
   await scheduleReminders(synced);
-  if (sendEmails) await notify(synced.id, ["VISITOR_RESCHEDULED"]);
+  if (sendEmails) await notify(synced.id, ["VISITOR_RESCHEDULED"], { sentByGoogle: attendeeNotified });
   return synced;
 }
 
@@ -300,13 +324,20 @@ export async function cancelBooking(
     data: { status: "CANCELLED", cancelReason: reason || null, cancelledAt: new Date() },
   });
   await prisma.bookingNotification.deleteMany({ where: { bookingId, kind: "REMINDER", sentAt: null } });
+  let attendeeNotified = false;
   try {
-    await deleteGoogleEvent(cancelled.calendarEventId);
+    ({ attendeeNotified } = await deleteGoogleEvent(cancelled.calendarEventId, {
+      notify: sendEmails,
+      attendeeEmail: cancelled.email,
+    }));
   } catch (error) {
     console.error("Calendar event delete failed:", error instanceof Error ? error.message : error);
   }
   clearBusyCache();
-  if (sendEmails) await notify(bookingId, by === "visitor" ? ["VISITOR_CANCELLED", "ADMIN_CANCELLED"] : ["VISITOR_CANCELLED"]);
+  if (sendEmails) {
+    await notify(bookingId, ["VISITOR_CANCELLED"], { sentByGoogle: attendeeNotified });
+    if (by === "visitor") await notify(bookingId, ["ADMIN_CANCELLED"]);
+  }
   return cancelled;
 }
 
@@ -316,6 +347,21 @@ export async function setBookingStatus(bookingId: string, status: BookingStatus)
   if (status === "COMPLETED" || status === "NO_SHOW")
     await prisma.bookingNotification.deleteMany({ where: { bookingId, kind: "REMINDER", sentAt: null } });
   return booking;
+}
+
+/**
+ * Approves a pending request. The calendar event gains the visitor as
+ * attendee, so Google sends the invitation; Resend confirms only when that
+ * did not happen.
+ */
+export async function confirmPendingBooking(bookingId: string) {
+  const current = await prisma.booking.findUnique({ where: { id: bookingId }, select: { status: true } });
+  if (current?.status !== "PENDING") throw new BookingError("Only pending bookings can be approved.");
+  const booking = await setBookingStatus(bookingId, "CONFIRMED");
+  const { booking: synced, attendeeNotified } = await syncCalendar(booking, { notify: true });
+  await scheduleReminders(synced);
+  await notify(synced.id, ["VISITOR_CONFIRMATION"], { sentByGoogle: attendeeNotified });
+  return synced;
 }
 
 export async function deleteBooking(bookingId: string) {

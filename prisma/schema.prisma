@@ -401,9 +401,6 @@ model CalendarConnection {
   checkBusy         Boolean  @default(true)
   createEvents      Boolean  @default(true)
   createMeetLinks   Boolean  @default(true)
-  // Let Google Calendar email its own invitation/updates to the attendee as
-  // well (sendUpdates=all). The site's confirmation email is sent either way.
-  sendGoogleInvites Boolean  @default(false)
   lastError         String?
   connectedAt       DateTime @default(now())
   updatedAt         DateTime @updatedAt

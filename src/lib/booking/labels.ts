@@ -24,6 +24,12 @@ export const ACTIVE_STATUSES: BookingStatus[] = ["PENDING", "CONFIRMED", "COMPLE
 
 export const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+/**
+ * Stored in BookingNotification.lastError (with sentAt set) when Google
+ * Calendar emailed the visitor instead of Resend.
+ */
+export const SENT_BY_GOOGLE = "google: sent by Google Calendar";
+
 export const SLOT_TAKEN_MESSAGE = "This time slot was just booked. Please choose another available time.";
 
 export function durationLabel(minutes: number): string {

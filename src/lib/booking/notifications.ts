@@ -3,7 +3,7 @@ import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
 import { site } from "@/lib/site";
 import { bookingIcs, googleCalendarUrl, manageUrl } from "./ics";
-import { durationLabel, locationDescription } from "./labels";
+import { durationLabel, locationDescription, SENT_BY_GOOGLE } from "./labels";
 import { formatInZone, formatLongDate, formatTime } from "./time";
 
 /**
@@ -225,8 +225,18 @@ async function deliver(notification: BookingNotification) {
     include: { meetingType: true },
   });
   if (!booking) return;
-  if (notification.kind === "REMINDER" && !["CONFIRMED", "PENDING"].includes(booking.status)) {
+  // A queued or retried email must still match the booking's state, e.g. a
+  // failed confirmation is not resent after the booking moved or was cancelled.
+  const stale =
+    notification.kind === "VISITOR_CANCELLED" || notification.kind === "ADMIN_CANCELLED"
+      ? booking.status !== "CANCELLED"
+      : !["CONFIRMED", "PENDING"].includes(booking.status);
+  if (stale) {
     await prisma.bookingNotification.update({ where: { id: notification.id }, data: { sentAt: new Date(), lastError: "skipped: booking not active" } });
+    return;
+  }
+  if (await alreadySentByGoogle(notification)) {
+    await prisma.bookingNotification.update({ where: { id: notification.id }, data: { sentAt: new Date(), lastError: SENT_BY_GOOGLE } });
     return;
   }
   const apiKey = process.env.RESEND_API_KEY;
@@ -268,12 +278,40 @@ async function deliver(notification: BookingNotification) {
   }
 }
 
-/** Queues and immediately attempts the given emails. Never throws. */
-export async function notify(bookingId: string, kinds: NotificationKind[]) {
+/** Visitor emails that Google Calendar's invitation, update or cancellation replaces. */
+const REPLACEABLE_BY_GOOGLE: NotificationKind[] = ["VISITOR_CONFIRMATION", "VISITOR_RESCHEDULED", "VISITOR_CANCELLED"];
+
+/** Last guard against duplicates: Google already emailed this booking's visitor about the same thing. */
+async function alreadySentByGoogle(notification: BookingNotification) {
+  if (!REPLACEABLE_BY_GOOGLE.includes(notification.kind)) return false;
+  const count = await prisma.bookingNotification.count({
+    where: { bookingId: notification.bookingId, kind: notification.kind, lastError: SENT_BY_GOOGLE, id: { not: notification.id } },
+  });
+  return count > 0;
+}
+
+/**
+ * Queues and immediately attempts the given emails. Never throws.
+ *
+ * Visitor emails listed in `sentByGoogle` are not sent through Resend: Google
+ * Calendar already emailed the attendee, so they are only recorded as sent.
+ */
+export async function notify(
+  bookingId: string,
+  kinds: NotificationKind[],
+  { sentByGoogle = false }: { sentByGoogle?: boolean } = {},
+) {
   try {
     const now = new Date();
+    const viaGoogle = sentByGoogle ? kinds.filter((kind) => REPLACEABLE_BY_GOOGLE.includes(kind)) : [];
+    if (viaGoogle.length)
+      await prisma.bookingNotification.createMany({
+        data: viaGoogle.map((kind) => ({ bookingId, kind, scheduledFor: now, sentAt: now, lastError: SENT_BY_GOOGLE })),
+      });
     const created = await Promise.all(
-      kinds.map((kind) => prisma.bookingNotification.create({ data: { bookingId, kind, scheduledFor: now } })),
+      kinds
+        .filter((kind) => !viaGoogle.includes(kind))
+        .map((kind) => prisma.bookingNotification.create({ data: { bookingId, kind, scheduledFor: now } })),
     );
     await Promise.all(created.map(deliver));
   } catch (error) {

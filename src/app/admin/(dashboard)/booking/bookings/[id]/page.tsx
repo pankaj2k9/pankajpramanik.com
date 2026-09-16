@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
 import { getBookingSettings } from "@/lib/booking/service";
-import { durationLabel, LOCATION_LABELS, STATUS_LABELS } from "@/lib/booking/labels";
+import { durationLabel, LOCATION_LABELS, SENT_BY_GOOGLE, STATUS_LABELS } from "@/lib/booking/labels";
 import { dateKeyInZone, formatInZone, formatLongDate, formatTime, wallTimeInZone } from "@/lib/booking/time";
 import {
   adminCancelBooking,
@@ -271,7 +271,7 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
                 </span>
                 <span className="bka-muted">
                   {n.sentAt
-                    ? `${n.lastError?.startsWith("skipped") ? "Skipped" : "Sent"} ${formatInZone(n.sentAt, tz, { dateStyle: "medium", timeStyle: "short" })}`
+                    ? `${n.lastError === SENT_BY_GOOGLE ? "Sent by Google Calendar" : n.lastError?.startsWith("skipped") ? "Skipped" : "Sent"} ${formatInZone(n.sentAt, tz, { dateStyle: "medium", timeStyle: "short" })}`
                     : n.lastError
                       ? `Failed (${n.attempts}×): ${n.lastError}`
                       : `Scheduled ${formatInZone(n.scheduledFor, tz, { dateStyle: "medium", timeStyle: "short" })}`}
