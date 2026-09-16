@@ -13,7 +13,10 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  IMAGE: ghcr.io/${{ github.repository }}
+  # Fixed name, not ghcr.io/${{ github.repository }}: the repo is
+  # "pankajpramanik.com", but the server's compose/.env pull
+  # ghcr.io/pankaj2k9/pankajpramanik.
+  IMAGE: ghcr.io/pankaj2k9/pankajpramanik
 
 jobs:
   build:
@@ -198,6 +201,9 @@ jobs:
             echo "Currently running image id: ${PREVIOUS:-none}"
             echo "Deploying: ${IMAGE_REF:-latest tag}"
 
+            # Pin the exact build from this run (sha tag) so what ships is what
+            # was built; shell env wins over APP_IMAGE in .env.
+            export APP_IMAGE="${IMAGE_REF:-ghcr.io/pankaj2k9/pankajpramanik:latest}"
             $COMPOSE pull app
 
             # Merge repo media into persistent storage: no-clobber copy, never
@@ -206,7 +212,7 @@ jobs:
             mkdir -p storage
             docker run --rm --user 0 --entrypoint sh \
               -v "$APP_DIR/.deploy/storage:/src:ro" -v "$APP_DIR/storage:/dst" \
-              "${IMAGE_REF:-ghcr.io/pankaj2k9/pankajpramanik:latest}" \
+              "$APP_IMAGE" \
               -c 'set -e; mkdir -p /dst/uploads; cd /src
                   # busybox cp -n / tar -k abort or skip whole trees on the
                   # first existing file, so copy file by file instead.
