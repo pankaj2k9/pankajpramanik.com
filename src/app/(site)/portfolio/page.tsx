@@ -60,7 +60,7 @@ export default async function PortfolioPage() {
         lines={["Systems built", "for real problems."]}
         lead={
           <p>
-            AI applications, data pipelines, automation and full-stack builds —
+            AI applications, data pipelines, automation and full-stack builds -
             with the technical context and source links available for each.
           </p>
         }

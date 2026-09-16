@@ -19,7 +19,7 @@ export const revalidate = 300;
 
 export const metadata = pageMetadata(
   "Skills & Tech Stack",
-  "Technical skills across Generative AI, LLM/RAG systems, data science, MLOps, frontend, backend, and cloud — Python, LangChain, Next.js, AWS, and more.",
+  "Technical skills across Generative AI, LLM/RAG systems, data science, MLOps, frontend, backend, and cloud - Python, LangChain, Next.js, AWS, and more.",
   "/skills",
 );
 
@@ -110,7 +110,7 @@ export default async function SkillsPage() {
             index="01"
             label="Capability map"
             title={["What I work with,", "and where it shows up."]}
-            intro="No percentage bars — just the groups I work in and the evidence behind each tool."
+            intro="No percentage bars - just the groups I work in and the evidence behind each tool."
           />
           <div data-hm="up">
             <SkillMap categories={categories} />

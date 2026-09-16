@@ -6,27 +6,43 @@ import PageHero from "@/components/inner/PageHero";
 import SectionHead from "@/components/inner/SectionHead";
 import PageCTA from "@/components/inner/PageCTA";
 import PageMotion from "@/components/motion/PageMotion";
+import EducationList from "@/components/inner/EducationList";
 import {
   getCertifications,
+  getEducation,
   getExperiences,
   getPublishedProjects,
   getSkillGroups,
 } from "@/lib/queries";
 import { site } from "@/lib/site";
-import { pageMetadata } from "@/lib/seo";
+import {
+  breadcrumbJsonLd,
+  jsonLdGraph,
+  pageMetadata,
+  PERSON_ID,
+  personJsonLd,
+  WEBSITE_ID,
+} from "@/lib/seo";
+import { absoluteUrl } from "@/lib/site";
+import { jsonLdScript } from "@/lib/utils";
 
 export const revalidate = 300;
 
+const DESCRIPTION =
+  "Meet Pankaj Kumar Pramanik, an AI and data engineer connecting software development, data pipelines, intelligent applications, and workflow automation.";
+
 export const metadata = pageMetadata(
-  "About — Practical AI & Data Engineering",
-  "Meet Pankaj Kumar Pramanik, an AI and data engineer connecting software development, data pipelines, intelligent applications, and workflow automation.",
+  "About Pankaj Kumar Pramanik - AI & Data Engineer",
+  DESCRIPTION,
   "/about",
+  { absoluteTitle: true },
 );
 
 const STEPS = [
   { id: "intro", label: "Intro" },
   { id: "approach", label: "Approach" },
   { id: "journey", label: "Journey" },
+  { id: "education", label: "Education" },
   { id: "process", label: "How I work" },
   { id: "principles", label: "Principles" },
   { id: "tools", label: "Tools" },
@@ -36,7 +52,7 @@ const STEPS = [
 const APPROACH = [
   {
     title: "Problem first",
-    text: "Who needs the system, which data it can use, and what a useful result looks like — before any tool is chosen.",
+    text: "Who needs the system, which data it can use, and what a useful result looks like - before any tool is chosen.",
   },
   {
     title: "Software, not notebooks",
@@ -83,7 +99,7 @@ const PRINCIPLES = [
   {
     a: "Observable",
     b: "mysterious",
-    text: "Logs, traces and evaluations make it possible to trust — and fix — what the system does.",
+    text: "Logs, traces and evaluations make it possible to trust - and fix - what the system does.",
     tone: "mint",
   },
   {
@@ -103,19 +119,37 @@ const PRINCIPLES = [
 const yearOf = (d: Date) => d.getFullYear();
 
 export default async function AboutPage() {
-  const [experiences, projects, certifications, skills] = await Promise.all([
+  const [experiences, projects, certifications, skills, education] = await Promise.all([
     getExperiences(),
     getPublishedProjects(),
     getCertifications(),
     getSkillGroups(),
+    getEducation(),
   ]);
   const timeline = [...experiences].sort(
     (a, b) => a.startDate.getTime() - b.startDate.getTime(),
   );
   const firstYear = timeline.length ? yearOf(timeline[0].startDate) : 2019;
+  const jsonLd = jsonLdGraph(
+    {
+      "@type": "ProfilePage",
+      "@id": `${absoluteUrl("/about")}#page`,
+      url: absoluteUrl("/about"),
+      name: `About ${site.name}`,
+      description: DESCRIPTION,
+      isPartOf: { "@id": WEBSITE_ID },
+      mainEntity: { "@id": PERSON_ID },
+    },
+    personJsonLd(education),
+    breadcrumbJsonLd([["About", "/about"]]),
+  );
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
+      />
       <PageHero
         index="02"
         label="About"
@@ -195,7 +229,7 @@ export default async function AboutPage() {
             index="01"
             label="My approach"
             title={["Start with the problem.", "Then choose the tools."]}
-            intro="I build document-aware AI applications, data pipelines and connected workflows — and take them past the prototype."
+            intro="I build document-aware AI applications, data pipelines and connected workflows - and take them past the prototype."
           />
           <div className="ab-approach" data-hm-stagger>
             {APPROACH.map((item, i) => (
@@ -256,10 +290,24 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section id="process" className="ip-section">
+      {education.length > 0 && (
+        <section id="education" className="ip-section">
+          <div className="hm-container">
+            <SectionHead
+              index="03"
+              label="Education"
+              title={["Academic foundation,", "applied at work."]}
+              intro="Formal study in data science and AI alongside professional engineering work."
+            />
+            <EducationList education={education} featureFirst />
+          </div>
+        </section>
+      )}
+
+      <section id="process" className="ip-section is-tint">
         <div className="hm-container">
           <SectionHead
-            index="03"
+            index="04"
             label="How I work"
             title={["Clarity at every step."]}
             intro="Four stages, each ending in something you can see, test and decide on."
@@ -277,10 +325,10 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section id="principles" className="ip-section is-tint">
+      <section id="principles" className="ip-section">
         <div className="hm-container">
           <SectionHead
-            index="04"
+            index="05"
             label="Principles"
             title={["What I optimise for."]}
             intro="Five trade-offs I make on purpose. Hover or focus a card for the reasoning."
@@ -307,10 +355,10 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section id="tools" className="ip-section">
+      <section id="tools" className="ip-section is-tint">
         <div className="hm-container">
           <SectionHead
-            index="05"
+            index="06"
             label="Tools & capabilities"
             title={["The stack behind the work."]}
             action={

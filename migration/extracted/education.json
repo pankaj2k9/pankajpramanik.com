@@ -1,23 +1,23 @@
 [
   {
-    "degree": "BSc in Data Science & Artificial Intelligence",
-    "institution": "Indian Institute of Technology, Guwahati",
+    "degree": "Bachelor of Science (Honours) in Data Science and Artificial Intelligence",
+    "institution": "Indian Institute of Technology Guwahati",
     "startYear": 2023,
     "endYear": 2027,
     "description": "Practical, industry-aligned curriculum across data engineering, MLOps, and applied AI at one of India's premier technology institutes."
   },
   {
-    "degree": "BSc in Mechanical Engineering",
-    "institution": "KUET — Khulna University of Engineering & Technology",
+    "degree": "Undergraduate Studies, Mechanical Engineering",
+    "institution": "Khulna University of Engineering and Technology",
     "startYear": 2009,
     "endYear": 2015,
-    "description": "Pivoted early to a self-directed path in software, shaping the next 8+ years in AI, automation, and data engineering."
+    "description": "Studied Mechanical Engineering before transitioning into software and technology. I later pursued a professional career in software engineering, data engineering, automation, and AI."
   },
   {
     "degree": "Higher Secondary Certificate (H.S.C)",
     "institution": "Govt. Azizul Haque College, Bogura",
     "startYear": 2007,
     "endYear": 2009,
-    "description": "GPA 5.00/5.00 — strongest subjects: Mathematics, Physics, and English."
+    "description": "GPA 5.00/5.00 - strongest subjects: Mathematics, Physics, and English."
   }
 ]

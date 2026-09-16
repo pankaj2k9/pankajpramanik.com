@@ -165,7 +165,7 @@ export default async function ServicesPage({
       <PageCTA
         label="Not sure yet?"
         lines={["Not sure which service fits?", "Tell me what you’re building."]}
-        copy="Describe the goal and what’s in the way. I’ll suggest where to start — even if it’s smaller than you expected."
+        copy="Describe the goal and what’s in the way. I’ll suggest where to start - even if it’s smaller than you expected."
         cta="Tell me about your project"
       />
       <PageMotion steps={STEPS} />

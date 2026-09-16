@@ -31,7 +31,7 @@
       "Developed AI-driven solutions using LangChain, PineconeDB, and LangFlow for advanced NLP workflows and RAG systems",
       "Built real-time applications with Supabase and PostgreSQL Realtime for seamless data sync",
       "Integrated Twilio for SMS notifications and Eleven Labs for voice capabilities to enhance user engagement",
-      "Designed scalable solutions with Python, Next.js, and Supabase — translating business needs into robust APIs"
+      "Designed scalable solutions with Python, Next.js, and Supabase - translating business needs into robust APIs"
     ]
   },
   {
@@ -79,8 +79,8 @@
     "summary": "Solidity · Web3.js · Three.js · Babylon.js · WebGL",
     "highlights": [
       "Created Ethereum smart contracts in Solidity and built DApps with HTML, JavaScript, Node.js, and Web3.js",
-      "Developed accurate, simultaneous rendering of heterogeneous and multi-resolution meshes (Biva Visibility Test — patent pending)",
-      "Worked on Mindbenders WebGL engine — optimized Virtual Texturing and rendering passes",
+      "Developed accurate, simultaneous rendering of heterogeneous and multi-resolution meshes (Biva Visibility Test - patent pending)",
+      "Worked on Mindbenders WebGL engine - optimized Virtual Texturing and rendering passes",
       "Built 2D/3D rendering with Three.js, Babylon.js, Fabric.js; handled OBJ/3DS to CTM/FBX conversions via Blender"
     ]
   },
@@ -96,7 +96,7 @@
     "summary": "React Native · Redux Saga · Push Notifications · App Store Deployment",
     "highlights": [
       "Built static UI and dynamic attributes for large automotive applications with custom push notifications and REST APIs",
-      "Refactored error handling with React Native alert dialogs — reduced user input errors by ~44%",
+      "Refactored error handling with React Native alert dialogs - reduced user input errors by ~44%",
       "Deployed apps to Google Play Store and Apple App Store; led adoption of React Native best practices",
       "Authored UML-compliant high-level designs (Class, Sequence, Activity diagrams, Use Cases)"
     ]
@@ -115,7 +115,7 @@
       "Built RESTful web services and SPAs with React, React Native, Next.js, and Node.js",
       "Implemented middleware with Redux-Thunk, Redux-Saga, Redux-Logger, and Universal React Redux",
       "Followed Agile/Scrum methodology with Rally for sprint tracking",
-      "Wrote complex SQL queries, stored procedures, functions, and packages — DDL and DML operations"
+      "Wrote complex SQL queries, stored procedures, functions, and packages - DDL and DML operations"
     ]
   }
 ]

@@ -15,7 +15,7 @@ import Counter from "@/components/site/Counter";
 export const revalidate = 300;
 
 export const metadata = pageMetadata(
-  "Journal — Writing on AI, data & engineering",
+  "Journal - Writing on AI, data & engineering",
   "Articles on AI engineering, LLM/RAG systems, MLOps, data engineering, and full-stack development.",
   "/blog",
 );
@@ -138,7 +138,7 @@ export default async function BlogPage({
       <PageCTA
         label="Discuss an idea"
         lines={["Working on something", "you want to talk through?"]}
-        copy="If one of these posts is close to a problem you have, tell me about it — I’m happy to compare notes."
+        copy="If one of these posts is close to a problem you have, tell me about it - I’m happy to compare notes."
         cta="Start a conversation"
       />
       <PageMotion steps={STEPS} />

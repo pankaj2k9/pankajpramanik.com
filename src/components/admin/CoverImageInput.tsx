@@ -83,7 +83,7 @@ export default function CoverImageInput({
         />
       )}
       {url && broken && (
-        <p className="mt-2 text-xs text-pink">Image failed to load — check the URL.</p>
+        <p className="mt-2 text-xs text-pink">Image failed to load - check the URL.</p>
       )}
     </div>
   );

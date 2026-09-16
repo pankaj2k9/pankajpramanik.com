@@ -83,7 +83,7 @@ export default function HomeFooter() {
               Pankaj<span>.</span>
             </p>
             <p className="hf-about">
-              AI &amp; Data Engineer — building agentic systems, LLM/RAG
+              AI &amp; Data Engineer - building agentic systems, LLM/RAG
               applications, data platforms, analytics systems, automation,
               LLMOps and MLOps.
             </p>

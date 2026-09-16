@@ -157,7 +157,7 @@ export default function PostForm({
         <div>
           <label htmlFor="seoDescription" className={labelCls}>
             SEO description{" "}
-            <span className="text-faint">(150–160 characters ideal)</span>
+            <span className="text-faint">(150-160 characters ideal)</span>
           </label>
           <textarea
             id="seoDescription"

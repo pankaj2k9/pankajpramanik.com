@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { site, absoluteUrl } from "@/lib/site";
+import { site } from "@/lib/site";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -12,17 +12,21 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: site.title,
-    template: `%s — ${site.name}`,
+    // Pages without their own title (404, errors) show just the name; the
+    // homepage sets its full title itself.
+    default: site.name,
+    template: `%s | ${site.name}`,
   },
   description: site.description,
   keywords: [...site.keywords],
   authors: [{ name: site.name, url: site.url }],
   creator: site.name,
+  publisher: site.name,
+  applicationName: site.name,
+  // No og:url here: pages set their own, and error/404 pages must not claim the homepage URL.
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: absoluteUrl("/"),
     siteName: site.name,
     title: site.title,
     description: site.description,
@@ -31,16 +35,6 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: site.title,
     description: site.description,
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
   },
 };
 

@@ -52,7 +52,7 @@ export default async function AdminExperiencePage() {
                   <p className="text-xs text-faint">{e.company}</p>
                 </td>
                 <td className="px-5 py-3 text-muted">
-                  {formatMonthYear(e.startDate)} —{" "}
+                  {formatMonthYear(e.startDate)} -{" "}
                   {e.current ? "Present" : formatMonthYear(e.endDate)}
                 </td>
                 <td className="px-5 py-3 text-muted">{e.order}</td>

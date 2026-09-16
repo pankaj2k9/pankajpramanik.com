@@ -173,7 +173,7 @@ export const serviceGroups: ServiceGroup[] = [
     label: "Agentic AI",
     title: "Agents with clear boundaries.",
     description:
-      "Design multi-step AI agents that plan, use tools and hand off to people — with guardrails, tracing and review where it matters.",
+      "Design multi-step AI agents that plan, use tools and hand off to people - with guardrails, tracing and review where it matters.",
     tone: "blue",
     visual: "agents",
     problems: [

@@ -1,6 +1,6 @@
 export const site = {
   name: "Pankaj Kumar Pramanik",
-  title: "Pankaj Kumar Pramanik — AI & Data Engineer",
+  title: "Pankaj Kumar Pramanik - AI & Data Engineer",
   description:
     "AI and data engineering by Pankaj Kumar Pramanik. Build useful AI applications, reliable data pipelines, and connected automation for your business.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://pankajpramanik.com",
@@ -18,7 +18,7 @@ export const site = {
   youtube: "https://www.youtube.com/@pankaj_data_ai_researcher_iitg",
   /** Stated across the site ("8+ years"); earlier freelance work predates the experience records. */
   yearsExperience: 8,
-  headline: "AI & Data Engineer — Agentic AI · MLOps · GenAI",
+  headline: "AI & Data Engineer - Agentic AI · MLOps · GenAI",
   photo: "/uploads/2026/09/16/pankaj-kumar-pramanik-portrait.jpg",
   cv: "/Pankaj_Kumar_Pramanik_AI_Data_Engineer_CV.pdf",
   keywords: [

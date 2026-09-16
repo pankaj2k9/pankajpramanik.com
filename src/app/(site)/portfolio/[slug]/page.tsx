@@ -1,4 +1,4 @@
-import { pageMetadata } from "@/lib/seo";
+import { breadcrumbJsonLd, jsonLdGraph, metaDescription, pageMetadata, PERSON_ID } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -40,32 +40,14 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
   if (!project || project.status !== "PUBLISHED") return {};
-  const title = project.seoTitle ?? `${project.title} — Project`;
-  const description =
-    project.seoDescription ?? project.description.slice(0, 160);
-  return {
-    ...pageMetadata(title, description, `/portfolio/${project.slug}`),
-    ...(project.coverImage
-      ? {
-          openGraph: {
-            ...pageMetadata(title, description, `/portfolio/${project.slug}`)
-              .openGraph,
-            images: [
-              {
-                url: project.coverImage,
-                alt: `${project.title} — project preview`,
-              },
-            ],
-          },
-          twitter: {
-            card: "summary_large_image",
-            title,
-            description,
-            images: [project.coverImage],
-          },
-        }
-      : {}),
-  };
+  const title = project.seoTitle ?? `${project.title} - Project`;
+  const description = metaDescription(project.seoDescription ?? project.description);
+  return pageMetadata(title, description, `/portfolio/${project.slug}`, {
+    absoluteTitle: title.length > 40,
+    image: project.coverImage
+      ? { url: project.coverImage, alt: `${project.title} - project preview` }
+      : null,
+  });
 }
 
 export default async function ProjectPage({
@@ -91,16 +73,22 @@ export default async function ProjectPage({
     ? upgradeCtaLinks(renderContent(project.content, project.contentFormat))
     : "";
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareSourceCode",
-    name: project.title,
-    description: project.seoDescription ?? project.description,
-    codeRepository: project.repoUrl ?? undefined,
-    programmingLanguage: project.techStack.join(", "),
-    url: absoluteUrl(`/portfolio/${project.slug}`),
-    image: project.coverImage ?? undefined,
-  };
+  const jsonLd = jsonLdGraph(
+    {
+      "@type": project.repoUrl ? "SoftwareSourceCode" : "CreativeWork",
+      name: project.title,
+      description: metaDescription(project.seoDescription ?? project.description, 300),
+      codeRepository: project.repoUrl ?? undefined,
+      keywords: project.techStack.join(", ") || undefined,
+      url: absoluteUrl(`/portfolio/${project.slug}`),
+      image: project.coverImage ? absoluteUrl(project.coverImage) : undefined,
+      author: { "@id": PERSON_ID },
+    },
+    breadcrumbJsonLd([
+      ["Projects", "/portfolio"],
+      [project.title, `/portfolio/${project.slug}`],
+    ]),
+  );
 
   const steps = [
     { id: "intro", label: "Intro" },

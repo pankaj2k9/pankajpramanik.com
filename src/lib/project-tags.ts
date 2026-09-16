@@ -56,9 +56,9 @@ export function projectType(p: ProjectLike): string {
   return "Case study";
 }
 
-/** Splits "Name — Subtitle (Stack)" style titles for display. */
+/** Splits "Name - Subtitle (Stack)" style titles for display. */
 export function splitTitle(title: string): { name: string; subtitle?: string } {
-  const [name, ...rest] = title.split(/\s+[—|–]\s+|\s+\|\s+|\s*\(/);
+  const [name, ...rest] = title.split(/\s+[-–—|]\s+|\s*\(/);
   const subtitle = rest.join(" ").replace(/\)\s*$/, "").trim();
   return { name: name.trim(), subtitle: subtitle || undefined };
 }

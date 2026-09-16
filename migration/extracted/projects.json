@@ -1,9 +1,9 @@
 [
   {
     "slug": "journeymesh-multiagent-llmops",
-    "title": "JourneyMesh — Multi-Agent AI Travel Planner",
+    "title": "JourneyMesh - Multi-Agent AI Travel Planner",
     "tagline": "Supervisor-routed multi-agent travel planning with guardrails, evaluation and human review",
-    "description": "JourneyMesh is a production-shaped multi-agent AI travel planner. A single sentence such as “plan a relaxing 5-day family trip from Dhaka to Singapore with a budget of $2,000” becomes a reviewable plan: routes, a hotel shortlist, a forecast, a cost breakdown that separates confirmed prices from estimates, and a day-by-day itinerary. A LangGraph supervisor picks only the specialist agents a request needs, every external call goes through an MCP client and an authorisation guard, every draft is guarded and evaluated, and nothing is final until a human approves it — with request-changes re-running only the affected agents.",
+    "description": "JourneyMesh is a production-shaped multi-agent AI travel planner. A single sentence such as “plan a relaxing 5-day family trip from Dhaka to Singapore with a budget of $2,000” becomes a reviewable plan: routes, a hotel shortlist, a forecast, a cost breakdown that separates confirmed prices from estimates, and a day-by-day itinerary. A LangGraph supervisor picks only the specialist agents a request needs, every external call goes through an MCP client and an authorisation guard, every draft is guarded and evaluated, and nothing is final until a human approves it - with request-changes re-running only the affected agents.",
     "techStack": [
       "Python",
       "LangGraph",
@@ -46,7 +46,7 @@
   },
   {
     "slug": "bird-disease-classification-mlops",
-    "title": "Bird Disease Classification — MLOps E2E",
+    "title": "Bird Disease Classification - MLOps E2E",
     "tagline": "Deep learning classifier with full MLOps lifecycle",
     "description": "End-to-end MLOps project for bird disease classification using deep learning: reproducible training pipelines, DVC data versioning, MLflow experiment tracking, Dockerized serving, and CI/CD deployment automation.",
     "techStack": [
@@ -65,7 +65,7 @@
   },
   {
     "slug": "caresage-medical-rag-chatbot",
-    "title": "CareSage — Medical RAG Chatbot",
+    "title": "CareSage - Medical RAG Chatbot",
     "tagline": "LangChain + Pinecone retrieval-augmented medical Q&A",
     "description": "Medical question-answering chatbot built on Retrieval-Augmented Generation: documents are chunked and embedded into Pinecone, retrieved with semantic search, and answered by an LLM through LangChain with source-grounded responses.",
     "techStack": [
@@ -86,7 +86,7 @@
     "slug": "ai-fullstack-langchain-app",
     "title": "AI Full-Stack App with LangChain",
     "tagline": "PDF-powered RAG chatbot for medical Q&A",
-    "description": "Full-stack RAG application answering questions over PDF documents: chunking and embedding with semantic search, vector storage, and an LLM answering layer — packaged as a deployable web app.",
+    "description": "Full-stack RAG application answering questions over PDF documents: chunking and embedding with semantic search, vector storage, and an LLM answering layer - packaged as a deployable web app.",
     "techStack": [
       "Python",
       "LangChain",
@@ -102,7 +102,7 @@
   },
   {
     "slug": "moviemate-recommender",
-    "title": "MovieMate — Personalized Movie Recommender",
+    "title": "MovieMate - Personalized Movie Recommender",
     "tagline": "Content-based recommendation engine",
     "description": "Personalized movie recommendation system that combines content-based filtering with popularity signals to suggest films tailored to each user's taste, with an interactive web UI.",
     "techStack": [
@@ -119,7 +119,7 @@
   },
   {
     "slug": "audience-sentiment-analysis-mlops",
-    "title": "Audience Sentiment Analysis — MLOps",
+    "title": "Audience Sentiment Analysis - MLOps",
     "tagline": "Sentiment model with automated build/deploy/retrain",
     "description": "Machine learning operations project for building, deploying, and continuously retraining an audience sentiment analysis model with pipeline automation and monitoring.",
     "techStack": [
@@ -137,9 +137,9 @@
   },
   {
     "slug": "rag-chat-nextjs-langchain",
-    "title": "RAG Chat App — Next.js + LangChain",
+    "title": "RAG Chat App - Next.js + LangChain",
     "tagline": "GPT-4 chat over your own documents",
-    "description": "Retrieval-augmented chat application built with Next.js and LangChain.js: document ingestion, embeddings, and GPT-4 answering — containerized with Docker for one-command deployment.",
+    "description": "Retrieval-augmented chat application built with Next.js and LangChain.js: document ingestion, embeddings, and GPT-4 answering - containerized with Docker for one-command deployment.",
     "techStack": [
       "TypeScript",
       "Next.js",
@@ -191,7 +191,7 @@
     "slug": "threejs-ai-character-scene",
     "title": "Three.js Scene with AI Character",
     "tagline": "React Three Fiber + Gaussian splatting + Hugging Face",
-    "description": "Interactive 3D scene combining React Three Fiber, drei, and Gaussian splatting (gsplat) with a Hugging Face-powered AI character — exploring the intersection of real-time 3D and generative AI.",
+    "description": "Interactive 3D scene combining React Three Fiber, drei, and Gaussian splatting (gsplat) with a Hugging Face-powered AI character - exploring the intersection of real-time 3D and generative AI.",
     "techStack": [
       "React",
       "React Three Fiber",
@@ -209,7 +209,7 @@
     "slug": "r3f-car-racing-game",
     "title": "React Three Fiber Car Racing Game",
     "tagline": "Physics-based browser racing game",
-    "description": "Browser-based 3D car racing game built with React Three Fiber, drei helpers, and cannon physics — real-time vehicle dynamics and collision in WebGL.",
+    "description": "Browser-based 3D car racing game built with React Three Fiber, drei helpers, and cannon physics - real-time vehicle dynamics and collision in WebGL.",
     "techStack": [
       "JavaScript",
       "React Three Fiber",
@@ -224,9 +224,9 @@
   },
   {
     "slug": "animated-galaxy-webgl",
-    "title": "Animated Galaxy — Custom WebGL Shaders",
+    "title": "Animated Galaxy - Custom WebGL Shaders",
     "tagline": "GLSL particle galaxy generator",
-    "description": "Procedural galaxy generator animated entirely in custom GLSL shaders with Three.js — tens of thousands of particles animated on the GPU.",
+    "description": "Procedural galaxy generator animated entirely in custom GLSL shaders with Three.js - tens of thousands of particles animated on the GPU.",
     "techStack": [
       "JavaScript",
       "Three.js",
@@ -241,9 +241,9 @@
   },
   {
     "slug": "nft-marketplace-kryptobirdz",
-    "title": "NFT Marketplace — KryptoBirdz",
+    "title": "NFT Marketplace - KryptoBirdz",
     "tagline": "Full-stack Web3 marketplace DApp",
-    "description": "NFT marketplace DApp with Solidity smart contracts, Web3.js integration, and a React frontend — minting, listing, and purchasing NFTs on Ethereum.",
+    "description": "NFT marketplace DApp with Solidity smart contracts, Web3.js integration, and a React frontend - minting, listing, and purchasing NFTs on Ethereum.",
     "techStack": [
       "Solidity",
       "Web3.js",
@@ -261,7 +261,7 @@
     "slug": "python-fullstack-apps",
     "title": "Python Full-Stack Apps Collection",
     "tagline": "Django, Flask, FastAPI + React reference apps",
-    "description": "Collection of full-stack reference applications pairing Python backends (Django, Flask, FastAPI) with React frontends — patterns for auth, APIs, and deployment.",
+    "description": "Collection of full-stack reference applications pairing Python backends (Django, Flask, FastAPI) with React frontends - patterns for auth, APIs, and deployment.",
     "techStack": [
       "Python",
       "Django",

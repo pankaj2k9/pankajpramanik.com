@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       await new Resend(apiKey).emails.send({
         from: process.env.CONTACT_FROM_EMAIL ?? "Portfolio <onboarding@resend.dev>",
         to,
-        subject: `[pankajpramanik.com] New comment awaiting approval — ${post.title}`,
+        subject: `[pankajpramanik.com] New comment awaiting approval - ${post.title}`,
         text: `${name} <${email}> commented on /blog/${post.slug}:\n\n${text}\n\nModerate: /admin/comments`,
       });
     } catch (err) {

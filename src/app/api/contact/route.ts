@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
         from,
         to,
         replyTo: email,
-        subject: `[pankajpramanik.com] ${subject || "New contact message"} — ${name}`,
+        subject: `[pankajpramanik.com] ${subject || "New contact message"} - ${name}`,
         text: `From: ${name} <${email}>\n\n${message}`,
       });
       if (result.error)

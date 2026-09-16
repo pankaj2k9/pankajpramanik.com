@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPageBySlug } from "@/lib/queries";
 import { renderContent } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 import PageHero from "@/components/inner/PageHero";
 import PageMotion from "@/components/motion/PageMotion";
 
@@ -10,11 +11,13 @@ export const revalidate = 3600;
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPageBySlug("privacy-policy");
   return {
-    title: page?.seoTitle ?? "Privacy Policy",
-    description:
+    ...pageMetadata(
+      page?.seoTitle ?? "Privacy Policy",
       page?.seoDescription ?? "Privacy policy for pankajpramanik.com.",
-    alternates: { canonical: "/privacy-policy" },
-    robots: { index: false },
+      "/privacy-policy",
+    ),
+    // Useful to visitors, not to searchers: keep it out of the index but let crawlers follow links.
+    robots: { index: false, follow: true },
   };
 }
 

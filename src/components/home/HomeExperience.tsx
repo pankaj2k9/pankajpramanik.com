@@ -70,7 +70,7 @@ const FALLBACK_TONES: Tone[] = ["blue", "peach", "mint", "violet"];
 
 function projectCopy(p: PortfolioProject, index: number) {
   const known = PROJECT_COPY[p.slug];
-  const [title, subtitle] = p.title.split(/\s+[—|(]\s*/);
+  const [title, subtitle] = p.title.split(/\s+(?:[-–—|]\s+|\()\s*/);
   const copy: ProjectCopy = known ?? {
     title,
     subtitle: subtitle?.replace(/\)$/, ""),
@@ -210,8 +210,8 @@ export default function HomeExperience({
                 </h2>
               </div>
               <p className="hm-intro" data-hm="up">
-                From the first data source to the last automated step — and on
-                into production — I help turn a useful idea into a system your
+                From the first data source to the last automated step - and on
+                into production - I help turn a useful idea into a system your
                 team can rely on.
               </p>
             </header>

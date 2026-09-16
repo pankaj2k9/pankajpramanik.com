@@ -13,12 +13,13 @@ import SectionHead from "@/components/inner/SectionHead";
 import PageCTA from "@/components/inner/PageCTA";
 import PageMotion from "@/components/motion/PageMotion";
 import Counter from "@/components/site/Counter";
+import EducationList from "@/components/inner/EducationList";
 
 export const revalidate = 300;
 
 export const metadata = pageMetadata(
-  "Work Experience",
-  "8+ years of professional experience — AI engineering, LLM/RAG systems, MLOps, 3D graphics, and full-stack development across global teams.",
+  "Work Experience & Education",
+  "8+ years of professional experience - AI engineering, LLM/RAG systems, MLOps, 3D graphics, and full-stack development across global teams.",
   "/experience",
 );
 
@@ -51,7 +52,7 @@ export default async function ExperiencePage() {
         lines={["Years of building,", "learning and shipping."]}
         lead={
           <p>
-            Remote-first work with teams worldwide — across AI engineering, data
+            Remote-first work with teams worldwide - across AI engineering, data
             platforms, 3D graphics and full-stack product development.
           </p>
         }
@@ -110,7 +111,7 @@ export default async function ExperiencePage() {
                   <div className="ex-when">
                     <span className="ex-year">{e.startDate.getFullYear()}</span>
                     <span className="ex-range">
-                      {formatMonthYear(e.startDate)} —{" "}
+                      {formatMonthYear(e.startDate)} -{" "}
                       {e.current ? "Present" : formatMonthYear(e.endDate)}
                     </span>
                     <span className="ex-place">{e.location}</span>
@@ -158,18 +159,7 @@ export default async function ExperiencePage() {
       <section id="education" className="ip-section is-tint">
         <div className="hm-container">
           <SectionHead index="02" label="Education" title={["Where it started."]} />
-          <div className="ex-education" data-hm-stagger>
-            {education.map((ed) => (
-              <article key={ed.id} className="ip-card ex-edu" data-hm="up">
-                <p className="hm-label">
-                  {ed.startYear} — {ed.endYear ?? "present"}
-                </p>
-                <h3>{ed.degree}</h3>
-                <p className="ex-institution">{ed.institution}</p>
-                {ed.description && <p className="ex-summary">{ed.description}</p>}
-              </article>
-            ))}
-          </div>
+          <EducationList education={education} />
         </div>
       </section>
 

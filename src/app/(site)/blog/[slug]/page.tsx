@@ -12,6 +12,7 @@ import { renderContent, readingTimeMinutes } from "@/lib/content";
 import { formatDate, jsonLdScript, slugify } from "@/lib/utils";
 import { absoluteUrl, site } from "@/lib/site";
 import { projectTags, splitTitle } from "@/lib/project-tags";
+import { breadcrumbJsonLd, jsonLdGraph, metaDescription, pageMetadata, PERSON_ID } from "@/lib/seo";
 import ShareButtons from "@/components/site/ShareButtons";
 import Comments from "@/components/site/Comments";
 import PageHero from "@/components/inner/PageHero";
@@ -47,33 +48,15 @@ export async function generateMetadata({
   if (!post || post.status !== "PUBLISHED") return {};
 
   const title = post.seoTitle ?? post.title;
-  const description = post.seoDescription ?? post.excerpt.slice(0, 160);
+  const description = metaDescription(post.seoDescription ?? post.excerpt);
 
-  return {
-    title,
-    description,
-    alternates: { canonical: `/blog/${post.slug}` },
-    openGraph: {
-      type: "article",
-      title,
-      description,
-      url: absoluteUrl(`/blog/${post.slug}`),
-      publishedTime: post.publishedAt?.toISOString(),
-      modifiedTime: post.updatedAt.toISOString(),
-      images: [
-        {
-          url: post.coverImage || absoluteUrl("/opengraph-image"),
-          alt: post.title,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [post.coverImage || absoluteUrl("/opengraph-image")],
-    },
-  };
+  return pageMetadata(title, description, `/blog/${post.slug}`, {
+    absoluteTitle: title.length > 40,
+    type: "article",
+    image: post.coverImage ? { url: post.coverImage, alt: post.title } : null,
+    publishedTime: post.publishedAt?.toISOString(),
+    modifiedTime: post.updatedAt.toISOString(),
+  });
 }
 
 /** Adds ids to h2/h3 headings and collects them for the table of contents. */
@@ -130,17 +113,25 @@ export default async function BlogPostPage({
     .sort((a, b) => b.score - a.score)[0];
   const relatedProject = scored && scored.score > 0 ? scored.p : null;
 
-  const articleJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: post.title,
-    description: post.seoDescription ?? post.excerpt,
-    image: post.coverImage ? [absoluteUrl(post.coverImage)] : undefined,
-    datePublished: post.publishedAt?.toISOString(),
-    dateModified: post.updatedAt.toISOString(),
-    author: { "@type": "Person", name: site.name, url: site.url },
-    mainEntityOfPage: absoluteUrl(`/blog/${post.slug}`),
-  };
+  const articleJsonLd = jsonLdGraph(
+    {
+      "@type": "BlogPosting",
+      headline: post.title,
+      description: metaDescription(post.seoDescription ?? post.excerpt, 300),
+      image: post.coverImage ? [absoluteUrl(post.coverImage)] : undefined,
+      datePublished: post.publishedAt?.toISOString(),
+      dateModified: post.updatedAt.toISOString(),
+      author: { "@type": "Person", "@id": PERSON_ID, name: site.name, url: absoluteUrl("/") },
+      publisher: { "@type": "Person", "@id": PERSON_ID, name: site.name },
+      mainEntityOfPage: absoluteUrl(`/blog/${post.slug}`),
+      articleSection: post.categories[0]?.name,
+      keywords: post.tags.map((t) => t.name).join(", ") || undefined,
+    },
+    breadcrumbJsonLd([
+      ["Journal", "/blog"],
+      [post.title, `/blog/${post.slug}`],
+    ]),
+  );
 
   const steps = [
     { id: "intro", label: "Intro" },
@@ -252,7 +243,7 @@ export default async function BlogPostPage({
       <PageCTA
         label="Discuss this idea"
         lines={["Working on something", "like this?"]}
-        copy={`If ${splitTitle(post.title).name} touches a problem you have, tell me about it — I’m happy to compare notes or scope the work.`}
+        copy={`If ${splitTitle(post.title).name} touches a problem you have, tell me about it - I’m happy to compare notes or scope the work.`}
         cta="Start a conversation"
       />
       <PageMotion steps={steps} root=".ip-main" />

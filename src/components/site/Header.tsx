@@ -38,7 +38,7 @@ export default function Header() {
           href="/"
           className="brand"
           onClick={() => setOpen(false)}
-          aria-label="Pankaj Pramanik home"
+          aria-label="Pankaj Kumar Pramanik, home"
         >
           <span className="brand-mark" aria-hidden>
             ✳

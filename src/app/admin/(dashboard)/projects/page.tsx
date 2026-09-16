@@ -51,7 +51,7 @@ export default async function AdminProjectsPage() {
                   <p className="text-xs text-faint">/{p.slug}</p>
                 </td>
                 <td className="px-5 py-3 text-muted">{p.category}</td>
-                <td className="px-5 py-3">{p.featured ? "★" : "—"}</td>
+                <td className="px-5 py-3">{p.featured ? "★" : "-"}</td>
                 <td className="px-5 py-3">
                   <span
                     className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${

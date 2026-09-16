@@ -1,4 +1,4 @@
-import { pageMetadata } from "@/lib/seo";
+import { breadcrumbJsonLd, jsonLdGraph, metaDescription, pageMetadata, PERSON_ID } from "@/lib/seo";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -40,11 +40,10 @@ export async function generateMetadata({
   const { slug } = await params;
   const page = await getPageBySlug(slug);
   if (!page || page.kind !== "SERVICE") return {};
-  return pageMetadata(
-    page.seoTitle || page.label || page.title,
-    page.seoDescription || page.summary,
-    `/services/${page.slug}`,
-  );
+  const title = page.seoTitle || page.label || page.title;
+  return pageMetadata(title, metaDescription(page.seoDescription || page.summary), `/services/${page.slug}`, {
+    absoluteTitle: title.length > 40,
+  });
 }
 
 type Feature = { icon: string; title: string; desc: string };
@@ -170,14 +169,21 @@ export default async function ServicePage({
   const { features, rest } = extractFeatures(fullHtml);
   const { intro, showcases, sections } = organizeArticle(rest);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    name: page.label || page.title,
-    description: page.summary,
-    provider: { "@type": "Person", name: site.name, url: site.url },
-    url: absoluteUrl(`/services/${page.slug}`),
-  };
+  const jsonLd = jsonLdGraph(
+    {
+      "@type": "Service",
+      name: page.label || page.title,
+      description: page.summary,
+      serviceType: group.label,
+      provider: { "@type": "Person", "@id": PERSON_ID, name: site.name, url: absoluteUrl("/") },
+      areaServed: "Worldwide",
+      url: absoluteUrl(`/services/${page.slug}`),
+    },
+    breadcrumbJsonLd([
+      ["Services", "/services"],
+      [page.label || page.title, `/services/${page.slug}`],
+    ]),
+  );
 
   const steps = [
     { id: "intro", label: "Intro" },

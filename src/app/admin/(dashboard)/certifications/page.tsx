@@ -59,7 +59,7 @@ export default async function AdminCertificationsPage() {
                       View ↗
                     </a>
                   ) : (
-                    <span className="text-faint">—</span>
+                    <span className="text-faint">-</span>
                   )}
                 </td>
                 <td className="px-5 py-3 text-right">

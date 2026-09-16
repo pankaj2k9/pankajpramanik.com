@@ -15,7 +15,7 @@ const NEEDS = [
   { id: "mlops", label: "MLOps / LLMOps", hint: "What is already built, and what keeps breaking?" },
   { id: "other", label: "Something else", hint: "Describe the problem in your own words." },
 ];
-const TIMELINES = ["As soon as possible", "Within 1–3 months", "This quarter", "Still exploring"];
+const TIMELINES = ["As soon as possible", "Within 1-3 months", "This quarter", "Still exploring"];
 const ENGAGEMENTS = ["Fixed-scope project", "Ongoing collaboration", "Advisory / review", "Not sure yet"];
 
 type Status = "idle" | "sending" | "sent" | "error";
@@ -94,7 +94,7 @@ export default function ProjectInquiry({ initialNeed }: { initialNeed?: string }
         </span>
         <h2>Message received.</h2>
         <p>
-          Thanks for the brief — I’ll read it properly and reply by email with
+          Thanks for the brief - I’ll read it properly and reply by email with
           questions and a suggested first step.
         </p>
       </div>

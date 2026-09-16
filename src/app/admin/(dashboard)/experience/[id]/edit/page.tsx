@@ -17,7 +17,7 @@ export default async function EditExperiencePage({
     <div>
       <h1 className="font-display text-2xl font-bold">Edit experience</h1>
       <p className="mt-1 text-sm text-faint">
-        {experience.role} — {experience.company}
+        {experience.role} - {experience.company}
       </p>
       <div className="mt-6">
         <ExperienceForm experience={experience} />

@@ -1683,14 +1683,16 @@
    Experience
    ========================================================================== */
 .ex-timeline {
+  --ex-when: 152px;
+  --ex-gap: 64px;
   position: relative;
-  padding-left: 0;
 }
+/* The rail sits in the middle of the gap between the dates and the cards. */
 .ex-rail {
   position: absolute;
-  top: 16px;
-  bottom: 16px;
-  left: 148px;
+  top: 36px;
+  bottom: 36px;
+  left: calc(var(--ex-when) + var(--ex-gap) / 2 - 1px);
   width: 2px;
   border-radius: 2px;
   background: var(--hm-border);
@@ -1705,18 +1707,18 @@
 }
 .ex-timeline ol {
   display: grid;
-  gap: 20px;
+  gap: 24px;
 }
 .ex-role {
   display: grid;
-  grid-template-columns: 148px minmax(0, 1fr);
-  gap: 40px;
+  grid-template-columns: var(--ex-when) minmax(0, 1fr);
+  gap: var(--ex-gap);
 }
 .ex-when {
   position: sticky;
   top: 110px;
   align-self: start;
-  padding-top: 20px;
+  padding-top: 28px;
   text-align: right;
 }
 .ex-year {
@@ -1731,16 +1733,23 @@
 .ex-role[data-focus] .ex-year {
   color: var(--hm-accent-ink, var(--hm-accent));
 }
-.ex-range,
+.ex-range {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--hm-body);
+}
 .ex-place {
   display: block;
-  margin-top: 6px;
+  margin-top: 2px;
   font-size: 12px;
+  line-height: 1.4;
   color: var(--hm-faint);
 }
 .ex-now {
   display: inline-block;
-  margin-top: 8px;
+  margin-top: 10px;
   padding: 3px 10px;
   border-radius: 999px;
   background: color-mix(in srgb, #22c55e 18%, transparent);
@@ -1753,7 +1762,7 @@
 }
 .ex-card {
   position: relative;
-  padding: 26px 28px;
+  padding: clamp(22px, 2.4vw, 30px) clamp(20px, 2.6vw, 34px);
   transition:
     border-color 0.35s ease,
     box-shadow 0.4s ease;
@@ -1761,8 +1770,8 @@
 .ex-card::before {
   content: "";
   position: absolute;
-  top: 30px;
-  left: -46px;
+  top: 37px;
+  left: calc(var(--ex-gap) / -2 - 8px);
   width: 14px;
   height: 14px;
   border: 2px solid var(--hm-border-strong);
@@ -1785,13 +1794,15 @@
 .ex-card h3 {
   font-size: clamp(20px, 1.8vw, 24px);
   font-weight: 600;
+  line-height: 1.25;
   letter-spacing: -0.02em;
   color: var(--hm-fg);
 }
 .ex-company {
   margin-top: 6px;
   font-size: 15px;
-  color: var(--hm-body);
+  font-weight: 500;
+  color: var(--hm-accent-ink, var(--hm-accent));
 }
 .ex-company a:hover {
   color: var(--hm-fg);
@@ -1799,20 +1810,24 @@
   text-underline-offset: 4px;
 }
 .ex-summary {
+  max-width: 72ch;
   margin-top: 12px;
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.65;
   color: var(--hm-body);
 }
 .ex-details {
-  margin-top: 18px;
+  margin-top: 20px;
   border-top: 1px solid var(--hm-border);
-  padding-top: 14px;
+  padding-top: 16px;
 }
 .ex-details summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
+  min-height: 32px;
+  cursor: pointer;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -1842,19 +1857,20 @@
 .ex-details ul {
   display: grid;
   gap: 10px;
+  max-width: 76ch;
   margin-top: 14px;
 }
 .ex-details li {
   position: relative;
   padding-left: 20px;
   font-size: 14.5px;
-  line-height: 1.55;
+  line-height: 1.6;
   color: var(--hm-body);
 }
 .ex-details li::before {
   content: "";
   position: absolute;
-  top: 9px;
+  top: 11px;
   left: 0;
   width: 8px;
   height: 1px;
@@ -1863,30 +1879,18 @@
 .ex-tech {
   margin-top: 18px;
 }
-.ex-education,
+.ex-details + .ex-tech {
+  margin-top: 16px;
+}
 .ex-quotes {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
-}
-.ex-edu {
-  padding: 24px;
-}
-.ex-edu h3 {
-  margin-top: 10px;
-  font-size: 19px;
-  font-weight: 600;
-  color: var(--hm-fg);
-}
-.ex-institution {
-  margin-top: 4px;
-  font-size: 14px;
-  color: var(--hm-accent-ink, var(--hm-accent));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 20px;
 }
 .ex-certs {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  gap: 14px;
 }
 .ex-cert {
   display: grid;
@@ -1918,7 +1922,11 @@ a.ex-cert:hover {
   color: var(--hm-accent-ink, var(--hm-accent));
 }
 .ex-quote {
-  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: clamp(22px, 2.4vw, 28px);
 }
 .ex-quote blockquote {
   font-size: 16px;
@@ -1939,6 +1947,120 @@ a.ex-cert:hover {
 .ex-quote figcaption span {
   font-size: 13px;
   color: var(--hm-faint);
+}
+
+/* ==========================================================================
+   Education (About + Experience)
+   ========================================================================== */
+.ed-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.ed-list > li {
+  display: flex;
+}
+.ed-card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 20px;
+  padding: clamp(22px, 2.4vw, 30px);
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.4s ease;
+}
+.ed-card:hover {
+  border-color: var(--hm-border-strong);
+}
+.ed-institution {
+  margin-top: 10px;
+  font-size: clamp(19px, 1.6vw, 22px);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--hm-fg);
+  text-wrap: balance;
+}
+.ed-body {
+  display: grid;
+  gap: 16px;
+}
+.ed-facts {
+  display: grid;
+  gap: 12px;
+}
+.ed-facts dt {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--hm-faint);
+}
+.ed-facts dd {
+  margin-top: 3px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--hm-accent-ink, var(--hm-accent));
+}
+.ed-description {
+  padding-top: 16px;
+  border-top: 1px solid var(--hm-border);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--hm-body);
+}
+/* Featured first record: full width, heading beside the details. */
+.ed-list.has-featured {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.ed-list.has-featured > li:first-child {
+  grid-column: 1 / -1;
+}
+.ed-card.is-featured {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+  padding: clamp(24px, 3.2vw, 40px);
+  background:
+    radial-gradient(ellipse 60% 90% at 0% 0%, var(--tone-wash), transparent 70%),
+    var(--hm-card);
+}
+.ed-card.is-featured .ed-institution {
+  font-size: clamp(24px, 2.4vw, 32px);
+  line-height: 1.15;
+}
+.ed-card.is-featured .ed-facts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 24px;
+}
+.ed-card.is-featured .ed-facts dd {
+  font-size: 16px;
+}
+@media (max-width: 1099px) {
+  .ed-list,
+  .ed-list.has-featured {
+    grid-template-columns: 1fr;
+  }
+  .ed-card,
+  .ed-card.is-featured {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 20px 32px;
+  }
+}
+@media (max-width: 640px) {
+  .ed-card,
+  .ed-card.is-featured {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .ed-card.is-featured .ed-facts {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }
 
 /* ==========================================================================
@@ -2735,20 +2857,26 @@ a.ex-cert:hover {
   }
   .ex-role {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 12px;
   }
   .ex-when {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
+    align-items: baseline;
+    gap: 4px 14px;
     padding-top: 0;
     text-align: left;
+  }
+  .ex-year {
+    font-size: 26px;
   }
   .ex-range,
   .ex-place,
   .ex-now {
     margin-top: 0;
+  }
+  .ex-timeline ol {
+    gap: 32px;
   }
   .ex-rail,
   .ex-card::before {

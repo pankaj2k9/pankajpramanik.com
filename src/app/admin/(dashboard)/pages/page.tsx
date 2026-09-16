@@ -22,7 +22,7 @@ export default async function AdminPagesPage() {
         {p.seoTitle ? (
           <span className="text-emerald">✓</span>
         ) : (
-          <span className="text-faint">—</span>
+          <span className="text-faint">-</span>
         )}
       </td>
       <td className="px-5 py-3 text-right">
