@@ -12,6 +12,7 @@ const EXPLORE = [
 const SITE = [
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
+  { href: "/booking", label: "Book a meeting" },
   { href: "/privacy-policy", label: "Privacy Policy" },
 ];
 const CONNECT = [

@@ -7,7 +7,8 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/api"],
+        // /booking/ (with slash) holds private manage links; /booking itself stays public.
+        disallow: ["/admin", "/api", "/booking/"],
       },
     ],
     sitemap: absoluteUrl("/sitemap.xml"),

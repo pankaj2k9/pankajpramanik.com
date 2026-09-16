@@ -36,6 +36,9 @@ function wordpressRedirects() {
     { source: "/about-me", destination: "/about", permanent: true },
     { source: "/resume", destination: "/experience", permanent: true },
     { source: "/latest-from-the-blog", destination: "/blog", permanent: true },
+    // Short, shareable booking links.
+    { source: "/book", destination: "/booking", permanent: false },
+    { source: "/schedule", destination: "/booking", permanent: false },
   ];
 
   // Retired WordPress services still occur in migrated article links.

@@ -95,6 +95,9 @@ export default async function ContactPage({
           <Link className="hm-link" href="/services#explorer">
             Not sure where to start? Find a service <span aria-hidden>→</span>
           </Link>
+          <Link className="hm-link" href="/booking">
+            Prefer to talk? Book a meeting <span aria-hidden>→</span>
+          </Link>
         </div>
       </PageHero>
 

@@ -72,21 +72,21 @@ model Tag {
 }
 
 model Project {
-  id            String        @id @default(cuid())
-  slug          String        @unique
-  title         String
-  tagline       String        @default("")
-  description   String        @default("")
-  content       String        @default("") // optional long-form case study
-  contentFormat ContentFormat @default(MARKDOWN)
-  problem     String        @default("")
-  approach    String        @default("")
-  outcome     String        @default("")
-  evidenceUrl String?
-  techStack   String[]      @default([])
-  repoUrl     String?
-  liveUrl     String?
-  coverImage  String?
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  title          String
+  tagline        String        @default("")
+  description    String        @default("")
+  content        String        @default("") // optional long-form case study
+  contentFormat  ContentFormat @default(MARKDOWN)
+  problem        String        @default("")
+  approach       String        @default("")
+  outcome        String        @default("")
+  evidenceUrl    String?
+  techStack      String[]      @default([])
+  repoUrl        String?
+  liveUrl        String?
+  coverImage     String?
   category       String        @default("General")
   featured       Boolean       @default(false)
   order          Int           @default(0)
@@ -213,4 +213,198 @@ model Comment {
 
   @@index([postId, status, createdAt])
   @@index([status, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Booking system. Every instant is stored in UTC; wall-clock times (weekly
+// hours, breaks) are "HH:mm" strings read in BookingSettings.timezone, so
+// daylight-saving changes are resolved when slots are generated. None of these
+// tables are part of the content snapshot: production owns its own calendar.
+// ---------------------------------------------------------------------------
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  RESCHEDULED
+  NO_SHOW
+}
+
+enum MeetingLocation {
+  GOOGLE_MEET
+  ZOOM
+  MICROSOFT_TEAMS
+  PHONE
+  CUSTOM_LINK
+}
+
+enum BlockedKind {
+  BLOCKED
+  VACATION
+}
+
+enum BookingSource {
+  PUBLIC
+  ADMIN
+}
+
+enum NotificationKind {
+  VISITOR_CONFIRMATION
+  ADMIN_NEW_BOOKING
+  VISITOR_RESCHEDULED
+  VISITOR_CANCELLED
+  ADMIN_CANCELLED
+  REMINDER
+}
+
+model MeetingType {
+  id                  String          @id @default(cuid())
+  name                String
+  slug                String          @unique
+  description         String          @default("")
+  durationMinutes     Int
+  bufferBeforeMinutes Int             @default(0)
+  bufferAfterMinutes  Int             @default(0)
+  locationType        MeetingLocation @default(GOOGLE_MEET)
+  // Zoom/Teams/custom link or phone number, depending on locationType.
+  locationDetail      String          @default("")
+  active              Boolean         @default(true)
+  order               Int             @default(0)
+  bookings            Booking[]
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+  @@index([active, order])
+}
+
+// Weekly working hours. Several rows per weekday allow split shifts.
+model AvailabilityRule {
+  id        String   @id @default(cuid())
+  weekday   Int // 0 = Sunday … 6 = Saturday, in the booking timezone
+  startTime String // "HH:mm"
+  endTime   String // "HH:mm"
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([weekday, active])
+}
+
+// Recurring breaks inside working hours; weekday null = every day.
+model AvailabilityBreak {
+  id        String @id @default(cuid())
+  weekday   Int?
+  startTime String
+  endTime   String
+  label     String @default("")
+}
+
+// One-off unavailability: blocked ranges, whole days and vacations.
+model BlockedTime {
+  id           String      @id @default(cuid())
+  startTimeUTC DateTime
+  endTimeUTC   DateTime
+  kind         BlockedKind @default(BLOCKED)
+  reason       String      @default("")
+  createdAt    DateTime    @default(now())
+
+  @@index([startTimeUTC, endTimeUTC])
+}
+
+// Singleton (id = "default").
+model BookingSettings {
+  id                  String   @id @default("default")
+  timezone            String   @default("America/New_York")
+  bookingEnabled      Boolean  @default(true)
+  minNoticeMinutes    Int      @default(240)
+  maxDaysAhead        Int      @default(60)
+  slotIntervalMinutes Int      @default(30)
+  maxPerDay           Int      @default(6)
+  // Applied on top of each meeting type (the larger value wins).
+  bufferBeforeMinutes Int      @default(0)
+  bufferAfterMinutes  Int      @default(0)
+  // New public bookings start as PENDING instead of CONFIRMED.
+  requireApproval     Boolean  @default(false)
+  notifyEmail         String   @default("")
+  reminderOffsets     Int[]    @default([1440, 60, 15])
+  updatedAt           DateTime @updatedAt
+}
+
+model Booking {
+  id                  String                @id @default(cuid())
+  // Long random secret for public manage links; never the database id.
+  bookingToken        String                @unique
+  // Short human reference shown to the visitor, e.g. "PKP-7F3K9Q".
+  reference           String                @unique
+  meetingType         MeetingType           @relation(fields: [meetingTypeId], references: [id], onDelete: Restrict)
+  meetingTypeId       String
+  fullName            String
+  email               String
+  phone               String?
+  company             String?
+  purpose             String
+  notes               String?
+  startTimeUTC        DateTime
+  endTimeUTC          DateTime
+  // Snapshots, so later meeting-type edits do not move existing bookings.
+  bufferBeforeMinutes Int                   @default(0)
+  bufferAfterMinutes  Int                   @default(0)
+  locationType        MeetingLocation
+  visitorTimezone     String
+  status              BookingStatus         @default(CONFIRMED)
+  source              BookingSource         @default(PUBLIC)
+  meetingUrl          String?
+  calendarEventId     String?
+  adminNotes          String?
+  cancelReason        String?
+  cancelledAt         DateTime?
+  rescheduledFrom     Booking?              @relation("BookingReschedule", fields: [rescheduledFromId], references: [id], onDelete: SetNull)
+  rescheduledFromId   String?               @unique
+  rescheduledTo       Booking?              @relation("BookingReschedule")
+  notifications       BookingNotification[]
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+
+  @@index([startTimeUTC, endTimeUTC])
+  @@index([status, startTimeUTC])
+  @@index([email])
+}
+
+// Outbox for booking emails and reminders; a cron endpoint delivers due rows.
+model BookingNotification {
+  id            String           @id @default(cuid())
+  booking       Booking          @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  bookingId     String
+  kind          NotificationKind
+  offsetMinutes Int?
+  scheduledFor  DateTime
+  sentAt        DateTime?
+  attempts      Int              @default(0)
+  lastError     String?
+  createdAt     DateTime         @default(now())
+
+  @@index([sentAt, scheduledFor])
+  @@index([bookingId])
+}
+
+// OAuth connection to an external calendar (Google today). Tokens are
+// AES-256-GCM encrypted at rest and never leave the server.
+model CalendarConnection {
+  id                String   @id @default(cuid())
+  provider          String   @unique // "google"
+  accountEmail      String
+  calendarId        String   @default("primary")
+  accessTokenEnc    String
+  refreshTokenEnc   String
+  expiresAt         DateTime
+  scope             String   @default("")
+  checkBusy         Boolean  @default(true)
+  createEvents      Boolean  @default(true)
+  createMeetLinks   Boolean  @default(true)
+  // Let Google Calendar email its own invitation/updates to the attendee as
+  // well (sendUpdates=all). The site's confirmation email is sent either way.
+  sendGoogleInvites Boolean  @default(false)
+  lastError         String?
+  connectedAt       DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }

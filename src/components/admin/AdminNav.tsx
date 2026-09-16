@@ -7,6 +7,7 @@ export default function AdminNav() {
     <nav className="admin-navigation" aria-label="Dashboard navigation">
       {[
         { href: "/admin", label: "Overview" },
+        { href: "/admin/booking", label: "Bookings & calendar" },
         { href: "/admin/posts", label: "Blog posts" },
         { href: "/admin/projects", label: "Projects" },
         { href: "/admin/pages", label: "Pages & services" },

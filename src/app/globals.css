@@ -536,10 +536,10 @@ summary {
   position: relative;
   padding-block: 20px;
 }
-.desktop-nav a[aria-current="page"] {
+.desktop-nav a[aria-current] {
   color: var(--foreground);
 }
-.desktop-nav a[aria-current="page"]::after {
+.desktop-nav a[aria-current]::after {
   content: "";
   position: absolute;
   width: 4px;
@@ -938,7 +938,7 @@ footer .text-faint {
   background: #0d1829;
   border-bottom-color: transparent;
 }
-.home-shell .desktop-nav a[aria-current="page"]::after {
+.home-shell .desktop-nav a[aria-current]::after {
   background: #ff7a45;
   transform: translateX(-50%);
 }
@@ -2854,32 +2854,14 @@ html.theme-switching :is(.home-shell, .inner-shell) * {
     opacity 0.3s ease,
     transform 0.35s var(--ease);
 }
-.home-shell .desktop-nav a[aria-current="page"]::after {
+.home-shell .desktop-nav a[aria-current]::after {
   opacity: 1;
   transform: translateX(-50%) scale(1);
 }
-.home-shell[data-section]:not([data-section="intro"]) .desktop-nav a[aria-current="page"] {
-  color: var(--muted);
-}
-.home-shell[data-section]:not([data-section="intro"], [data-section="contact"])
-  .desktop-nav
-  a[aria-current="page"]::after {
-  opacity: 0;
-  transform: translateX(-50%) scale(0.3);
-}
-.home-shell:is([data-section="expertise"], [data-section="finder"]) .desktop-nav a[href="/services"],
-.home-shell[data-section="work"] .desktop-nav a[href="/portfolio"] {
-  color: var(--foreground);
-}
-.home-shell:is([data-section="expertise"], [data-section="finder"])
-  .desktop-nav
-  a[href="/services"]::after,
-.home-shell[data-section="work"] .desktop-nav a[href="/portfolio"]::after {
-  opacity: 1;
-  transform: translateX(-50%) scale(1);
-}
-.home-shell[data-section="contact"] .desktop-nav a[aria-current="page"] {
-  color: var(--foreground);
+/* The header marks one item: the route, or on the homepage the section in view. */
+:is(.home-shell, .inner-shell) .header-contact[data-active] {
+  border-color: color-mix(in srgb, currentColor 55%, transparent);
+  background: color-mix(in srgb, currentColor 8%, transparent);
 }
 :is(.home-shell, .inner-shell) .header-contact {
   transition:
