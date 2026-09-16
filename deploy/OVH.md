@@ -283,8 +283,11 @@ deploy workflow that could race ahead of CI.
    the database-backed dashboard tests with Chromium). Report, screenshots and
    server log are uploaded as an artifact on failure. **This is a required
    gate: a failing browser test blocks the deploy.**
-3. **publish**: same database preparation, then builds the Docker image and
-   pushes `ghcr.io/pankaj2k9/pankajpramanik` tagged `latest`, `sha-<short>` and
+3. **publish**: same database preparation, then builds the Docker image,
+   **smoke-tests it** — starts the image against an empty database, so the
+   entrypoint's `prisma migrate deploy`, content import and admin creation all
+   run, and requires `/api/health` to answer — and only then pushes
+   `ghcr.io/pankaj2k9/pankajpramanik` tagged `latest`, `sha-<short>` and
    `sha-<full>`.
 4. **deploy** (environment `production`), as `deploy` over SSH:
    1. rsync `storage/` and `docker-compose.prod.yml` to `/opt/pankajpramanik/.deploy`

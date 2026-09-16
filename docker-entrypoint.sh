@@ -12,7 +12,7 @@
 set -e
 
 echo "→ Running prisma migrate deploy…"
-node_modules/.bin/prisma migrate deploy
+node prisma-cli/node_modules/prisma/build/index.js migrate deploy --schema prisma/schema.prisma
 
 if [ "${CONTENT_SYNC:-true}" != "false" ]; then
   echo "→ Syncing content snapshot…"

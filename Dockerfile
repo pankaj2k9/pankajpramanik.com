@@ -38,6 +38,27 @@ RUN npm run build
 # run by the entrypoint on every start.
 RUN npm run content:bundle
 
+# ---- prisma-cli: Prisma CLI with its full dependency tree ----
+# The entrypoint runs `prisma migrate deploy` on every start. The CLI needs its
+# own dependencies (effect, c12, its .wasm files, the schema engine) that the
+# standalone output does not contain, and `node_modules/.bin/prisma` is a
+# symlink that COPY would flatten into a file that cannot find its .wasm.
+# So install the CLI on its own, pinned to the exact version from
+# package-lock.json and with the same overrides as package.json.
+FROM node:22-alpine AS prisma-cli
+WORKDIR /prisma-cli
+RUN apk add --no-cache libc6-compat openssl
+COPY package.json /tmp/app-package.json
+COPY --from=deps /app/node_modules/prisma/package.json /tmp/prisma-package.json
+RUN node -e 'const fs = require("fs"); \
+      const app = require("/tmp/app-package.json"); \
+      const version = require("/tmp/prisma-package.json").version; \
+      fs.writeFileSync("package.json", JSON.stringify({ private: true, \
+        dependencies: { prisma: version }, overrides: app.overrides || {} }));' \
+  && npm install --omit=dev --no-audit --no-fund \
+  && npm cache clean --force \
+  && node node_modules/prisma/build/index.js --version
+
 # ---- runner: minimal standalone image ----
 FROM node:22-alpine AS runner
 WORKDIR /app
@@ -46,6 +67,8 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+# Prisma CLI: no update check / telemetry request on every container start.
+ENV CHECKPOINT_DISABLE=1
 
 RUN addgroup -g 1001 -S nodejs && adduser -u 1001 -S nextjs -G nodejs
 
@@ -56,13 +79,12 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Prisma schema + migrations + CLI so the entrypoint can run
-# `prisma migrate deploy` against the real database on container start
+# Prisma schema + migrations, the generated client (used by the content
+# importer), and the standalone Prisma CLI for `prisma migrate deploy`.
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
+COPY --from=prisma-cli /prisma-cli/node_modules ./prisma-cli/node_modules
 COPY --from=builder /app/dist/content-import.cjs ./scripts/content-import.cjs
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
 ENV STORAGE_DIR=/app/storage

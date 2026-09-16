@@ -266,11 +266,12 @@ jobs:
         with:
           driver-opts: network=host
 
-      - name: Build & push
+      - name: Build image
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: .
-          push: true
+          load: true
+          push: false
           network: host
           build-args: |
             DATABASE_URL=postgresql://build:build@localhost:5432/build?schema=public
@@ -278,6 +279,37 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # Start the built image exactly as production does — entrypoint runs
+      # `prisma migrate deploy` against an EMPTY database, imports content,
+      # creates the admin, starts Next — and require /api/health to answer.
+      # Nothing is pushed unless this passes.
+      - name: Smoke test image
+        env:
+          SMOKE_IMAGE: ${{ env.IMAGE }}:sha-${{ github.sha }}
+        run: |
+          set -euo pipefail
+          docker run --rm --network host postgres:16-alpine \
+            psql postgresql://build:build@localhost:5432/build -c 'CREATE DATABASE smoke'
+          docker run -d --name smoke --network host \
+            -e DATABASE_URL='postgresql://build:build@localhost:5432/smoke?schema=public' \
+            -e AUTH_SECRET=smoke-test-only -e AUTH_URL=http://localhost:3000 -e AUTH_TRUST_HOST=true \
+            -e ADMIN_EMAIL=smoke@example.com -e ADMIN_NAME=Smoke -e ADMIN_PASSWORD=smoke-test-password \
+            -e NEXT_PUBLIC_SITE_URL=https://pankajpramanik.com \
+            "$SMOKE_IMAGE"
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:3000/api/health; then
+              echo; echo "Image is healthy."; docker logs smoke | tail -20; docker rm -f smoke; exit 0
+            fi
+            if [ "$(docker inspect -f '{{.State.Running}}' smoke)" != "true" ]; then
+              echo "::error::container exited during smoke test"; break
+            fi
+            sleep 2
+          done
+          echo "::error::image failed smoke test"; docker logs smoke; docker rm -f smoke || true; exit 1
+
+      - name: Push image
+        run: docker push --all-tags "$IMAGE"
 
   deploy:
     name: Deploy production
