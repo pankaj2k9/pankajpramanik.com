@@ -62,6 +62,12 @@ const paths: Record<string, React.ReactNode> = {
     </>
   ),
   bolt: <path d="M13 2.5 4.5 13.5H12L11 21.5l8.5-11H12Z" />,
+  shield: (
+    <path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.3 7.5 9.5 4.3-1.2 7.5-4.9 7.5-9.5V6Zm-3 9 2.2 2.2L15.5 10" />
+  ),
+  dna: (
+    <path d="M7 3c0 5 10 7 10 12s-4 4-5 6M17 3c0 5-10 7-10 12s4 4 5 6M8.5 6.5h7M9 17.5h6M10.5 10h3M10.5 14h3" />
+  ),
 };
 
 export default function HeroIcon({

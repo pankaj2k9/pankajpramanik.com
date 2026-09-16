@@ -1,8 +1,14 @@
-import { pageMetadata } from "@/lib/seo";
-import ServiceFinder from "@/components/site/ServiceFinder";
 import Link from "next/link";
-import { getServices } from "@/lib/queries";
-import { serviceArt } from "@/lib/service-art";
+import { pageMetadata } from "@/lib/seo";
+import { getPublishedProjects, getServices } from "@/lib/queries";
+import { serviceGroups } from "@/lib/service-catalog";
+import { projectTags, splitTitle } from "@/lib/project-tags";
+import PageHero from "@/components/inner/PageHero";
+import SectionHead from "@/components/inner/SectionHead";
+import PageCTA from "@/components/inner/PageCTA";
+import ServiceExplorer from "@/components/inner/ServiceExplorer";
+import PageMotion from "@/components/motion/PageMotion";
+import SystemVisual from "@/components/home/SystemVisual";
 
 export const revalidate = 300;
 
@@ -12,77 +18,157 @@ export const metadata = pageMetadata(
   "/services",
 );
 
-export default async function ServicesPage() {
-  const services = await getServices();
+const STEPS = [
+  { id: "intro", label: "Intro" },
+  { id: "explorer", label: "Explorer" },
+  { id: "capabilities", label: "All services" },
+  { id: "contact", label: "Contact" },
+];
+
+export default async function ServicesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ area?: string }>;
+}) {
+  const [{ area }, services, projects] = await Promise.all([
+    searchParams,
+    getServices(),
+    getPublishedProjects(),
+  ]);
+  const serviceMap = Object.fromEntries(
+    services.map((s) => [s.slug, { slug: s.slug, label: s.label, summary: s.summary }]),
+  );
+  const tagged = projects.map((p) => ({ p, tags: projectTags(p).map((t) => t.id) }));
+  const relatedByGroup = Object.fromEntries(
+    serviceGroups.map((g) => [
+      g.id,
+      tagged
+        .filter(({ tags }) => g.projectTags.includes(tags[0]))
+        .slice(0, 3)
+        .map(({ p }) => ({ slug: p.slug, name: splitTitle(p.title).name, tag: g.label })),
+    ]),
+  );
+  const initial = Math.max(0, serviceGroups.findIndex((g) => g.id === area));
+  const grouped = new Set(serviceGroups.flatMap((g) => g.serviceSlugs));
+  const ungrouped = services.filter((s) => !grouped.has(s.slug));
 
   return (
-    <div className="container-site py-16">
-      <header className="max-w-3xl">
-        <p className="micro-label">Services</p>
-        <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">
-          Make your next idea <span className="text-gradient">work.</span>
-        </h1>
-        <p className="mt-4 text-lg leading-relaxed text-muted">
-          Bring me a business problem, an early prototype, or a system that
-          needs to improve. I help design and build the data pipelines, AI
-          applications, and integrations that connect your tools to your goals.
-        </p>
-      </header>
-
-      <div id="service-finder" className="mt-12">
-        <ServiceFinder />
-      </div>
-      <h2 className="mt-16 text-2xl font-medium">Explore the capabilities</h2>
-      <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {services.map((s) => (
-          <Link
-            key={s.id}
-            href={`/services/${s.slug}`}
-            className="card card-hover group relative overflow-hidden"
-          >
-            <div className="relative aspect-[8/5] overflow-hidden border-b border-border bg-surface-raised">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={serviceArt(s.slug)}
-                alt={`${s.label} — service illustration`}
-                loading="lazy"
-                width={800}
-                height={500}
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
-              />
-            </div>
-            <div className="p-6">
-              <h2 className="font-display text-lg font-semibold group-hover:text-accent">
-                {s.label}
-              </h2>
-              <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
-                {s.summary}
-              </p>
-              <span className="mt-4 inline-block text-sm font-medium text-accent">
-                Learn more →
-              </span>
-            </div>
-          </Link>
-        ))}
-      </div>
-
-      <div className="card mt-14 flex flex-wrap items-center justify-between gap-6 p-8">
-        <div>
-          <h2 className="font-display text-xl font-bold">
-            Have a project in mind?
-          </h2>
-          <p className="mt-1 text-muted">
-            Share your goals, current setup, and timeline. We’ll define a useful
-            next step.
+    <>
+      <PageHero
+        index="03"
+        label="Services"
+        tone="blue"
+        lines={["From raw data", "to working intelligence."]}
+        lead={
+          <p>
+            Bring a business problem, an early prototype or a system that needs
+            to improve. I design and build the data pipelines, AI applications
+            and integrations that connect your tools to your goals.
           </p>
+        }
+        visual={
+          <div className="sv-hero-card ip-card" data-hm-pointer>
+            <div className="sv-hero-art">
+              <SystemVisual kind="pipeline" />
+            </div>
+            <ol className="sv-hero-flow">
+              {["Data", "Intelligence", "Automation", "Production"].map((s) => (
+                <li key={s}>{s}</li>
+              ))}
+            </ol>
+          </div>
+        }
+      >
+        <div className="ip-actions">
+          <a className="hm-button" href="#explorer" data-hm-magnetic>
+            Explore services <span aria-hidden>↓</span>
+          </a>
+          <Link className="hm-link" href="/portfolio">
+            See the work <span aria-hidden>→</span>
+          </Link>
         </div>
-        <Link
-          href="/contact"
-          className="rounded-xl bg-accent-strong px-7 py-3 font-semibold text-white transition hover:opacity-90"
-        >
-          Get in Touch
-        </Link>
-      </div>
-    </div>
+      </PageHero>
+
+      <section id="explorer" className="ip-section">
+        <div className="hm-container">
+          <SectionHead
+            index="01"
+            label="Service explorer"
+            title={["Eight ways in.", "One connected system."]}
+            intro="Pick an area to see the problems it solves, what you get, the tools involved and related work."
+          />
+          <div data-hm="up">
+            <ServiceExplorer
+              groups={serviceGroups}
+              services={serviceMap}
+              projects={relatedByGroup}
+              initial={initial}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section id="capabilities" className="ip-section is-tint">
+        <div className="hm-container">
+          <SectionHead
+            index="02"
+            label="All services"
+            title={["Every service page,", "grouped by area."]}
+          />
+          <div className="sv-groups">
+            {serviceGroups.map((g) => {
+              const pages = g.serviceSlugs.map((s) => serviceMap[s]).filter(Boolean);
+              if (!pages.length) return null;
+              return (
+                <div key={g.id} className={`sv-group tone-${g.tone}`} data-hm-stagger>
+                  <h3 className="sv-group-title" data-hm="up">
+                    <span aria-hidden />
+                    {g.label}
+                  </h3>
+                  <div className="sv-group-cards">
+                    {pages.map((s) => (
+                      <Link key={s.slug} href={`/services/${s.slug}`} className="sv-card" data-hm="up">
+                        <span className="sv-card-title">{s.label}</span>
+                        <span className="sv-card-summary">{s.summary}</span>
+                        <span className="hm-arrow" aria-hidden>
+                          ↗
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+            {ungrouped.length > 0 && (
+              <div className="sv-group tone-blue" data-hm-stagger>
+                <h3 className="sv-group-title" data-hm="up">
+                  <span aria-hidden />
+                  More
+                </h3>
+                <div className="sv-group-cards">
+                  {ungrouped.map((s) => (
+                    <Link key={s.slug} href={`/services/${s.slug}`} className="sv-card" data-hm="up">
+                      <span className="sv-card-title">{s.label}</span>
+                      <span className="sv-card-summary">{s.summary}</span>
+                      <span className="hm-arrow" aria-hidden>
+                        ↗
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <PageCTA
+        label="Not sure yet?"
+        lines={["Not sure which service fits?", "Tell me what you’re building."]}
+        copy="Describe the goal and what’s in the way. I’ll suggest where to start — even if it’s smaller than you expected."
+        cta="Tell me about your project"
+      />
+      <PageMotion steps={STEPS} />
+    </>
   );
 }

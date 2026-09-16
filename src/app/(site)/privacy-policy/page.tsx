@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPageBySlug } from "@/lib/queries";
 import { renderContent } from "@/lib/content";
+import PageHero from "@/components/inner/PageHero";
+import PageMotion from "@/components/motion/PageMotion";
 
 export const revalidate = 3600;
 
@@ -21,18 +23,33 @@ export default async function PrivacyPolicyPage() {
   if (!page) notFound();
 
   return (
-    <div className="container-site py-16">
-      <div className="mx-auto max-w-3xl">
-        <h1 className="font-display text-4xl font-bold tracking-tight">
-          {page.title}
-        </h1>
-        <div
-          className="prose-content mt-8"
-          dangerouslySetInnerHTML={{
-            __html: renderContent(page.content, page.contentFormat),
-          }}
-        />
-      </div>
-    </div>
+    <>
+      <PageHero
+        index="09"
+        label="Legal"
+        tone="blue"
+        compact
+        lines={[page.title]}
+        lead={
+          <p>
+            How this site handles the information you share through the contact
+            form, comments and analytics.
+          </p>
+        }
+      />
+      <section className="ip-section">
+        <div className="hm-container ar-layout">
+          <article className="ar-body">
+            <div
+              className="prose-content"
+              dangerouslySetInnerHTML={{
+                __html: renderContent(page.content, page.contentFormat),
+              }}
+            />
+          </article>
+        </div>
+      </section>
+      <PageMotion />
+    </>
   );
 }

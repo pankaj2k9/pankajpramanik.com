@@ -1,91 +1,167 @@
-import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
-import { getServices, getSkillGroups } from "@/lib/queries";
+import { pageMetadata } from "@/lib/seo";
+import {
+  getExperiences,
+  getPublishedProjects,
+  getServices,
+  getSkillGroups,
+} from "@/lib/queries";
+import { splitTitle } from "@/lib/project-tags";
+import { serviceGroups } from "@/lib/service-catalog";
+import PageHero from "@/components/inner/PageHero";
+import SectionHead from "@/components/inner/SectionHead";
+import PageCTA from "@/components/inner/PageCTA";
+import PageMotion from "@/components/motion/PageMotion";
+import SkillMap, { type SkillCategory } from "@/components/inner/SkillMap";
+import Counter from "@/components/site/Counter";
 
 export const revalidate = 300;
 
 export const metadata = pageMetadata(
   "Skills & Tech Stack",
-  "Technical skills across Generative AI, LLM/RAG systems, data science, MLOps, frontend, backend, and cloud \u2014 Python, LangChain, Next.js, AWS, and more.",
+  "Technical skills across Generative AI, LLM/RAG systems, data science, MLOps, frontend, backend, and cloud — Python, LangChain, Next.js, AWS, and more.",
   "/skills",
 );
 
+const TONES = ["blue", "peach", "mint", "orange", "violet"];
+const STEPS = [
+  { id: "intro", label: "Intro" },
+  { id: "map", label: "Capability map" },
+  { id: "services", label: "Services" },
+  { id: "contact", label: "Contact" },
+];
+
+/** Loose match, so "LLM (GPT-4, Claude)" still finds "GPT-4" in a stack. */
+function usedIn(skill: string, values: string[]) {
+  const s = skill.toLowerCase();
+  const core = s.split(/[(/,·]/)[0].trim();
+  return values.some((v) => {
+    const t = v.toLowerCase();
+    return t.includes(core) || core.includes(t);
+  });
+}
+
 export default async function SkillsPage() {
-  const [groups, services] = await Promise.all([
+  const [groups, services, projects, experiences] = await Promise.all([
     getSkillGroups(),
     getServices(),
+    getPublishedProjects(),
+    getExperiences(),
   ]);
 
+  const categories: SkillCategory[] = groups.map((g, i) => ({
+    id: g.id,
+    label: g.category,
+    tone: TONES[i % TONES.length],
+    items: g.items.map((name) => ({
+      name,
+      projects: projects
+        .filter((p) => usedIn(name, p.techStack))
+        .slice(0, 6)
+        .map((p) => ({ slug: p.slug, name: splitTitle(p.title).name })),
+      roles: experiences
+        .filter((e) => usedIn(name, e.techStack))
+        .map((e) => e.company),
+    })),
+  }));
+  const total = groups.reduce((n, g) => n + g.items.length, 0);
+  const serviceMap = Object.fromEntries(services.map((s) => [s.slug, s]));
+
   return (
-    <div className="container-site py-16">
-      <header className="max-w-2xl">
-        <p className="micro-label">Skills</p>
-        <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">
-          Tech stack &amp; capabilities
-        </h1>
-        <p className="mt-4 text-lg text-muted">
-          The tools I reach for — from model training and agentic workflows to
-          production deployment and cloud infrastructure.
-        </p>
-      </header>
-
-      <div className="mt-14 grid gap-6 md:grid-cols-2">
-        {groups.map((g) => (
-          <section key={g.id} className="card p-7">
-            <h2 className="font-display text-lg font-semibold">{g.category}</h2>
-            <ul className="mt-4 flex flex-wrap gap-2">
-              {g.items.map((s) => (
-                <li
-                  key={s}
-                  className="rounded-lg border border-border bg-surface-raised px-3 py-1.5 text-sm text-muted"
-                >
-                  {s}
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
-      </div>
-
-      {/* ---------- Services these skills power ---------- */}
-      <section className="mt-20">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+    <>
+      <PageHero
+        index="06"
+        label="Skills"
+        tone="mint"
+        lines={["The tools behind", "the systems."]}
+        lead={
+          <p>
+            From model training and agentic workflows to production deployment
+            and cloud infrastructure. Pick a technology to see the projects and
+            roles that actually use it.
+          </p>
+        }
+      >
+        <dl className="ip-stats sk-stats">
           <div>
-            <p className="micro-label">Services</p>
-            <h2 className="mt-2 font-display text-3xl font-bold tracking-tight">
-              Hire me for
-            </h2>
+            <dd>
+              <Counter value={total} />
+            </dd>
+            <dt>Technologies</dt>
           </div>
-          <Link
-            href="/services"
-            className="text-sm font-medium text-muted transition-colors hover:text-accent"
-          >
-            All services →
-          </Link>
+          <div>
+            <dd>
+              <Counter value={groups.length} />
+            </dd>
+            <dt>Capability groups</dt>
+          </div>
+          <div>
+            <dd>
+              <Counter value={services.length} />
+            </dd>
+            <dt>Services they power</dt>
+          </div>
+        </dl>
+      </PageHero>
+
+      <section id="map" className="ip-section">
+        <div className="hm-container">
+          <SectionHead
+            index="01"
+            label="Capability map"
+            title={["What I work with,", "and where it shows up."]}
+            intro="No percentage bars — just the groups I work in and the evidence behind each tool."
+          />
+          <div data-hm="up">
+            <SkillMap categories={categories} />
+          </div>
         </div>
-        <ul className="mt-6 flex flex-wrap gap-2.5">
-          {services.map((s) => (
-            <li key={s.id}>
-              <Link
-                href={`/services/${s.slug}`}
-                className="inline-block rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-medium text-muted transition hover:border-accent hover:text-accent"
-              >
-                {s.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
       </section>
 
-      <div className="mt-16 text-center">
-        <p className="text-muted">Need one of these skills on your project?</p>
-        <Link
-          href="/contact"
-          className="mt-4 inline-block rounded-xl bg-accent-strong px-8 py-3.5 font-semibold text-white shadow-lg shadow-accent-strong/25 transition hover:opacity-90"
-        >
-          Let&apos;s Talk
-        </Link>
-      </div>
-    </div>
+      <section id="services" className="ip-section is-tint">
+        <div className="hm-container">
+          <SectionHead
+            index="02"
+            label="Services"
+            title={["What these skills", "turn into."]}
+            action={
+              <Link className="hm-link" href="/services">
+                All services <span aria-hidden>→</span>
+              </Link>
+            }
+          />
+          <div className="sv-groups" data-hm-stagger>
+            {serviceGroups.map((g) => {
+              const pages = g.serviceSlugs.map((s) => serviceMap[s]).filter(Boolean);
+              if (!pages.length) return null;
+              return (
+                <div key={g.id} className={`sk-service tone-${g.tone}`} data-hm="up">
+                  <div className="sk-service-head">
+                    <span className="sk-dot" aria-hidden />
+                    <h3>{g.label}</h3>
+                    <Link className="hm-link" href={`/services?area=${g.id}#explorer`}>
+                      Explore <span aria-hidden>→</span>
+                    </Link>
+                  </div>
+                  <ul className="ip-chips">
+                    {g.tools.map((t) => (
+                      <li key={t}>{t}</li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <PageCTA
+        label="Put it to work"
+        lines={["Need one of these", "on your project?"]}
+        copy="Tell me what you’re building and which parts are unclear. I’ll say what I’d use, what I’d avoid, and why."
+        cta="Let’s talk"
+      />
+      <PageMotion steps={STEPS} />
+    </>
   );
 }

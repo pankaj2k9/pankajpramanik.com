@@ -1687,7 +1687,8 @@ footer .text-faint {
 /* ==========================================================================
    Homepage below the hero — tokens, sections, cards, motion
    ========================================================================== */
-.home-shell {
+.home-shell,
+.inner-shell {
   --ease: cubic-bezier(0.22, 0.8, 0.24, 1);
   --hm-bg-1: #f3f6fa;
   --hm-bg-2: #ebf0f7;
@@ -1716,7 +1717,7 @@ footer .text-faint {
   --sv-line: #b9c6d8;
   --sv-bar: #dfe6ef;
 }
-:root[data-theme="dark"] .home-shell {
+:root[data-theme="dark"] :is(.home-shell, .inner-shell) {
   --hm-bg-1: #0f1b2d;
   --hm-bg-2: #0b1625;
   --hm-bg-3: #0d1829;
@@ -1764,14 +1765,14 @@ footer .text-faint {
   --tone-wash: color-mix(in srgb, var(--tone) 9%, var(--hm-card, #ffffff));
   --tone-glow: color-mix(in srgb, var(--tone) 32%, transparent);
 }
-:root[data-theme="dark"] .home-shell [class*="tone-"] {
+:root[data-theme="dark"] :is(.home-shell, .inner-shell) [class*="tone-"] {
   --tone-wash: color-mix(in srgb, var(--tone) 11%, var(--hm-card));
   --tone-glow: color-mix(in srgb, var(--tone) 22%, transparent);
 }
 
 /* Theme switch: one short crossfade instead of an instant swap. */
-html.theme-switching .home-shell,
-html.theme-switching .home-shell * {
+html.theme-switching :is(.home-shell, .inner-shell),
+html.theme-switching :is(.home-shell, .inner-shell) * {
   transition:
     background-color 0.4s ease,
     border-color 0.4s ease,
@@ -1857,7 +1858,8 @@ html.theme-switching .home-shell * {
 }
 
 /* ---------- reveal ---------- */
-.home-below {
+.home-below,
+.ip-main {
   --hm-reveal:
     opacity 0.8s var(--ease) var(--hm-delay, 0ms),
     translate 0.8s var(--ease) var(--hm-delay, 0ms),
@@ -2073,8 +2075,7 @@ html.theme-switching .home-shell * {
 .hm-service-card:nth-child(n + 4) {
   grid-column: span 3;
 }
-.home-below .hm-service-card,
-.home-below .hm-project {
+:is(.home-below, .ip-main) :is(.hm-service-card, .hm-project) {
   transition:
     var(--hm-reveal),
     transform 0.42s var(--ease),
@@ -2782,13 +2783,14 @@ html.theme-switching .home-shell * {
 .hm-progress {
   transition: opacity 0.4s ease;
 }
-.home-shell[data-near-footer] .hm-progress {
+:is(.home-shell, .inner-shell)[data-near-footer] .hm-progress {
   opacity: 0;
   pointer-events: none;
 }
+/* Over the hero the indicator has nothing to point at yet. */
 .home-shell:not([data-past-hero]) .hm-progress {
-  --hm-faint: #7f90aa;
-  --hm-fg: #eef3fa;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ---------- sticky header on the homepage ---------- */
@@ -2868,26 +2870,26 @@ html.theme-switching .home-shell * {
 .home-shell[data-section="contact"] .desktop-nav a[aria-current="page"] {
   color: var(--foreground);
 }
-.home-shell .header-contact {
+:is(.home-shell, .inner-shell) .header-contact {
   transition:
     translate 0.25s var(--ease),
     background-color 0.25s ease,
     border-color 0.25s ease;
 }
-.home-shell .header-contact span {
+:is(.home-shell, .inner-shell) .header-contact span {
   transition: transform 0.3s var(--ease);
 }
-.home-shell .header-contact:hover {
+:is(.home-shell, .inner-shell) .header-contact:hover {
   translate: 0 -2px;
   background: color-mix(in srgb, currentColor 8%, transparent);
   border-color: color-mix(in srgb, currentColor 40%, transparent);
 }
-.home-shell .header-contact:hover span {
+:is(.home-shell, .inner-shell) .header-contact:hover span {
   transform: translate(4px, -4px);
 }
 
 /* ---------- floating controls ---------- */
-.home-shell .music-pill {
+:is(.home-shell, .inner-shell) .music-pill {
   --surface: #0f1b2d;
   --surface-raised: #ffffff14;
   --border-strong: #ffffff1f;
@@ -2900,10 +2902,10 @@ html.theme-switching .home-shell * {
     translate 0.45s var(--ease),
     border-color 0.3s ease;
 }
-.home-shell .music-pill[data-playing] {
+:is(.home-shell, .inner-shell) .music-pill[data-playing] {
   border-color: #ffb08a55;
 }
-.home-shell .music-pill [class*="animate-"] {
+:is(.home-shell, .inner-shell) .music-pill [class*="animate-"] {
   animation-duration: 1.7s;
 }
 .music-volume {
@@ -2926,7 +2928,7 @@ html.theme-switching .home-shell * {
     opacity: 1;
   }
 }
-.home-shell .whatsapp-float {
+:is(.home-shell, .inner-shell) .whatsapp-float {
   transition:
     translate 0.45s var(--ease),
     transform 0.3s var(--ease),
@@ -2934,14 +2936,14 @@ html.theme-switching .home-shell * {
     box-shadow 0.3s ease;
   animation: hm-soft-glow 6s ease-in-out infinite;
 }
-.home-shell .whatsapp-float svg {
+:is(.home-shell, .inner-shell) .whatsapp-float svg {
   transition: transform 0.35s var(--ease);
 }
-.home-shell .whatsapp-float:hover {
+:is(.home-shell, .inner-shell) .whatsapp-float:hover {
   transform: translateY(-2px) scale(1.03);
   border-color: #d3ece2;
 }
-.home-shell .whatsapp-float:hover svg {
+:is(.home-shell, .inner-shell) .whatsapp-float:hover svg {
   transform: rotate(-10deg);
 }
 @keyframes hm-soft-glow {
@@ -2956,7 +2958,7 @@ html.theme-switching .home-shell * {
       0 0 0 6px #37a88f22;
   }
 }
-.home-shell[data-near-footer] :is(.music-pill, .whatsapp-float) {
+:is(.home-shell, .inner-shell)[data-near-footer] :is(.music-pill, .whatsapp-float) {
   translate: 0 -14px;
 }
 
@@ -3022,7 +3024,8 @@ html.theme-switching .home-shell * {
     translate: 0 18px;
     filter: none;
   }
-  .home-below {
+  .home-below,
+  .ip-main {
     --hm-reveal:
       opacity 0.55s var(--ease) var(--hm-delay, 0ms),
       translate 0.55s var(--ease) var(--hm-delay, 0ms);
@@ -3039,7 +3042,7 @@ html.theme-switching .home-shell * {
 }
 @media (prefers-reduced-motion: reduce) {
   .sv-flow,
-  .home-shell .whatsapp-float,
+  :is(.home-shell, .inner-shell) .whatsapp-float,
   .hm-option[aria-pressed="true"] .hm-option-arrow,
   .hm-finder-panel,
   .theme-icon,

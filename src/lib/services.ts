@@ -101,16 +101,8 @@ export const heroNiches = [
   { label: "Finance", icon: "bank", href: "/portfolio" },
   { label: "Education", icon: "cap", href: "/portfolio" },
   { label: "Travel", icon: "plane", href: "/portfolio" },
-  {
-    label: "Analytics",
-    icon: "bars",
-    href: "/services/hire-data-analytics-visualization-expert",
-  },
-  {
-    label: "MLOps",
-    icon: "cube",
-    href: "/services/hire-the-perfect-mlops-developer",
-  },
+  { label: "Cybersecurity", icon: "shield", href: "/portfolio" },
+  { label: "Biotech", icon: "dna", href: "/portfolio" },
 ] as const;
 
 /**

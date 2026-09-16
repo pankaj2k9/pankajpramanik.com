@@ -1,78 +1,128 @@
 import Link from "next/link";
-import ContactForm from "@/components/site/ContactForm";
 import SocialLinks from "@/components/site/SocialLinks";
 import { site } from "@/lib/site";
 import { pageMetadata } from "@/lib/seo";
 import { homeServices } from "@/lib/services";
+import { serviceGroups } from "@/lib/service-catalog";
+import PageHero from "@/components/inner/PageHero";
+import ProjectInquiry from "@/components/inner/ProjectInquiry";
+import PageMotion from "@/components/motion/PageMotion";
+
 export const metadata = pageMetadata(
   "Contact — Let's Build Something Useful",
   "Discuss your AI application, data pipeline, or automation project with Pankaj Kumar Pramanik. Send a project brief, email, or connect on WhatsApp.",
   "/contact",
 );
+
+const STEPS = [
+  { id: "intro", label: "Intro" },
+  { id: "brief", label: "Project brief" },
+];
+
+/** Maps ?service= ids from the homepage and services pages onto form options. */
+const NEED_BY_SERVICE: Record<string, string> = {
+  data: "data-platform",
+  "data-engineering": "data-platform",
+  intelligence: "rag",
+  "genai-rag": "rag",
+  "agentic-ai": "ai-product",
+  automation: "automation",
+  analytics: "analytics",
+  "data-analytics": "analytics",
+  production: "mlops",
+  "llmops-mlops": "mlops",
+  "ai-ml": "ai-product",
+  "cloud-production": "ai-product",
+};
+
 export default async function ContactPage({
   searchParams,
 }: {
   searchParams: Promise<{ service?: string }>;
 }) {
   const { service: id } = await searchParams;
-  const service = homeServices.find((s) => s.id === id);
+  const service =
+    homeServices.find((s) => s.id === id) ?? serviceGroups.find((g) => g.id === id);
+
   return (
-    <div className="container-site py-16">
-      <div className="grid gap-12 lg:grid-cols-[1fr_1.15fr]">
-        <div>
-          <p className="eyebrow">Every useful thing starts somewhere</p>
-          <h1 className="mt-5 font-display text-4xl font-medium tracking-tight sm:text-6xl">
-            What are you
-            <br />
-            <span className="text-muted">working on?</span>
-          </h1>
-          <p className="mt-6 text-lg leading-relaxed text-muted">
-            Tell me about your idea, the problem you’re solving, and where you
-            need help. A short description of your goals, timeline, and existing
-            tools is a good place to start.
-          </p>
-          <dl className="mt-9 space-y-6">
+    <>
+      <PageHero
+        index="08"
+        label="Contact"
+        tone="mint"
+        lines={["Let’s build", "something useful."]}
+        lead={
+          <>
+            <p>
+              Tell me about your idea, the problem you’re solving and where you
+              need help. A short brief about your goals, timeline and existing
+              tools is a good place to start.
+            </p>
+            {service && (
+              <p className="ct-preselect">
+                Starting from <strong>{service.label}</strong>.
+              </p>
+            )}
+          </>
+        }
+      >
+        <div className="ct-details">
+          <dl>
             <div>
-              <dt className="eyebrow text-muted">WhatsApp</dt>
-              <dd className="mt-2">
-                <a className="text-xl hover:underline" href={site.whatsapp}>
-                  {site.phone} ↗
+              <dt className="hm-label">WhatsApp</dt>
+              <dd>
+                <a href={site.whatsapp} target="_blank" rel="noopener noreferrer">
+                  {site.phone} <span aria-hidden>↗</span>
                 </a>
               </dd>
             </div>
             <div>
-              <dt className="eyebrow text-muted">Email</dt>
-              <dd className="mt-2 break-all">
-                <a className="block hover:underline" href={`mailto:${site.businessEmail}`}>
-                  {site.businessEmail}
-                </a>
-                <a className="mt-1 block hover:underline" href={`mailto:${site.email}`}>
-                  {site.email}
-                </a>
+              <dt className="hm-label">Email</dt>
+              <dd>
+                <a href={`mailto:${site.businessEmail}`}>{site.businessEmail}</a>
+                <a href={`mailto:${site.email}`}>{site.email}</a>
+              </dd>
+            </div>
+            <div>
+              <dt className="hm-label">What happens next</dt>
+              <dd className="ct-next">
+                I read the brief, reply by email with questions and a suggested
+                first step, and say plainly if I’m not the right fit.
               </dd>
             </div>
           </dl>
-          <SocialLinks className="mt-7" />
-          <div className="mt-10 border-t border-border pt-6">
-            <h2 className="font-semibold">What happens next?</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
-              I’ll review your brief and follow up to clarify the scope, suggest
-              an approach, and discuss whether we’re a good fit.
+          <SocialLinks className="ct-socials" />
+          <Link className="hm-link" href="/services#explorer">
+            Not sure where to start? Find a service <span aria-hidden>→</span>
+          </Link>
+        </div>
+      </PageHero>
+
+      <section id="brief" className="ip-section ct-section">
+        <div className="hm-container ct-layout">
+          <div className="ct-intro" data-hm-stagger>
+            <p className="hm-label" data-hm="up">
+              <span>01</span> / Project brief
             </p>
-            <Link href="/services#service-finder" className="text-link">
-              Not sure where to start? Find a service →
-            </Link>
+            <h2 className="hm-title ip-section-title" data-hm="up">
+              Five short steps.
+            </h2>
+            <p className="hm-intro" data-hm="up">
+              Enough for me to understand the problem and reply with something
+              useful rather than a generic quote.
+            </p>
+            <ul className="ct-list" data-hm="up">
+              <li>No account, no sales sequence.</li>
+              <li>Your details are only used to reply.</li>
+              <li>Prefer email or WhatsApp? Both work too.</li>
+            </ul>
+          </div>
+          <div className="ct-card ip-card" data-hm="scale">
+            <ProjectInquiry initialNeed={id ? NEED_BY_SERVICE[id] : undefined} />
           </div>
         </div>
-        <div className="card h-fit p-6 sm:p-8">
-          <h2 className="mb-6 text-xl font-medium">
-            A little about your project
-          </h2>
-          <ContactForm
-            initialSubject={service ? `${service.label} project inquiry` : ""}
-          />
-        </div>
-      </div>
-    </div>
+      </section>
+      <PageMotion steps={STEPS} />
+    </>
   );
 }

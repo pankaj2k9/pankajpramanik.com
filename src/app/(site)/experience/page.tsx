@@ -1,5 +1,5 @@
-import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
+import { pageMetadata } from "@/lib/seo";
 import {
   getCertifications,
   getEducation,
@@ -7,12 +7,18 @@ import {
   getTestimonials,
 } from "@/lib/queries";
 import { formatMonthYear } from "@/lib/utils";
+import { site } from "@/lib/site";
+import PageHero from "@/components/inner/PageHero";
+import SectionHead from "@/components/inner/SectionHead";
+import PageCTA from "@/components/inner/PageCTA";
+import PageMotion from "@/components/motion/PageMotion";
+import Counter from "@/components/site/Counter";
 
 export const revalidate = 300;
 
 export const metadata = pageMetadata(
   "Work Experience",
-  "8+ years of professional experience \u2014 AI engineering, LLM/RAG systems, MLOps, 3D graphics, and full-stack development across global teams.",
+  "8+ years of professional experience — AI engineering, LLM/RAG systems, MLOps, 3D graphics, and full-stack development across global teams.",
   "/experience",
 );
 
@@ -25,214 +31,216 @@ export default async function ExperiencePage() {
       getTestimonials(),
     ]);
 
-  return (
-    <div className="container-site py-16">
-      <header className="max-w-2xl">
-        <p className="micro-label">Experience</p>
-        <h1 className="mt-2 font-display text-4xl font-bold tracking-tight sm:text-5xl">
-          Where I&apos;ve worked
-        </h1>
-        <p className="mt-4 text-lg text-muted">
-          8+ years across AI engineering, data platforms, 3D graphics, and
-          full-stack development — remote-first with teams worldwide.
-        </p>
-        <a
-          href="/Pankaj_Kumar_Pramanik_AI_Data_Engineer_CV.pdf"
-          download
-          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent-strong px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
-        >
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden
-          >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
-          </svg>
-          Download CV
-        </a>
-      </header>
+  const technologies = new Set(experiences.flatMap((e) => e.techStack));
+  const companies = new Set(experiences.map((e) => e.company));
+  const steps = [
+    { id: "intro", label: "Intro" },
+    { id: "roles", label: "Roles" },
+    { id: "education", label: "Education" },
+    { id: "certifications", label: "Certificates" },
+    ...(testimonials.length ? [{ id: "testimonials", label: "Testimonials" }] : []),
+    { id: "contact", label: "Contact" },
+  ];
 
-      {/* ---------- Timeline ---------- */}
-      <ol className="relative mt-14 max-w-3xl space-y-10 border-l border-border pl-8">
-        {experiences.map((e) => (
-          <li key={e.id} className="relative">
-            <span
-              className={`absolute -left-[2.42rem] top-1.5 h-3.5 w-3.5 rounded-full border-2 ${
-                e.current
-                  ? "border-emerald bg-emerald/30"
-                  : "border-accent-strong bg-surface"
-              }`}
-              aria-hidden
-            />
-            <p className="text-sm text-faint">
-              {formatMonthYear(e.startDate)} —{" "}
-              {e.current ? (
-                <span className="font-medium text-emerald">Present</span>
-              ) : (
-                formatMonthYear(e.endDate)
-              )}
-              <span className="mx-2" aria-hidden>
-                ·
-              </span>
-              {e.location}
-            </p>
-            <h2 className="mt-1.5 font-display text-xl font-semibold">
-              {e.role}{" "}
-              <span className="text-muted">
-                —{" "}
-                {e.companyUrl ? (
-                  <a
-                    href={e.companyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline underline-offset-4 hover:text-accent"
-                  >
-                    {e.company}
-                  </a>
-                ) : (
-                  e.company
-                )}
-              </span>
-            </h2>
-            {e.summary && (
-              <p className="mt-1 text-sm text-accent/90">{e.summary}</p>
-            )}
-            <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-muted">
-              {e.highlights.map((h) => (
-                <li key={h} className="flex gap-2">
-                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent" />
-                  {h}
+  return (
+    <>
+      <PageHero
+        index="05"
+        label="Experience"
+        tone="violet"
+        lines={["Years of building,", "learning and shipping."]}
+        lead={
+          <p>
+            Remote-first work with teams worldwide — across AI engineering, data
+            platforms, 3D graphics and full-stack product development.
+          </p>
+        }
+      >
+        <dl className="ip-stats ex-stats">
+          <div>
+            <dd>
+              <Counter value={site.yearsExperience} suffix="+" />
+            </dd>
+            <dt>Years of experience</dt>
+          </div>
+          <div>
+            <dd>
+              <Counter value={experiences.length} />
+            </dd>
+            <dt>Roles</dt>
+          </div>
+          <div>
+            <dd>
+              <Counter value={companies.size} />
+            </dd>
+            <dt>Companies &amp; clients</dt>
+          </div>
+          <div>
+            <dd>
+              <Counter value={technologies.size} />
+            </dd>
+            <dt>Technologies</dt>
+          </div>
+        </dl>
+        <div className="ip-actions ex-hero-actions">
+          <a className="hm-button" href={site.cv} download data-hm-magnetic>
+            Download CV <span aria-hidden>↓</span>
+          </a>
+          <Link className="hm-link" href="/portfolio">
+            See the projects <span aria-hidden>→</span>
+          </Link>
+        </div>
+      </PageHero>
+
+      <section id="roles" className="ip-section">
+        <div className="hm-container">
+          <SectionHead
+            index="01"
+            label="Roles"
+            title={["Where I’ve worked,", "and what I built there."]}
+            intro="Open “What I built” on any role for the specific systems and results recorded for it."
+          />
+          <div className="ex-timeline" data-hm-fill>
+            <span className="ex-rail" aria-hidden>
+              <span />
+            </span>
+            <ol data-hm-stagger>
+              {experiences.map((e) => (
+                <li key={e.id} className="ex-role" data-hm="up" data-hm-focus>
+                  <div className="ex-when">
+                    <span className="ex-year">{e.startDate.getFullYear()}</span>
+                    <span className="ex-range">
+                      {formatMonthYear(e.startDate)} —{" "}
+                      {e.current ? "Present" : formatMonthYear(e.endDate)}
+                    </span>
+                    <span className="ex-place">{e.location}</span>
+                    {e.current && <span className="ex-now">Current</span>}
+                  </div>
+                  <div className="ex-card ip-card">
+                    <h3>{e.role}</h3>
+                    <p className="ex-company">
+                      {e.companyUrl ? (
+                        <a href={e.companyUrl} target="_blank" rel="noopener noreferrer">
+                          {e.company} <span aria-hidden>↗</span>
+                        </a>
+                      ) : (
+                        e.company
+                      )}
+                    </p>
+                    {e.summary && <p className="ex-summary">{e.summary}</p>}
+                    {e.highlights.length > 0 && (
+                      <details className="ex-details">
+                        <summary>
+                          What I built <span aria-hidden>+</span>
+                        </summary>
+                        <ul>
+                          {e.highlights.map((h) => (
+                            <li key={h}>{h}</li>
+                          ))}
+                        </ul>
+                      </details>
+                    )}
+                    {e.techStack.length > 0 && (
+                      <ul className="ip-chips ex-tech" aria-label="Technologies">
+                        {e.techStack.map((t) => (
+                          <li key={t}>{t}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </li>
               ))}
-            </ul>
-            {e.techStack.length > 0 && (
-              <ul className="mt-3 flex flex-wrap gap-1.5">
-                {e.techStack.map((t) => (
-                  <li
-                    key={t}
-                    className="rounded-md border border-border bg-surface-raised px-2 py-0.5 text-[11px] text-muted"
-                  >
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ol>
-
-      {/* ---------- Education ---------- */}
-      <section className="mt-20 max-w-3xl">
-        <h2 className="font-display text-2xl font-bold">Education</h2>
-        <div className="mt-6 space-y-4">
-          {education.map((ed) => (
-            <div key={ed.id} className="card p-6">
-              <p className="text-sm text-faint">
-                {ed.startYear} — {ed.endYear ?? "present"}
-              </p>
-              <h3 className="mt-1 font-display text-lg font-semibold">
-                {ed.degree}
-              </h3>
-              <p className="text-sm text-accent/90">{ed.institution}</p>
-              {ed.description && (
-                <p className="mt-2 text-sm leading-relaxed text-muted">
-                  {ed.description}
-                </p>
-              )}
-            </div>
-          ))}
+            </ol>
+          </div>
         </div>
       </section>
 
-      {/* ---------- Certifications ---------- */}
-      <section className="mt-20">
-        <h2 className="font-display text-2xl font-bold">Certifications</h2>
-        <p className="mt-2 text-muted">
-          Continuous learning across AI, software engineering, and modern web
-          technologies.
-        </p>
-        <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {certifications.map((c) => {
-            const inner = (
-              <>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-faint">
-                  {c.issuer}
+      <section id="education" className="ip-section is-tint">
+        <div className="hm-container">
+          <SectionHead index="02" label="Education" title={["Where it started."]} />
+          <div className="ex-education" data-hm-stagger>
+            {education.map((ed) => (
+              <article key={ed.id} className="ip-card ex-edu" data-hm="up">
+                <p className="hm-label">
+                  {ed.startYear} — {ed.endYear ?? "present"}
                 </p>
-                <p className="mt-1 text-sm font-medium leading-snug">
-                  {c.title}
-                </p>
-                {c.url && (
-                  <p className="mt-2 text-xs font-medium text-accent">
-                    View certificate ↗
-                  </p>
-                )}
-              </>
-            );
-            return (
-              <li key={c.id}>
-                {c.url ? (
-                  <a
-                    href={c.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="card card-hover block h-full p-4"
-                  >
-                    {inner}
-                  </a>
-                ) : (
-                  <div className="card h-full p-4">{inner}</div>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+                <h3>{ed.degree}</h3>
+                <p className="ex-institution">{ed.institution}</p>
+                {ed.description && <p className="ex-summary">{ed.description}</p>}
+              </article>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* ---------- Testimonials ---------- */}
-      {testimonials.length > 0 && (
-        <section className="mt-20">
-          <h2 className="font-display text-2xl font-bold">Testimonials</h2>
-          <p className="mt-2 text-muted">
-            Trusted by founders, engineering leaders, and clients across AI,
-            SaaS, and Web3.
-          </p>
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
-            {testimonials.map((t) => (
-              <figure key={t.id} className="card p-7">
-                <div className="text-sm text-amber-400" aria-label="5 stars">
-                  ★★★★★
-                </div>
-                <blockquote className="mt-3 text-sm leading-relaxed text-muted">
-                  “{t.quote}”
-                </blockquote>
-                <figcaption className="mt-4 text-sm">
-                  <span className="font-semibold text-foreground">
-                    {t.author}
-                  </span>
-                  {t.authorTitle && (
-                    <span className="text-faint"> — {t.authorTitle}</span>
+      <section id="certifications" className="ip-section">
+        <div className="hm-container">
+          <SectionHead
+            index="03"
+            label="Certifications"
+            title={["Continuous learning."]}
+            intro={`${certifications.length} certificates across AI, software engineering and cloud.`}
+          />
+          <ul className="ex-certs" data-hm-stagger>
+            {certifications.map((c) => {
+              const inner = (
+                <>
+                  <span className="hm-label">{c.issuer}</span>
+                  <span className="ex-cert-title">{c.title}</span>
+                  {c.url && (
+                    <span className="ex-cert-link">
+                      View certificate <span aria-hidden>↗</span>
+                    </span>
                   )}
-                </figcaption>
-              </figure>
-            ))}
+                </>
+              );
+              return (
+                <li key={c.id} data-hm="up">
+                  {c.url ? (
+                    <a className="ex-cert" href={c.url} target="_blank" rel="noopener noreferrer">
+                      {inner}
+                    </a>
+                  ) : (
+                    <div className="ex-cert">{inner}</div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </section>
+
+      {testimonials.length > 0 && (
+        <section id="testimonials" className="ip-section is-tint">
+          <div className="hm-container">
+            <SectionHead
+              index="04"
+              label="Testimonials"
+              title={["What clients say."]}
+              intro="Feedback from founders, engineering leaders and clients."
+            />
+            <div className="ex-quotes" data-hm-stagger>
+              {testimonials.map((t) => (
+                <figure key={t.id} className="ip-card ex-quote" data-hm="up">
+                  <blockquote>“{t.quote}”</blockquote>
+                  <figcaption>
+                    <strong>{t.author}</strong>
+                    {t.authorTitle && <span>{t.authorTitle}</span>}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
-      <div className="mt-20 text-center">
-        <Link
-          href="/contact"
-          className="inline-block rounded-xl bg-accent-strong px-8 py-3.5 font-semibold text-white shadow-lg shadow-accent-strong/25 transition hover:opacity-90"
-        >
-          Work With Me
-        </Link>
-      </div>
-    </div>
+      <PageCTA
+        label="Work together"
+        lines={["Need this experience", "on your team?"]}
+        copy="Tell me about the role or project. I’ll be direct about where I can help and where someone else would be a better fit."
+        cta="Start a conversation"
+      />
+      <PageMotion steps={steps} />
+    </>
   );
 }

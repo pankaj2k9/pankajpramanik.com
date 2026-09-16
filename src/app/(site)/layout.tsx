@@ -1,6 +1,7 @@
+import "@/styles/inner.css";
 import WhatsAppButton from "@/components/site/WhatsAppButton";
 import Header from "@/components/site/Header";
-import Footer from "@/components/site/Footer";
+import HomeFooter from "@/components/home/HomeFooter";
 import MusicPlayer from "@/components/site/MusicPlayer";
 
 export default function SiteLayout({
@@ -9,14 +10,14 @@ export default function SiteLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <div className="inner-shell flex min-h-dvh flex-col">
       <Header />
-      <main id="main-content" className="flex-1">
+      <main id="main-content" className="ip-main flex-1">
         {children}
       </main>
-      <Footer />
-      <MusicPlayer />
+      <HomeFooter />
+      <MusicPlayer expandable />
       <WhatsAppButton />
-    </>
+    </div>
   );
 }

@@ -7,7 +7,16 @@ import HomeServiceFinder from "./HomeServiceFinder";
 import SystemVisual, { type SystemVisualKind } from "./SystemVisual";
 import { homeServices } from "@/lib/services";
 import { site } from "@/lib/site";
-import type { PortfolioProject } from "@/components/site/PortfolioGrid";
+/** The fields the homepage needs from a featured project record. */
+export type PortfolioProject = {
+  id: string;
+  slug: string;
+  title: string;
+  tagline: string;
+  description: string;
+  techStack: string[];
+  category: string;
+};
 
 /** The story the page tells, shown under the service cards. */
 const STORY = [
