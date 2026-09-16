@@ -315,7 +315,10 @@
 .ab-portrait-img img {
   object-fit: cover;
   object-position: 50% 20%;
-  transform: translate(calc(var(--px, 0) * -4px), calc(var(--py, 0) * -4px)) scale(1.03);
+  /* Origin near the top: the 1.1 zoom grows mostly downward, trimming the
+     bottom while keeping a few px of headroom for the parallax shift. */
+  transform-origin: 50% 12%;
+  transform: translate(calc(var(--px, 0) * -4px), calc(var(--py, 0) * -4px)) scale(1.1);
   transition: transform 0.6s var(--ease);
 }
 .ab-portrait figcaption {
