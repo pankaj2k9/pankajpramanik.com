@@ -6,7 +6,7 @@
 # `next build` runs generateStaticParams / server components that read
 # PostgreSQL, so a database must be reachable AT BUILD TIME. CI provides
 # a throwaway Postgres and passes its URL as the DATABASE_URL build arg
-# (see .github/workflows/docker.yml). The runtime container connects to
+# (see .github/workflows/ci-cd.yml). The runtime container connects to
 # the real database via the DATABASE_URL env var instead.
 # ------------------------------------------------------------------
 

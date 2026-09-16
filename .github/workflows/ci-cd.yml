@@ -1,16 +1,32 @@
-name: Build & Publish Docker image
+# Single CI/CD pipeline for pankajpramanik.com.
+#
+#   pull_request → main   ci
+#   push → main           ci → publish → deploy
+#   workflow_dispatch     ci → publish → deploy   (only when run on main)
+#
+# Every job `needs` the previous one, so an image is never built unless CI
+# passed on that exact commit, and production is never touched unless that
+# image was built and pushed. There is deliberately no second workflow: a
+# separate deploy workflow could race ahead of a failing CI run.
+name: CI/CD
 
 on:
+  pull_request:
+    branches: [main]
   push:
     branches: [main]
-    tags: ["v*"]
   workflow_dispatch:
 
-# One deploy at a time, and never cancel one mid-flight — a killed run can
-# leave the stack half-restarted.
+# One pipeline per ref. PR runs are superseded by newer pushes; main runs are
+# serialized and never cancelled mid-flight (a killed deploy can leave the
+# stack half-restarted). A newer pending main run replaces an older pending
+# one, which is fine: it contains that commit.
 concurrency:
-  group: deploy-${{ github.ref }}
-  cancel-in-progress: false
+  group: ci-cd-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
 
 env:
   # Fixed name, not ghcr.io/${{ github.repository }}: the repo is
@@ -19,8 +35,83 @@ env:
   IMAGE: ghcr.io/pankaj2k9/pankajpramanik
 
 jobs:
-  build:
+  ci:
+    name: CI
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # `next build` prerenders pages that read PostgreSQL, and the e2e tests
+    # run against the built app, so CI gets a throwaway database.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ci_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ci_test
+      AUTH_SECRET: ci-only-secret-not-used-in-production
+      AUTH_URL: http://localhost:3000
+      AUTH_TRUST_HOST: "true"
+      NEXT_PUBLIC_SITE_URL: https://pankajpramanik.com
+      ADMIN_EMAIL: ci@example.com
+      ADMIN_NAME: CI
+      ADMIN_PASSWORD: ci-only-placeholder-pw
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate Prisma schema
+        run: npx prisma validate
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Apply migrations
+        run: npx prisma migrate deploy
+
+      # The DB must hold the content production will serve, so prerendered
+      # pages and tests see real data: seed the baseline, then apply the
+      # committed snapshot exported from the local database.
+      - name: Seed and import content snapshot
+        run: |
+          npm run db:seed
+          npm run content:import
+
+      - name: Check referenced media exists in storage/
+        run: |
+          missing=0
+          for ref in $(grep -oE '/uploads/[^"'"'"'[:space:])<>?#\\]+' prisma/content/snapshot.json | sort -u); do
+            [ -f "storage$ref" ] || { echo "::error::missing storage$ref"; missing=1; }
+          done
+          exit $missing
+
+      - name: Build
+        run: npm run build
+
+  publish:
+    name: Docker build + publish
+    needs: ci
+    # Only for main (push or manual run). Implicitly also requires ci success.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       packages: write
@@ -64,22 +155,12 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      # The build DB must hold exactly the content production will serve, so
-      # prerendered pages match: seed the baseline, then apply the committed
-      # snapshot exported from the local database.
+      # Same content as CI, so the image's prerendered pages match production.
       - name: Migrate, seed & import content snapshot
         run: |
           npx prisma migrate deploy
           npm run db:seed
           npm run content:import
-
-      - name: Check referenced media exists in storage/
-        run: |
-          missing=0
-          for ref in $(grep -oE '/uploads/[^"'"'"'[:space:])<>?#\\]+' prisma/content/snapshot.json | sort -u); do
-            [ -f "storage$ref" ] || { echo "::error::missing storage$ref"; missing=1; }
-          done
-          exit $missing
 
       - name: Log in to GHCR
         uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
@@ -95,7 +176,6 @@ jobs:
           images: ${{ env.IMAGE }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=ref,event=tag
             type=sha,format=short
             type=sha,format=long
 
@@ -118,10 +198,11 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
-    name: Deploy to OVHcloud VPS
-    needs: build
-    if: github.ref == 'refs/heads/main'
+    name: Deploy production
+    needs: publish
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     environment: production
     steps:
       - uses: actions/checkout@v4
@@ -164,7 +245,7 @@ jobs:
           # would fail with a 401.
           GHCR_USER: ${{ github.repository_owner }}
           GHCR_TOKEN: ${{ secrets.GHCR_PULL_TOKEN }}
-          IMAGE_REF: ${{ needs.build.outputs.image }}
+          IMAGE_REF: ${{ needs.publish.outputs.image }}
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}

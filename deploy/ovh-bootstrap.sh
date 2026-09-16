@@ -250,7 +250,7 @@ Remaining steps, in order (details in deploy/OVH.md):
 
   1. Fill $APP_DIR/.env from .env.production.example, then chmod 600 it.
 
-  2. Run the GitHub Actions workflow "Build & Publish Docker image" on main.
+  2. Run the GitHub Actions workflow "CI/CD" on main (or merge to main).
      It ships docker-compose.prod.yml, syncs media, pulls the sha-tagged image,
      starts this stack and waits for pankajpramanik-app to report healthy.
 

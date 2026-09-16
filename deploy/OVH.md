@@ -171,7 +171,7 @@ created. Choose them before the first deploy.
 
 ## 6. First deploy
 
-GitHub → Actions → **Build & Publish Docker image** → Run workflow → `main`
+GitHub → Actions → **CI/CD** → Run workflow → `main`
 (or push to `main`).
 
 The deploy job ships `docker-compose.prod.yml`, merges media, pulls the image
@@ -257,23 +257,40 @@ Install backups (see below) the same day.
 
 ## CI/CD
 
-**`.github/workflows/ci.yml`** — every push and PR to `main`: lint, typecheck,
-migrate, seed, import snapshot, build. Never touches the server.
+One workflow, **`.github/workflows/ci-cd.yml`**, with three chained jobs:
 
-**`.github/workflows/docker.yml`** — pushes to `main` (and `v*` tags, build only):
+```
+ci  ──needs──►  publish  ──needs──►  deploy (environment: production)
+```
 
-1. **build**: throwaway Postgres → migrate, seed, import snapshot → fail if any
-   `/uploads/…` referenced by content is missing from `storage/` → build and
-   push `ghcr.io/pankaj2k9/pankajpramanik` tagged `latest`, `sha-<short>`,
-   `sha-<full>` (and the git tag).
-2. **deploy** (`main` only, environment `production`), as `deploy` over SSH:
+| Event | ci | publish | deploy |
+|---|---|---|---|
+| Pull request → `main` | ✓ | skipped | skipped |
+| Push to `main` | ✓ | if ci passed | if publish passed |
+| Manual run (Actions → CI/CD → Run workflow) on `main` | ✓ | if ci passed | if publish passed |
+| Manual run on any other branch | ✓ | skipped | skipped |
+
+Each job `needs` the previous one, so a failing CI run on a commit means no
+image is built for it and nothing reaches the server. There is no separate
+deploy workflow that could race ahead of CI.
+
+1. **ci** (throwaway Postgres): `npm ci` → `prisma validate` → lint →
+   typecheck → `prisma migrate deploy` → seed + import content snapshot →
+   fail if any `/uploads/…` referenced by content is missing from `storage/` →
+   `npm run build` → start the built app and run the Playwright suite
+   (`npm run test:e2e`, including the database-backed dashboard tests).
+   The Playwright report is uploaded as an artifact on failure.
+2. **publish**: same database preparation, then builds the Docker image and
+   pushes `ghcr.io/pankaj2k9/pankajpramanik` tagged `latest`, `sha-<short>` and
+   `sha-<full>`.
+3. **deploy** (environment `production`), as `deploy` over SSH:
    1. rsync `storage/` and `docker-compose.prod.yml` to `/opt/pankajpramanik/.deploy`
    2. refuse unless `/opt/pankajpramanik`, its `.env` and the `proxy` network exist
    3. install the compose file (keeping `docker-compose.prod.yml.bak-*`)
    4. `docker login ghcr.io` with the token over stdin; logout on any exit
    5. `APP_IMAGE=…:sha-<full sha>` → `docker compose pull app`
    6. merge media without overwriting; `chown` to uid 1001
-   7. `docker compose up -d` (entrypoint runs migrations + content import)
+   7. `docker compose up -d` (entrypoint runs `prisma migrate deploy` + content import)
    8. wait up to ~250s for container health `healthy`; fail immediately on
       `unhealthy`, a crash loop (3+ restarts) or a wrong image — printing the
       last 80 log lines and the exact rollback command
@@ -281,7 +298,12 @@ migrate, seed, import snapshot, build. Never touches the server.
       `.deploy/deployed-images.log`
    10. remove old builds of **this image only**, keeping the 5 newest
 
-Deploys are serialized and never cancelled mid-flight.
+Runs on `main` are serialized and never cancelled mid-flight; a newer queued
+run replaces an older queued one. Pull-request runs are cancelled by newer
+pushes to the same PR.
+
+To stop unreviewed code reaching `main` at all, protect the branch: Settings →
+Branches → `main` → require a pull request and the **CI** status check.
 
 ### What the deploy job will not do
 
