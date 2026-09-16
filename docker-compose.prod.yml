@@ -13,12 +13,27 @@
 # Env comes from a .env file placed next to this file on the server (see
 # .env.production.example). NEVER commit that file.
 #
-# The matching site block for /opt/proxy/Caddyfile lives in
-# deploy/proxy-caddyfile.snippet.
+# The matching proxy site file is deploy/pankajpramanik.caddy, installed as
+# /opt/proxy/sites/pankajpramanik.caddy by deploy/ovh-bootstrap.sh.
+#
+# APP_IMAGE selects the build. The deploy workflow exports the immutable
+# ghcr.io/pankaj2k9/pankajpramanik:sha-<full commit sha> tag; a manual rollback
+# names any earlier sha tag the same way:
+#
+#   APP_IMAGE=ghcr.io/pankaj2k9/pankajpramanik:sha-<commit> \
+#     docker compose -f docker-compose.prod.yml up -d app
 # =============================================================================
+
+# Pinned project name, so container/volume/network names never depend on the
+# directory this file is run from and cannot collide with another stack.
+name: pankajpramanik
+
 services:
   app:
     image: ${APP_IMAGE:-ghcr.io/pankaj2k9/pankajpramanik:latest}
+    # Stable DNS name on the shared `proxy` network (the network alias below
+    # says the same thing; both are kept so either resolves).
+    container_name: pankajpramanik-app
     restart: unless-stopped
     env_file: .env
     environment:
@@ -37,14 +52,24 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    # Internal only. No `ports:` — nothing is published on the host, so the
+    # app is reachable solely through shared-caddy over the proxy network.
     expose:
       - "3000"
+    # 200 only when the app can reach PostgreSQL (src/app/api/health/route.ts).
+    # start_period covers `prisma migrate deploy` + content import on start.
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 180s
     networks:
       internal:
       proxy:
         aliases:
           # The name the shared Caddy reverse-proxies to. Changing it means
-          # changing /opt/proxy/Caddyfile too.
+          # changing /opt/proxy/sites/pankajpramanik.caddy too.
           - pankajpramanik-app
 
   db:

@@ -1,252 +1,265 @@
 #!/usr/bin/env bash
 # =============================================================================
-# One-time bootstrap for pankajpramanik.com on the shared OVHcloud VPS.
+# One-time (re-runnable) bootstrap for pankajpramanik.com on the EXISTING shared
+# OVHcloud VPS.
 #
-#   bash ovh-bootstrap.sh
+#   scp deploy/ovh-bootstrap.sh deploy/pankajpramanik.caddy deploy@<host>:~/pp-bootstrap/
+#   ssh deploy@<host> 'bash ~/pp-bootstrap/ovh-bootstrap.sh'
 #
-# This VPS already serves other applications behind the shared Caddy in
-# /opt/proxy. Every step below is ADDITIVE and idempotent:
+# This VPS already runs a shared Caddy (container `shared-caddy`, config in
+# /opt/proxy, per-site files in /opt/proxy/sites) in front of other production
+# applications (travelcrewai.com / JourneyMesh). Everything below is ADDITIVE
+# and idempotent:
 #
-#   * it never runs `docker compose down`, `docker system prune`, or
-#     `docker network rm` — nothing belonging to another app is touched
-#   * it never overwrites /opt/proxy/.env or /opt/proxy/Caddyfile; it appends,
-#     and only when the entry is missing
-#   * it backs up both proxy files before appending
-#   * it validates the Caddy config and refuses to reload if validation fails,
-#     so a bad edit here cannot take the other sites offline
-#   * re-running it changes nothing that is already in place
+#   * it never creates a Caddy, never restarts or reloads shared-caddy
+#   * it never edits /opt/proxy/Caddyfile, /opt/proxy/.env, or any other site
+#     file — it writes exactly one file: /opt/proxy/sites/pankajpramanik.caddy
+#   * it never creates or removes Docker networks, never runs `compose down`,
+#     never prunes — nothing belonging to another app is touched
+#   * before replacing an existing pankajpramanik.caddy it takes a timestamped
+#     backup, stored OUTSIDE the sites directory (an `import sites/*` glob would
+#     otherwise load the backup as a duplicate site)
+#   * it validates the full proxy config with `caddy validate` and rolls its
+#     own change back if validation fails, so a later reload by anyone cannot
+#     be broken by this script
+#   * re-running it with an unchanged site file changes nothing
 #
-# What it does NOT do: start this app's stack. That is the last step and is
-# left to you, after you have filled in .env. See deploy/OVH.md.
+# What it does NOT do: start this app's stack or reload the proxy. Both are
+# deliberate manual steps — see deploy/OVH.md.
 # =============================================================================
 set -euo pipefail
 
-APP_NAME=pankajpramanik
 APP_DIR=${APP_DIR:-/opt/pankajpramanik}
 PROXY_DIR=${PROXY_DIR:-/opt/proxy}
-PROXY_SERVICE=${PROXY_SERVICE:-caddy}
+PROXY_CONTAINER=${PROXY_CONTAINER:-shared-caddy}
 NETWORK=${NETWORK:-proxy}
 DOMAIN=${DOMAIN:-pankajpramanik.com}
-UPSTREAM=${UPSTREAM:-pankajpramanik-app:3000}
+EXPECTED_IP=${EXPECTED_IP:-51.79.166.97}
+SITE_FILE_NAME=pankajpramanik.caddy
+SITE_SRC=${SITE_SRC:-"$(cd "$(dirname "$0")" && pwd)/$SITE_FILE_NAME"}
 
-# Marker so a re-run can tell "already added" from "not added yet" without
-# parsing Caddy's syntax.
-MARKER="# >>> ${APP_NAME} (managed by deploy/ovh-bootstrap.sh) >>>"
+CADDYFILE="$PROXY_DIR/Caddyfile"
+SITES_DIR="$PROXY_DIR/sites"
+SITE_DST="$SITES_DIR/$SITE_FILE_NAME"
+BACKUP_DIR="$APP_DIR/proxy-backups"
+STAMP=$(date +%Y%m%d%H%M%S)
 
-# The shared proxy's compose file may be named any of the four conventional
-# spellings, so resolve it rather than assuming. Falls back to talking to the
-# container directly if there is no compose file at all.
-PROXY_COMPOSE=""
-for f in docker-compose.yml docker-compose.yaml compose.yml compose.yaml; do
-  if [ -f "$PROXY_DIR/$f" ]; then PROXY_COMPOSE="$PROXY_DIR/$f"; break; fi
-done
-
-caddy_cmd() {
-  if [ -n "$PROXY_COMPOSE" ]; then
-    docker compose -f "$PROXY_COMPOSE" exec -T "$PROXY_SERVICE" "$@"
-  else
-    CID=$(docker ps --filter "name=$PROXY_SERVICE" --format '{{.ID}}' | head -1)
-    [ -n "$CID" ] || { echo "cannot find a running '$PROXY_SERVICE' container" >&2; return 1; }
-    docker exec -i "$CID" "$@"
-  fi
-}
+# Marker the previous version of this script appended to the main Caddyfile.
+LEGACY_MARKER="# >>> pankajpramanik (managed by deploy/ovh-bootstrap.sh) >>>"
 
 say()  { printf '\n\033[1;36m==> %s\033[0m\n' "$*"; }
 warn() { printf '\033[1;33m    ! %s\033[0m\n' "$*"; }
 ok()   { printf '\033[0;32m    ✓ %s\033[0m\n' "$*"; }
+die()  { printf '\n\033[1;31m✗ %s\033[0m\n\n' "$*" >&2; exit 1; }
+
+# Path inside shared-caddy for a host path, resolved from the container's
+# mounts (longest matching source wins). Empty when the path is not mounted.
+container_path() {
+  local host
+  host=$(realpath -m "$1")
+  docker inspect -f '{{range .Mounts}}{{.Source}}{{"\t"}}{{.Destination}}{{"\n"}}{{end}}' "$PROXY_CONTAINER" |
+    while IFS=$'\t' read -r src dst; do
+      [ -n "$src" ] || continue
+      case "$host" in
+        "$src") printf '%s\t%s\n' "${#src}" "$dst" ;;
+        "$src"/*) printf '%s\t%s%s\n' "${#src}" "$dst" "${host#"$src"}" ;;
+      esac
+    done | sort -rn | head -1 | cut -f2-
+}
+
+# Non-comment lines of a Caddy file.
+code_lines() { grep -vE '^[[:space:]]*#' "$1" 2>/dev/null || true; }
 
 # --- preflight ---------------------------------------------------------------
 
-say "Preflight"
+say "Preflight (read-only)"
 
-command -v docker >/dev/null || { echo "docker not installed"; exit 1; }
-docker compose version >/dev/null 2>&1 || { echo "docker compose plugin missing"; exit 1; }
+command -v docker >/dev/null || die "docker not installed"
+docker compose version >/dev/null 2>&1 || die "docker compose plugin missing"
 ok "docker and the compose plugin are present"
 
-if [ ! -d "$PROXY_DIR" ]; then
-  echo "No shared proxy at $PROXY_DIR."
-  echo "Set PROXY_DIR=/path/to/proxy, or use the standalone Caddyfile in the repo."
-  exit 1
-fi
-ok "shared proxy found at $PROXY_DIR"
+[ -f "$SITE_SRC" ] || die "site file not found at $SITE_SRC — copy deploy/$SITE_FILE_NAME next to this script"
+ok "site file source: $SITE_SRC"
 
-# Show what is already running. Purely informational, but it is the check that
-# catches "wrong server" before anything is written.
-say "Applications already on this VPS (left untouched)"
-docker ps --format '    {{.Names}}\t{{.Image}}' || true
+[ -d "$PROXY_DIR" ] || die "no shared proxy at $PROXY_DIR — this script only supports the existing shared proxy (see deploy/OVH.md, option A for a new VPS)"
+[ -f "$CADDYFILE" ] || die "no $CADDYFILE — refusing to continue"
+[ -d "$SITES_DIR" ] || die "no $SITES_DIR directory — refusing to create proxy structure on a shared VPS"
+ok "shared proxy found at $PROXY_DIR (Caddyfile + sites/)"
 
-# --- 1. shared network -------------------------------------------------------
+[ "$(docker inspect -f '{{.State.Running}}' "$PROXY_CONTAINER" 2>/dev/null || echo false)" = "true" ] \
+  || die "container '$PROXY_CONTAINER' is not running — not touching anything"
+ok "$PROXY_CONTAINER is running"
 
-say "Shared '$NETWORK' network"
-if docker network inspect "$NETWORK" >/dev/null 2>&1; then
-  ok "already exists — reusing it, not recreating"
+docker network inspect "$NETWORK" >/dev/null 2>&1 \
+  || die "external Docker network '$NETWORK' is missing — it must already exist on this VPS; not creating it"
+ok "external network '$NETWORK' exists"
+
+if docker inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' "$PROXY_CONTAINER" \
+     | tr ' ' '\n' | grep -qx "$NETWORK"; then
+  ok "$PROXY_CONTAINER is attached to '$NETWORK'"
 else
-  docker network create "$NETWORK"
-  ok "created"
+  die "$PROXY_CONTAINER is not attached to '$NETWORK' — it could not reach pankajpramanik-app"
 fi
 
-# --- 2. stack directory ------------------------------------------------------
+say "Applications already on this VPS (left untouched)"
+docker ps --format '    {{.Names}}\t{{.Image}}\t{{.Status}}' || true
+
+# --- how shared-caddy sees the config -----------------------------------------
+
+say "Proxy configuration layout"
+
+CADDYFILE_IN=$(container_path "$CADDYFILE")
+[ -n "$CADDYFILE_IN" ] || die "$CADDYFILE is not mounted into $PROXY_CONTAINER — cannot validate safely"
+ok "Caddyfile inside container: $CADDYFILE_IN"
+
+SITES_IN=$(container_path "$SITES_DIR")
+[ -n "$SITES_IN" ] || die "$SITES_DIR is not mounted into $PROXY_CONTAINER — a site file there would never load"
+ok "sites dir inside container: $SITES_IN"
+
+if code_lines "$CADDYFILE" | grep -qE '^[[:space:]]*import[[:space:]]+[^[:space:]]*sites/'; then
+  ok "Caddyfile imports the sites directory"
+else
+  die "$CADDYFILE has no 'import …sites/…' line, so $SITE_FILE_NAME would never load.
+   This script does not edit the shared Caddyfile. Check how the other sites
+   (e.g. travelcrewai.caddy) are loaded and fix that by hand first."
+fi
+
+COMMON_FOUND=no
+for f in "$CADDYFILE" "$SITES_DIR"/*; do
+  [ -f "$f" ] && [ "$f" != "$SITE_DST" ] || continue
+  if code_lines "$f" | grep -qE '^[[:space:]]*\(common\)'; then COMMON_FOUND=yes; break; fi
+done
+[ "$COMMON_FOUND" = yes ] || die "no '(common)' snippet defined in $CADDYFILE or $SITES_DIR — $SITE_FILE_NAME uses 'import common'"
+ok "'(common)' snippet is defined"
+
+# --- conflicts ------------------------------------------------------------------
+
+say "Checking for conflicting definitions of $DOMAIN"
+
+if grep -qF "$LEGACY_MARKER" "$CADDYFILE"; then
+  die "$CADDYFILE still contains a pankajpramanik block appended by an older
+   version of this script (between '$LEGACY_MARKER'
+   and '# <<< pankajpramanik <<<'). Two definitions of the same site make the
+   whole proxy config invalid. Remove that block by hand (after backing up the
+   Caddyfile), then re-run."
+fi
+
+DOMAIN_RE="(^|[[:space:],])(https?://)?(www\\.)?${DOMAIN//./\\.}(:[0-9]+)?([[:space:],{]|$)"
+for f in "$CADDYFILE" "$SITES_DIR"/*; do
+  [ -f "$f" ] && [ "$f" != "$SITE_DST" ] || continue
+  if code_lines "$f" | grep -qE "$DOMAIN_RE"; then
+    die "$f already mentions $DOMAIN outside of $SITE_FILE_NAME — resolve that by hand first"
+  fi
+done
+ok "no other file defines $DOMAIN"
+
+# --- stack directory ------------------------------------------------------------
 
 say "Stack directory $APP_DIR"
-mkdir -p "$APP_DIR" "$APP_DIR/storage/uploads"
-ok "ready (media storage: $APP_DIR/storage — persistent, never deleted by deploys)"
 
-if ! command -v rsync >/dev/null 2>&1; then
-  warn "rsync is not installed — the deploy workflow needs it to sync media:"
-  warn "  sudo apt-get install -y rsync"
+if ! mkdir -p "$APP_DIR/storage/uploads" "$BACKUP_DIR" 2>/dev/null; then
+  die "cannot create $APP_DIR as $(id -un). Once, with sudo:
+   sudo install -d -o $(id -un) -g $(id -gn) $APP_DIR"
 fi
+ok "ready (media: $APP_DIR/storage — persistent, never deleted by deploys)"
 
-if [ ! -f "$APP_DIR/docker-compose.prod.yml" ]; then
-  warn "docker-compose.prod.yml is not there yet — copy it from the repo:"
-  warn "  scp docker-compose.prod.yml <user>@<host>:$APP_DIR/"
-fi
+command -v rsync >/dev/null 2>&1 || warn "rsync is not installed — the deploy workflow needs it: sudo apt-get install -y rsync"
+
+[ -f "$APP_DIR/docker-compose.prod.yml" ] \
+  || warn "docker-compose.prod.yml not there yet — the first GitHub Actions deploy ships it"
 
 if [ ! -f "$APP_DIR/.env" ]; then
-  warn ".env is not there yet — copy .env.production.example to $APP_DIR/.env"
-  warn "  and fill it in. Generate the auth secret with: openssl rand -base64 32"
+  warn ".env not there yet — copy .env.production.example to $APP_DIR/.env, fill it in, chmod 600"
+elif [ "$(stat -c '%a' "$APP_DIR/.env")" != "600" ]; then
+  warn "$APP_DIR/.env is mode $(stat -c '%a' "$APP_DIR/.env") — run: chmod 600 $APP_DIR/.env"
+else
+  ok ".env present (mode 600)"
 fi
 
-# --- 3. proxy environment ----------------------------------------------------
-#
-# Appended, never rewritten. Another application's variables live in the same
-# file and must survive this.
+# --- install the site file ------------------------------------------------------
 
-say "Proxy environment ($PROXY_DIR/.env)"
-PROXY_ENV="$PROXY_DIR/.env"
-touch "$PROXY_ENV"
+say "Proxy site file $SITE_DST"
 
-add_env() {
-  local key=$1 value=$2
-  if grep -qE "^[[:space:]]*${key}=" "$PROXY_ENV"; then
-    ok "$key already set — leaving it alone"
+[ -w "$SITES_DIR" ] || die "$SITES_DIR is not writable by $(id -un) — ask for write access to that directory only; do not run this script as root"
+
+BACKUP=""
+CREATED=no
+if [ -f "$SITE_DST" ] && cmp -s "$SITE_SRC" "$SITE_DST"; then
+  ok "already up to date — nothing written"
+else
+  if [ -f "$SITE_DST" ]; then
+    BACKUP="$BACKUP_DIR/$SITE_FILE_NAME.bak.$STAMP"
+    [ ! -e "$BACKUP" ] || BACKUP="$BACKUP.$$"
+    cp -p "$SITE_DST" "$BACKUP"
+    ok "backed up existing file to $BACKUP"
   else
-    cp -a "$PROXY_ENV" "${PROXY_ENV}.bak.$(date +%Y%m%d%H%M%S)"
-    printf '\n# %s\n%s=%s\n' "$APP_NAME" "$key" "$value" >> "$PROXY_ENV"
-    ok "$key appended"
+    CREATED=yes
+  fi
+  # Write in place (keeps the inode, in case the file itself is bind-mounted).
+  cat "$SITE_SRC" > "$SITE_DST"
+  chmod 644 "$SITE_DST"
+  ok "written"
+fi
+
+rollback() {
+  if [ -n "$BACKUP" ]; then
+    cat "$BACKUP" > "$SITE_DST"
+    warn "restored $SITE_DST from $BACKUP"
+  elif [ "$CREATED" = yes ]; then
+    rm -f "$SITE_DST"
+    warn "removed the new $SITE_DST"
   fi
 }
 
-add_env PANKAJPRAMANIK_DOMAIN "$DOMAIN"
-add_env PANKAJPRAMANIK_WWW "www.$DOMAIN"
-
-# --- 4. proxy site block -----------------------------------------------------
-
-say "Proxy site block ($PROXY_DIR/Caddyfile)"
-CADDYFILE="$PROXY_DIR/Caddyfile"
-
-if [ ! -f "$CADDYFILE" ]; then
-  echo "No Caddyfile at $CADDYFILE — refusing to create one from scratch."
-  echo "A shared proxy should already have one. Check PROXY_DIR."
-  exit 1
-fi
-
-if grep -qF "$MARKER" "$CADDYFILE"; then
-  ok "block already present — not appending a second copy"
-else
-  BACKUP="${CADDYFILE}.bak.$(date +%Y%m%d%H%M%S)"
-  cp -a "$CADDYFILE" "$BACKUP"
-  ok "backed up to $BACKUP"
-
-  cat >> "$CADDYFILE" <<EOF
-
-$MARKER
-# =============================================================================
-# ${DOMAIN}
+# --- validate (never reload) ----------------------------------------------------
 #
-# The app container joins the shared '${NETWORK}' network under the alias
-# 'pankajpramanik-app' and publishes no host port, so Caddy is the only thing
-# that can reach it. Next.js serves its own static assets, so the long-cache
-# headers live here rather than in an nginx in front of the app.
-# =============================================================================
+# An invalid config that someone later reloads would take every site on this
+# VPS down, so a failed validation undoes this script's change.
 
-{\$PANKAJPRAMANIK_DOMAIN} {
-	import common
-
-	# Hashed build output and never-changing artwork.
-	@immutable path /_next/static/* /services-art/* /audio/* /fonts/*
-	header @immutable Cache-Control "public, max-age=31536000, immutable"
-
-	# Migrated WordPress media — stable, but replaceable.
-	@uploads path /uploads/*
-	header @uploads Cache-Control "public, max-age=604800"
-
-	reverse_proxy ${UPSTREAM} {
-		header_up X-Forwarded-Proto {scheme}
-		header_up X-Forwarded-For {remote_host}
-		header_up Host {host}
-	}
-}
-
-# Canonical host redirect. Domain mode only.
-{\$PANKAJPRAMANIK_WWW} {
-	import common
-	redir https://{\$PANKAJPRAMANIK_DOMAIN}{uri} permanent
-}
-# <<< ${APP_NAME} <<<
-EOF
-  ok "block appended"
-fi
-
-# --- 5. validate before reloading -------------------------------------------
-#
-# The important safety step. An invalid Caddyfile that gets reloaded would take
-# every site on this VPS down, not just this one.
-
-say "Validating the proxy config"
-if caddy_cmd caddy validate --config /etc/caddy/Caddyfile; then
+say "Validating the full proxy config inside $PROXY_CONTAINER"
+if docker exec "$PROXY_CONTAINER" caddy validate --config "$CADDYFILE_IN" --adapter caddyfile; then
   ok "config is valid"
 else
-  warn "VALIDATION FAILED — the proxy has NOT been reloaded, so the other"
-  warn "applications on this VPS are still serving normally."
-  warn "Restore the backup listed above and investigate before reloading."
-  exit 1
+  rollback
+  die "VALIDATION FAILED — the change was rolled back and the proxy was NOT
+   reloaded, so the other applications keep serving normally."
 fi
 
-# --- 6. DNS check ------------------------------------------------------------
-#
-# Caddy cannot obtain a certificate for a name that does not resolve here, and
-# repeated failures hit Let's Encrypt rate limits.
+# --- DNS (informational) --------------------------------------------------------
 
-say "DNS check for $DOMAIN"
-SERVER_IP=$(curl -fsS --max-time 5 https://api.ipify.org || echo "")
-RESOLVED=$(getent hosts "$DOMAIN" | awk '{print $1}' | head -1 || echo "")
+say "DNS for $DOMAIN"
+for name in "$DOMAIN" "www.$DOMAIN"; do
+  RESOLVED=$(getent ahostsv4 "$name" | awk '{print $1}' | sort -u | tr '\n' ' ' || true)
+  if [ -z "$RESOLVED" ]; then
+    warn "$name does not resolve yet — add the DNS record before reloading the proxy"
+  elif printf '%s' "$RESOLVED" | grep -qw "$EXPECTED_IP"; then
+    ok "$name → $EXPECTED_IP (DNS only / grey cloud)"
+  else
+    warn "$name → $RESOLVED (not $EXPECTED_IP). Fine if Cloudflare-proxied (orange cloud);"
+    warn "then Cloudflare SSL/TLS mode must be 'Full (strict)', never 'Flexible'."
+  fi
+done
 
-if [ -z "$RESOLVED" ]; then
-  warn "$DOMAIN does not resolve yet. Add the A record before reloading Caddy."
-elif [ -n "$SERVER_IP" ] && [ "$RESOLVED" != "$SERVER_IP" ]; then
-  warn "$DOMAIN resolves to $RESOLVED but this VPS is $SERVER_IP."
-  warn "Certificate issuance will fail until that matches."
-else
-  ok "$DOMAIN resolves to this VPS ($RESOLVED)"
-fi
+# --- next steps -----------------------------------------------------------------
 
-# --- 7. next steps -----------------------------------------------------------
-
-say "Bootstrap complete. Nothing else on this VPS was modified."
+say "Bootstrap complete. shared-caddy was validated, not reloaded. Nothing else changed."
 
 cat <<EOF
 
-Remaining steps, in order:
+Remaining steps, in order (details in deploy/OVH.md):
 
-  1. Put docker-compose.prod.yml and a filled .env in $APP_DIR
+  1. Fill $APP_DIR/.env from .env.production.example, then chmod 600 it.
 
-  2. Log in to the registry so the first pull works
-       echo "\$GHCR_TOKEN" | docker login ghcr.io -u <github-user> --password-stdin
+  2. Run the GitHub Actions workflow "Build & Publish Docker image" on main.
+     It ships docker-compose.prod.yml, syncs media, pulls the sha-tagged image,
+     starts this stack and waits for pankajpramanik-app to report healthy.
 
-  3. Start this stack (it starts only its own services)
-       cd $APP_DIR
-       docker compose -f docker-compose.prod.yml up -d
+  3. Check the app from inside the proxy container:
+       docker exec $PROXY_CONTAINER wget -qO- http://pankajpramanik-app:3000/api/health
 
-  4. Reload the shared proxy — reload, not restart, so the other sites keep
-     serving through it without dropping a connection
-       docker compose -f $PROXY_DIR/docker-compose.yml exec $PROXY_SERVICE \\
-         caddy reload --config /etc/caddy/Caddyfile
+  4. Reload the shared proxy — reload, not restart, so other sites keep serving:
+       docker exec $PROXY_CONTAINER caddy reload --config $CADDYFILE_IN --adapter caddyfile
 
-  5. Nothing to seed by hand. On start the container applies migrations,
-     imports prisma/content/snapshot.json and creates the admin from
-     ADMIN_EMAIL / ADMIN_PASSWORD in .env. Media arrives with the first
-     GitHub Actions deploy (or rsync the repo's storage/ into $APP_DIR/storage).
-
-  6. Change the admin password at first login.
+  5. Log in at https://$DOMAIN/admin and change the admin password.
 
 EOF

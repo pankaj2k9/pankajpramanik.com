@@ -1,12 +1,13 @@
 # STANDALONE FALLBACK — not used by docker-compose.prod.yml.
 #
 # Production runs behind the shared reverse proxy at /opt/proxy on the VPS
-# (see deploy/proxy-caddyfile.snippet), so this stack ships no Caddy of its
+# (see deploy/pankajpramanik.caddy), so this stack ships no Caddy of its
 # own. Keep this file for a VPS where this app is the ONLY thing running:
 # re-add a `caddy` service publishing 80/443 and mount it at
 # /etc/caddy/Caddyfile.
 #
-# DOMAIN and ACME_EMAIL are injected from the .env file via compose.
+# DOMAIN and ACME_EMAIL must be passed to that caddy service (they are not in
+# .env.production.example, which targets the shared-proxy setup).
 {
 	email {$ACME_EMAIL}
 }

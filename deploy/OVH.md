@@ -1,147 +1,197 @@
 # Deploying pankajpramanik.com on the shared OVHcloud VPS
 
-This is the only supported deployment path. The image is built in GitHub
-Actions, published to the GitHub Container Registry, and pulled onto an
-OVHcloud VPS that already hosts other applications.
+The image is built in GitHub Actions, published to
+`ghcr.io/pankaj2k9/pankajpramanik`, and pulled onto an OVHcloud VPS
+(`51.79.166.97`) that **already hosts another production application**,
+travelcrewai.com (JourneyMesh), behind a shared Caddy.
 
-**The VPS is shared.** A single Caddy in `/opt/proxy` fronts every site on the
-box. Setup and deployment are entirely additive: they add one site block, one
-stack directory, and one set of containers, and no part of the deploy path ever
-stops or reconfigures an application that is already there.
+Everything in this guide is additive. Setting up and deploying this site adds
+one proxy site file, one stack directory and one set of containers. No step
+stops, restarts or reconfigures travelcrewai.com, the shared proxy container,
+or the `proxy` network.
 
-Retiring JourneyMesh is the one destructive operation, and it is kept separate
-on purpose. It has its own script, its own manually triggered workflow, and its
-own typed confirmation. See [Retiring JourneyMesh](#retiring-journeymesh).
+## Architecture
 
 ```
-                    :80 / :443
-                        │
-              ┌─────────▼──────────┐
-              │  /opt/proxy        │   shared Caddy — TLS, headers, routing
-              └──┬──────────────┬──┘
-                 │  proxy network
-     ┌───────────▼──┐        ┌──▼──────────────────┐
-     │ journeymesh  │        │ pankajpramanik-app  │  :3000, no host port
-     │ (until it is │        └──┬──────────────────┘
-     │  retired)    │           │  internal network
-     └──────────────┘           │
-                          ┌─────▼──────┐
-                          │ db · redis │  reachable only by this stack
-                          └────────────┘
+Cloudflare (DNS; optionally proxied)
+    │
+51.79.166.97
+    │
+shared-caddy  :80 / :443          /opt/proxy — the ONLY thing publishing host ports
+    │                             sites: /opt/proxy/sites/travelcrewai.caddy
+    │                                    /opt/proxy/sites/pankajpramanik.caddy
+    │  external Docker network: proxy
+    ├──────────────► travelcrewai / JourneyMesh containers (untouched)
+    │
+pankajpramanik-app:3000           container_name + alias; `expose` only, no `ports`
+    │
+    │  private network: pankajpramanik_internal
+    ├── db     postgres:16-alpine  volume pankajpramanik_pgdata     (no ports)
+    └── redis  redis:7-alpine      volume pankajpramanik_redisdata  (no ports)
+
+/opt/pankajpramanik/
+    docker-compose.prod.yml   shipped by every deploy (previous copy kept as .bak-*)
+    .env                      production secrets, mode 600, never in git
+    storage/                  media bind mount → /app/storage (persistent)
+    .deploy/                  deploy staging + deployed-images.log
+    proxy-backups/            backups of pankajpramanik.caddy taken by the bootstrap
 ```
 
-Two rules make the sharing safe:
+Rules that keep the sharing safe:
 
-1. **Only the proxy publishes host ports.** This stack publishes none, so it can
-   never collide with an existing app over `:80`, `:443`, or `:3000`.
-2. **The proxy is reloaded, never restarted.** `caddy reload` swaps the config
-   in place and keeps existing connections alive for every other site.
+1. **Only shared-caddy publishes host ports.** This stack publishes none, so
+   port 3000, PostgreSQL 5432 and Redis 6379 are unreachable from the internet
+   and cannot collide with anything.
+2. **db and redis are only on the private network.** Not even shared-caddy or
+   the other application can reach them.
+3. **The proxy is reloaded by hand, never restarted.** `caddy reload` swaps the
+   config in place; travelcrewai.com keeps its connections.
+4. **Compose is always scoped** to `-f docker-compose.prod.yml` with the pinned
+   project name `pankajpramanik`. No `down`, no `system prune`, no network or
+   volume removal anywhere in the deploy path.
+
+## Which setup applies
+
+| | Situation | Do |
+|---|---|---|
+| **A** | First VPS ever, no shared proxy | [Appendix A](#appendix-a-first-vps-ever-create-the-shared-proxy), then continue from step 1 |
+| **B** | Shared proxy already exists: `/opt/proxy`, `shared-caddy`, `proxy` network | Steps 1–9 below |
+
+**This server (51.79.166.97) is option B.** Do not create another Caddy, network
+or proxy directory on it.
 
 ---
 
-## 1. Build a registry token
+## 1. Registry pull token
 
-The server pulls a private image from `ghcr.io`, so it needs a credential of its
-own.
+The server pulls a private image, so it needs its own credential.
 
 GitHub → Settings → Developer settings → Personal access tokens → Tokens
-(classic) → Generate new token, with the **`read:packages`** scope only. Save it
-as `GHCR_PULL_TOKEN`.
+(classic) → Generate new token, scope **`read:packages`** only. This becomes
+`GHCR_PULL_TOKEN`.
 
-Do not reuse `GITHUB_TOKEN` for this. It is scoped to a single workflow run, so
-using it for `docker login` on the server leaves a credential that is already
-dead, and the next manual `docker compose pull` fails with a 401.
+Do not use `GITHUB_TOKEN` for this; it dies with the workflow run.
 
-If you would rather not manage a token, make the package public instead:
-GitHub → Packages → `pankajpramanik` → Package settings → Change visibility.
-Anonymous pulls then work and the login step can be dropped.
+## 2. Deploy SSH key and GitHub secrets
 
-## 2. GitHub secrets
+If the `deploy` user does not yet have a key for GitHub Actions, create a
+dedicated one on your laptop and install its public half:
 
-Settings → Secrets and variables → Actions, in the `production` environment.
+```sh
+ssh-keygen -t ed25519 -f ~/.ssh/pankajpramanik_deploy -C "gha-pankajpramanik" -N ""
+ssh-copy-id -i ~/.ssh/pankajpramanik_deploy.pub deploy@51.79.166.97
+```
+
+Repo → Settings → Environments → **New environment → `production`** (exact name;
+the workflow uses `environment: production`). Optionally add yourself as a
+required reviewer so each deploy waits for approval. Add these **environment**
+secrets:
 
 | Secret | Value |
 | --- | --- |
-| `DEPLOY_HOST` | VPS IP or hostname |
-| `DEPLOY_USER` | deploy user, a member of the `docker` group |
-| `DEPLOY_SSH_KEY` | private key whose public half is in that user's `authorized_keys` |
+| `DEPLOY_HOST` | `51.79.166.97` |
+| `DEPLOY_USER` | `deploy` |
+| `DEPLOY_SSH_KEY` | full private key (`~/.ssh/pankajpramanik_deploy`, including the BEGIN/END lines) |
 | `GHCR_PULL_TOKEN` | the `read:packages` token from step 1 |
 
-## 3. DNS
+No application secret (`POSTGRES_PASSWORD`, `AUTH_SECRET`, …) goes into GitHub.
+Those live only in `/opt/pankajpramanik/.env`.
 
-Point the records at the VPS **before** touching Caddy. Caddy cannot obtain a
-certificate for a name that does not resolve here, and repeated failures count
-against Let's Encrypt rate limits.
+The `deploy` user must be in the `docker` group, have `bash` as its login shell,
+and never be `root`. Docker group membership is root-equivalent on the host:
+guard `DEPLOY_SSH_KEY` accordingly.
+
+## 3. DNS (Cloudflare)
 
 | Record | Type | Value |
 | --- | --- | --- |
-| `pankajpramanik.com` | A | VPS IPv4 |
+| `pankajpramanik.com` | A | `51.79.166.97` |
 | `www` | CNAME | `pankajpramanik.com` |
 
-```sh
-dig +short pankajpramanik.com
-```
-
-## 4. Bootstrap the server
-
-Copy the script up and run it as the deploy user.
+Start with **DNS only (grey cloud)** until Caddy has issued both certificates.
+Proxied records combined with Cloudflare's "Always Use HTTPS" can block the
+Let's Encrypt HTTP challenge. After certificates exist you may switch to
+proxied (orange); then set SSL/TLS mode to **Full (strict)**. "Flexible" causes
+redirect loops with Caddy.
 
 ```sh
-scp deploy/ovh-bootstrap.sh <user>@<host>:~
-ssh <user>@<host> 'bash ovh-bootstrap.sh'
+dig +short pankajpramanik.com          # 51.79.166.97 while grey-clouded
 ```
 
-It creates the shared `proxy` network if it does not exist, creates
-`/opt/pankajpramanik`, appends the two domain variables to `/opt/proxy/.env`,
-and appends this site's block to `/opt/proxy/Caddyfile` between marker comments.
-
-Every write is guarded. Existing variables are left alone, both proxy files are
-backed up with a timestamp before being appended to, the block is skipped
-entirely on a re-run, and the config is validated with `caddy validate` before
-you are told to reload. If validation fails the script stops without reloading,
-so the other sites keep serving.
-
-The block it appends is the same one kept in
-[`proxy-caddyfile.snippet`](./proxy-caddyfile.snippet) for reference or manual
-installation.
-
-## 5. Stack files
+## 4. Bootstrap the stack directory and proxy site file
 
 ```sh
-scp docker-compose.prod.yml <user>@<host>:/opt/pankajpramanik/
-scp .env.production.example  <user>@<host>:/opt/pankajpramanik/.env
-ssh <user>@<host> 'chmod 600 /opt/pankajpramanik/.env && nano /opt/pankajpramanik/.env'
+ssh deploy@51.79.166.97 'mkdir -p ~/pp-bootstrap'
+scp deploy/ovh-bootstrap.sh deploy/pankajpramanik.caddy deploy@51.79.166.97:~/pp-bootstrap/
+ssh deploy@51.79.166.97 'bash ~/pp-bootstrap/ovh-bootstrap.sh'
 ```
 
-Generate the auth secret rather than inventing one:
+Read-only checks first; it stops without writing anything if any fail:
+
+- `/opt/proxy`, `/opt/proxy/Caddyfile`, `/opt/proxy/sites` exist
+- `shared-caddy` is running and attached to the external `proxy` network
+- the Caddyfile and `sites/` are mounted into `shared-caddy`
+- the Caddyfile has an `import …sites/…` line and a `(common)` snippet exists
+- no other file (and no block from an older version of this script) already
+  defines `pankajpramanik.com`
+
+Then it:
+
+- creates `/opt/pankajpramanik/storage/uploads`
+- writes `/opt/proxy/sites/pankajpramanik.caddy` from
+  [`pankajpramanik.caddy`](./pankajpramanik.caddy), backing up any previous
+  copy to `/opt/pankajpramanik/proxy-backups/` (outside `sites/`, so an import
+  glob can never load a backup)
+- runs `caddy validate` inside `shared-caddy`; on failure it restores or
+  removes its file, so a later reload cannot break travelcrewai.com
+- **does not reload** the proxy
+
+Re-running it with an unchanged site file writes nothing.
+
+If `/opt/pankajpramanik` cannot be created as `deploy`, or `/opt/proxy/sites` is
+not writable, the script tells you the one command to fix it. Never run the
+script as root.
+
+## 5. Production `.env`
 
 ```sh
-openssl rand -base64 32
+scp .env.production.example deploy@51.79.166.97:/opt/pankajpramanik/.env
+ssh deploy@51.79.166.97 'chmod 600 /opt/pankajpramanik/.env && nano /opt/pankajpramanik/.env'
 ```
 
-Set a distinct `POSTGRES_PASSWORD` too. Postgres here is private to this stack,
-but it shares a kernel with everything else on the box.
-
-## 6. First start
+Replace every `CHANGE_ME_*`:
 
 ```sh
-cd /opt/pankajpramanik
-echo "$GHCR_TOKEN" | docker login ghcr.io -u <github-user> --password-stdin
-docker compose -f docker-compose.prod.yml up -d
-docker compose -f docker-compose.prod.yml logs -f app
+openssl rand -hex 32       # POSTGRES_PASSWORD (URL-safe: it is embedded in DATABASE_URL)
+openssl rand -base64 32    # AUTH_SECRET
 ```
 
-`docker-entrypoint.sh` runs `prisma migrate deploy` on every container start, so
-the schema is applied here. Then reload the proxy:
+`POSTGRES_USER/PASSWORD/DB` take effect only when the `pgdata` volume is first
+created. Choose them before the first deploy.
 
-```sh
-docker compose -f /opt/proxy/docker-compose.yml exec caddy \
-  caddy reload --config /etc/caddy/Caddyfile
-```
+## 6. First deploy
+
+GitHub → Actions → **Build & Publish Docker image** → Run workflow → `main`
+(or push to `main`).
+
+The deploy job ships `docker-compose.prod.yml`, merges media, pulls the image
+tagged `sha-<full commit sha>`, runs `docker compose up -d`, and waits for
+`pankajpramanik-app` to become **healthy**. See [CI/CD](#cicd).
+
+On first start the container:
+
+1. `prisma migrate deploy` — applies all migrations to the empty database
+2. creates the admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD` if it does not exist
+3. imports `prisma/content/snapshot.json`
+4. starts Next.js
 
 ## 7. Content and media — nothing to seed by hand
 
-Content and media flow from your laptop to production through git:
+Content and media flow from your laptop to production through git. Both must be
+committed; neither is gitignored:
+
+- `prisma/content/snapshot.json` — baked into the image, imported on start
+- `storage/uploads/**` — not in the image; synced to the VPS by the deploy
 
 ```sh
 # locally, after editing content in the local admin (http://localhost:3000/admin)
@@ -151,18 +201,17 @@ git add prisma/content storage && git commit -m "content: update" && git push
 
 On push the deploy workflow:
 
-1. uploads `storage/` and merges it into `/opt/pankajpramanik/storage` —
-   file by file, **never overwriting or deleting** anything, so media uploaded
-   in the production admin is safe;
-2. restarts the app, whose entrypoint runs `prisma migrate deploy`, then imports
-   the snapshot. The import is skipped when that snapshot was already applied,
-   so production admin edits survive restarts — until you deploy a *new*
-   snapshot, which then wins for posts, projects, pages, experience, skills,
-   education, certifications and testimonials. Users and contact messages are
-   never touched.
+1. rsyncs `storage/` to `/opt/pankajpramanik/.deploy/storage` (no `--delete`)
+   and merges it into `/opt/pankajpramanik/storage` file by file, **never
+   overwriting or deleting**, so media uploaded in the production admin is safe;
+2. restarts the app, whose entrypoint runs `prisma migrate deploy`, ensures the
+   admin exists, then imports the snapshot. The import is skipped when that
+   snapshot was already applied, so production admin edits survive restarts —
+   until you deploy a *new* snapshot, which then wins for posts, projects,
+   pages, experience, skills, education, certifications and testimonials.
+   Users and contact messages are never touched.
 
-The admin user from `ADMIN_EMAIL` / `ADMIN_PASSWORD` is created on first start
-if missing. Set `CONTENT_SYNC=false` in `.env` to freeze production content.
+Set `CONTENT_SYNC=false` in `.env` to freeze production content.
 
 ### Media storage
 
@@ -173,126 +222,75 @@ if missing. Set `CONTENT_SYNC=false` in `.env` to freeze production content.
 | VPS | `/opt/pankajpramanik/storage` — bind mount, survives every redeploy |
 | Backup | `/var/backups/pankajpramanik/storage` (+ `REMOTE`) via `backup.sh` |
 
-Admin uploads land in `uploads/YYYY/MM/DD/<name>-<random>.<ext>`. To pull
-production uploads back into the repo so git holds them too:
+To pull production uploads back into the repo:
 
 ```sh
-rsync -av <user>@<host>:/opt/pankajpramanik/storage/ storage/
+rsync -av deploy@51.79.166.97:/opt/pankajpramanik/storage/ storage/
 ```
+
+## 8. Go live: check, then reload the proxy
+
+```sh
+ssh deploy@51.79.166.97
+cd /opt/pankajpramanik
+docker compose -f docker-compose.prod.yml ps               # app healthy, db healthy, redis up
+docker exec shared-caddy wget -qO- http://pankajpramanik-app:3000/api/health   # {"status":"ok"}
+docker exec shared-caddy caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+docker exec shared-caddy caddy reload   --config /etc/caddy/Caddyfile --adapter caddyfile
+```
+
+(Use the Caddyfile path the bootstrap printed if it is not `/etc/caddy/Caddyfile`.)
+
+## 9. Verify
+
+```sh
+curl -sI https://pankajpramanik.com | head -1              # HTTP/2 200
+curl -sI https://www.pankajpramanik.com | grep -i location # https://pankajpramanik.com/
+curl -s  https://pankajpramanik.com/api/health             # {"status":"ok"}
+curl -sI https://travelcrewai.com | head -1                # unchanged
+```
+
+Then log in at `https://pankajpramanik.com/admin` and change the admin password.
+Install backups (see below) the same day.
 
 ---
 
 ## CI/CD
 
-Two workflows, one of which deploys.
+**`.github/workflows/ci.yml`** — every push and PR to `main`: lint, typecheck,
+migrate, seed, import snapshot, build. Never touches the server.
 
-**`.github/workflows/ci.yml`** runs on every push and pull request to `main`:
-lint, typecheck, migrate, seed, import the content snapshot, build. It never
-touches the server.
+**`.github/workflows/docker.yml`** — pushes to `main` (and `v*` tags, build only):
 
-**`.github/workflows/docker.yml`** runs on pushes to `main` and on version tags:
+1. **build**: throwaway Postgres → migrate, seed, import snapshot → fail if any
+   `/uploads/…` referenced by content is missing from `storage/` → build and
+   push `ghcr.io/pankaj2k9/pankajpramanik` tagged `latest`, `sha-<short>`,
+   `sha-<full>` (and the git tag).
+2. **deploy** (`main` only, environment `production`), as `deploy` over SSH:
+   1. rsync `storage/` and `docker-compose.prod.yml` to `/opt/pankajpramanik/.deploy`
+   2. refuse unless `/opt/pankajpramanik`, its `.env` and the `proxy` network exist
+   3. install the compose file (keeping `docker-compose.prod.yml.bak-*`)
+   4. `docker login ghcr.io` with the token over stdin; logout on any exit
+   5. `APP_IMAGE=…:sha-<full sha>` → `docker compose pull app`
+   6. merge media without overwriting; `chown` to uid 1001
+   7. `docker compose up -d` (entrypoint runs migrations + content import)
+   8. wait up to ~250s for container health `healthy`; fail immediately on
+      `unhealthy`, a crash loop (3+ restarts) or a wrong image — printing the
+      last 80 log lines and the exact rollback command
+   9. retag the server's cached `:latest` to the deployed build, append to
+      `.deploy/deployed-images.log`
+   10. remove old builds of **this image only**, keeping the 5 newest
 
-1. Starts a throwaway Postgres, migrates, seeds and imports the content
-   snapshot into it, and fails if any `/uploads/…` file the content references
-   is missing from `storage/`.
-2. Builds the image against that database and pushes to
-   `ghcr.io/pankaj2k9/pankajpramanik`, tagged `latest`, `sha-<short>`, and the
-   git tag when there is one.
-3. Rsyncs `storage/` and `docker-compose.prod.yml` to `/opt/pankajpramanik/.deploy`,
-   then SSHes in, installs the compose file (keeping a `.bak-*` copy), merges
-   media into persistent storage without overwriting, pulls, restarts this
-   stack, and waits for the app to answer before reporting success.
-
-The server needs `rsync` installed (`sudo apt-get install -y rsync`).
-
-The build needs a live database because `next build` prerenders pages that read
-Postgres. CI provides one as a service container, and Buildx reaches it over the
-host network.
-
-A concurrency group serializes deploys and never cancels one mid-flight, since a
-killed run can leave the stack half-restarted.
+Deploys are serialized and never cancelled mid-flight.
 
 ### What the deploy job will not do
 
-Written down because this VPS is shared:
-
-- It names only `/opt/pankajpramanik/docker-compose.prod.yml`, so `up -d` starts
-  this stack's services and nothing else.
-- No `docker compose down`, no `docker system prune`, no `docker network rm`, no
-  volume removal.
-- Image cleanup is `docker image prune -f --filter "until=72h"`, which collects
-  dangling layers older than three days. Images referenced by a running
-  container are never eligible, so another app's image cannot be collected.
-- It never edits `/opt/proxy`. Proxy configuration happens once, by hand, in
-  step 4.
-- It aborts if the stack directory, the `.env`, or the shared network is
-  missing, rather than recreating any of them.
-- It never deletes or overwrites a file in `/opt/pankajpramanik/storage`.
-
----
-
-## Retiring JourneyMesh
-
-Once pankajpramanik.com is live and serving over HTTPS, JourneyMesh can come off
-this VPS. `deploy/decommission-journeymesh.sh` does it, gated behind a typed
-confirmation:
-
-```sh
-scp deploy/decommission-journeymesh.sh <user>@<host>:~
-ssh <user>@<host> 'CONFIRM=REMOVE-JOURNEYMESH bash decommission-journeymesh.sh'
-```
-
-Or from the Actions tab: **Decommission JourneyMesh** → Run workflow → type
-`REMOVE-JOURNEYMESH`. Manual dispatch only. It is deliberately not part of the
-deploy workflow, because a destructive step that runs on every push to `main` is
-one bad merge away from an outage.
-
-**Order matters, and the script enforces it.** JourneyMesh's block currently owns
-the bare IP (`JOURNEYMESH_DOMAIN=http://<vps-ip>`), so it is what answers on
-this VPS today. The script refuses to touch anything unless
-`https://pankajpramanik.com` already returns 200.
-
-What it does, in order:
-
-1. Verifies the replacement is live, the shared network exists, and prints every
-   running container.
-2. Archives the Caddyfile, both `.env` files, a container and volume inventory,
-   and a `tar.gz` of each JourneyMesh volume, into `/opt/decommissioned/…`.
-3. **Comments out** the `{$JOURNEYMESH_DOMAIN}` block rather than deleting it,
-   by counting braces from its opening line. Caddy placeholders like `{host}`
-   and `{scheme}` are balanced, so they do not confuse the match. Verified
-   against a copy of the real Caddyfile with `caddy validate`.
-4. Comments out `JOURNEYMESH_DOMAIN` in `/opt/proxy/.env`.
-5. Runs `caddy validate`. On failure it restores the backup and reloads nothing.
-6. Reloads, then re-checks the live URL. If that check fails it rolls the proxy
-   back and leaves the JourneyMesh containers running.
-7. Only then runs `docker compose down` in JourneyMesh's own directory.
-
-**Volumes are kept by default.** Containers are cheap to recreate, data is not.
-Pass `PURGE_VOLUMES=yes` only when you are certain, and note the backup in the
-archive directory is your last copy.
-
-To undo the proxy half at any point, restore the timestamped backup and reload:
-
-```sh
-ls -t /opt/proxy/Caddyfile.bak.*
-cp /opt/proxy/Caddyfile.bak.<timestamp> /opt/proxy/Caddyfile
-docker compose -f /opt/proxy/docker-compose.yml exec caddy \
-  caddy reload --config /etc/caddy/Caddyfile
-```
-
-### Tighten the proxy afterwards
-
-Two things in the shared config were held back only because JourneyMesh served
-plain HTTP on a bare IP. Once every site on the VPS is on a real domain with a
-certificate, both should be turned on:
-
-- Uncomment `Strict-Transport-Security` in the `(common)` snippet. It was left
-  out because sending HSTS over `http://` is ignored at best, and on a hostname
-  it would pin that name to HTTPS in every browser for two years before a
-  certificate existed.
-- Set `ACME_EMAIL` in `/opt/proxy/.env` and uncomment the `email` directive, for
-  Let's Encrypt expiry warnings.
+- touch `/opt/proxy` in any way (no edit, reload or restart)
+- run `docker compose down`, `docker system prune`, `docker network rm`, or remove volumes
+- remove images of any other repository, or an image a container is using
+- delete or overwrite any file in `/opt/pankajpramanik/storage`
+- create a missing stack directory, `.env` or network — it fails instead
+- print the SSH key or GHCR token
 
 ---
 
@@ -300,68 +298,152 @@ certificate, both should be turned on:
 
 ```sh
 cd /opt/pankajpramanik
-
 docker compose -f docker-compose.prod.yml ps
 docker compose -f docker-compose.prod.yml logs -f app
 docker compose -f docker-compose.prod.yml restart app
+tail .deploy/deployed-images.log
 ```
 
-**Rollback.** Every build is tagged with its short commit SHA, so name one:
+**Rollback** to any earlier build:
 
 ```sh
-APP_IMAGE=ghcr.io/pankaj2k9/pankajpramanik:sha-abc1234 \
+APP_IMAGE=ghcr.io/pankaj2k9/pankajpramanik:sha-<full or short sha> \
   docker compose -f docker-compose.prod.yml up -d app
 ```
 
-Rolling back the image does **not** roll back a migration. If a deploy shipped a
-destructive schema change, restore from a dump instead.
+Rolling back the image does **not** roll back a migration or a content import.
+If a deploy shipped a destructive schema change, restore from a dump.
 
-**Backups.** `deploy/backup.sh` dumps, compresses, verifies, copies off-box, and
-rotates. Install it as a cron:
+**Backups.** `deploy/backup.sh` dumps, compresses, verifies, copies off-box and
+rotates:
 
 ```sh
-sudo install -m 755 deploy/backup.sh /usr/local/bin/pankajpramanik-backup
-crontab -e
-# 03:17 daily, an odd minute so it misses the top-of-hour pile-up
+scp deploy/backup.sh deploy@51.79.166.97:~
+# on the VPS — set REMOTE= inside the script first
+sudo install -m 755 ~/backup.sh /usr/local/bin/pankajpramanik-backup
+sudo crontab -e
 17 3 * * * /usr/local/bin/pankajpramanik-backup >> /var/log/pankajpramanik-backup.log 2>&1
 ```
 
-Set `REMOTE` inside the script to an rsync destination. A dump that only ever
-lands on the machine it came from is not a backup, and the script warns on every
-run until that is set. It also writes to a `.part` file and renames only on
-success, so a truncated dump is never mistaken for a good one, and it shouts if
-a dump comes back at less than half the previous size.
+## Troubleshooting
+
+**502 from Caddy.** App not on the `proxy` network, or not healthy yet:
+`docker exec shared-caddy wget -qO- http://pankajpramanik-app:3000/api/health`.
+
+**Certificate never issues.** DNS not pointing at `51.79.166.97`, Cloudflare
+proxying during issuance, or ports 80/443 blocked in the OVHcloud firewall.
+
+**A proxy change broke sites.** Restore and reload:
+
+```sh
+ls -t /opt/pankajpramanik/proxy-backups/
+cp /opt/pankajpramanik/proxy-backups/pankajpramanik.caddy.bak.<stamp> /opt/proxy/sites/pankajpramanik.caddy
+# or, if this site should not be served at all: rm /opt/proxy/sites/pankajpramanik.caddy
+docker exec shared-caddy caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+docker exec shared-caddy caddy reload   --config /etc/caddy/Caddyfile --adapter caddyfile
+```
+
+**App restarts in a loop / deploy reports crash loop.** Almost always
+`prisma migrate deploy` or the content import failing against the database
+(wrong `POSTGRES_*`, special characters in `POSTGRES_PASSWORD`). Read the first
+lines of `docker compose -f docker-compose.prod.yml logs app`.
+
+**No admin user.** `ADMIN_PASSWORD` missing or under 12 characters. Fix `.env`,
+then `docker compose -f docker-compose.prod.yml up -d app` (recreates with the
+new env; the admin is created on start).
+
+**401 from ghcr.io.** `GHCR_PULL_TOKEN` expired or lacks `read:packages`.
+
+## Risks to keep in mind
+
+- **Cloudflare and rate limiting.** The app rate-limits by the first
+  `X-Forwarded-For` entry, which the site file sets to the TCP peer. With
+  Cloudflare proxying, that peer is a Cloudflare edge IP, so visitors behind the
+  same edge share contact/login/comment limits. Fixing it properly needs
+  `trusted_proxies` in the shared Caddyfile's global options, which affects
+  every site — decide deliberately, not during first deploy.
+- **The `(common)` snippet is shared.** Whatever it contains (e.g. HSTS)
+  applies to this site too. Check it before the first reload.
+- **A new content snapshot is authoritative.** Deploying one replaces
+  production edits to content tables; posts missing from it are deleted, and
+  their comments cascade with them.
+- **SSH host key is trusted on first use** (`ssh-keyscan` in the workflow).
+- **Rollbacks don't undo migrations.** Take a backup before deploying schema
+  changes.
+
+## Retired: JourneyMesh decommissioning
+
+An earlier version shipped a workflow and script to remove JourneyMesh from this
+VPS. JourneyMesh is the live travelcrewai.com production application, so the
+workflow was removed and `deploy/decommission-journeymesh.sh` now refuses to
+run.
 
 ---
 
-## Troubleshooting
+## Appendix A: first VPS ever — create the shared proxy
 
-**Caddy returns a connection error.** The app is not on the shared network.
-Check that the alias resolves from inside the proxy container:
-
-```sh
-docker compose -f /opt/proxy/docker-compose.yml exec caddy \
-  wget -qO- http://pankajpramanik-app:3000 | head
-```
-
-**The certificate never issues.** Confirm DNS resolves to this VPS, that ports
-80 and 443 are open in the OVHcloud firewall, and that `PANKAJPRAMANIK_DOMAIN`
-carries no `http://` prefix. That prefix tells Caddy to serve plain HTTP and
-skip ACME entirely.
-
-**A proxy edit broke every site.** Every append is backed up with a timestamp.
-Restore and reload:
+Only for a VPS with **no** proxy. **Not for 51.79.166.97.** As a sudo user:
 
 ```sh
-ls -t /opt/proxy/Caddyfile.bak.*
-cp /opt/proxy/Caddyfile.bak.<timestamp> /opt/proxy/Caddyfile
-docker compose -f /opt/proxy/docker-compose.yml exec caddy \
-  caddy reload --config /etc/caddy/Caddyfile
+curl -fsSL https://get.docker.com | sudo sh
+sudo apt-get install -y rsync
+sudo adduser --disabled-password --gecos "" deploy
+sudo usermod -aG docker deploy
+sudo install -d -o deploy -g deploy /opt/proxy /opt/proxy/sites /opt/pankajpramanik
+sudo ufw allow OpenSSH && sudo ufw allow 80/tcp && sudo ufw allow 443/tcp && sudo ufw allow 443/udp && sudo ufw enable
 ```
 
-**The app restarts in a loop.** Almost always a failed `prisma migrate deploy`
-against an unreachable or misconfigured database. Read the first twenty lines of
-`docker compose logs app`.
+As `deploy`:
 
-**The deploy fails with a 401 from ghcr.io.** `GHCR_PULL_TOKEN` has expired or
-lacks `read:packages`. Regenerate it.
+```sh
+docker network create proxy
+```
+
+`/opt/proxy/Caddyfile`:
+
+```caddy
+{
+	email you@example.com
+}
+
+(common) {
+	encode zstd gzip
+	header {
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+}
+
+import /etc/caddy/sites/*.caddy
+```
+
+`/opt/proxy/docker-compose.yml`:
+
+```yaml
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: shared-caddy
+    restart: unless-stopped
+    ports: ["80:80", "443:443", "443:443/udp"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./sites:/etc/caddy/sites:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [proxy]
+networks:
+  proxy:
+    external: true
+volumes:
+  caddy_data:
+  caddy_config:
+```
+
+```sh
+cd /opt/proxy && docker compose up -d
+```
+
+Then continue with step 1. The bootstrap script works unchanged against this
+layout.

@@ -25,6 +25,18 @@
 # =============================================================================
 set -euo pipefail
 
+# -----------------------------------------------------------------------------
+# RETIRED — DO NOT RUN.
+#
+# This script assumed JourneyMesh only served the bare VPS IP from a block in
+# /opt/proxy/Caddyfile. That is no longer true: JourneyMesh is the live
+# travelcrewai.com production SaaS, and sites now live in /opt/proxy/sites/*.
+# Running it would stop a production application. Its GitHub Actions workflow
+# was removed for the same reason. Kept only for reference.
+# -----------------------------------------------------------------------------
+echo "decommission-journeymesh.sh is retired: JourneyMesh (travelcrewai.com) is live production. Refusing to run." >&2
+exit 1
+
 JM_NAME=journeymesh
 JM_DIR=${JM_DIR:-/opt/journeymesh}
 JM_COMPOSE=${JM_COMPOSE:-docker-compose.prod.yml}

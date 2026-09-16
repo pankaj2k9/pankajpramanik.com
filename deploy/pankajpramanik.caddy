@@ -1,0 +1,61 @@
+# =============================================================================
+# pankajpramanik.com — site file for the SHARED proxy (container: shared-caddy).
+#
+# Installed on the VPS as /opt/proxy/sites/pankajpramanik.caddy by
+# deploy/ovh-bootstrap.sh, which backs up any existing copy, validates the whole
+# proxy config, and rolls back on failure. It never reloads the proxy — do that
+# by hand once the app is healthy:
+#
+#   docker exec shared-caddy caddy reload --config /etc/caddy/Caddyfile
+#
+# The main /opt/proxy/Caddyfile must already import the sites directory and
+# define the `(common)` snippet; this file relies on both and changes neither.
+#
+# Domains are literal on purpose: no variables in /opt/proxy/.env, so nothing
+# here depends on the proxy container's environment being recreated.
+#
+# No Strict-Transport-Security during initial deployment. Add it only after
+# HTTPS has been confirmed working for both hostnames.
+# =============================================================================
+
+pankajpramanik.com {
+	import common
+
+	# Hashed Next.js build output and never-changing artwork.
+	@immutable path /_next/static/* /services-art/* /audio/* /fonts/*
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	# Generated hero model (scripts/models/generate-brain.mjs) — stable name.
+	@models path /models/*
+	header @models Cache-Control "public, max-age=604800"
+
+	# Media from /opt/pankajpramanik/storage — stable, but replaceable.
+	@uploads path /uploads/*
+	header @uploads Cache-Control "public, max-age=604800"
+
+	# `pankajpramanik-app` is the container_name / network alias of the app in
+	# docker-compose.prod.yml, on the external `proxy` network.
+	reverse_proxy pankajpramanik-app:3000 {
+		header_up X-Forwarded-Proto {scheme}
+		# REPLACES any client-sent value with the real TCP peer. The app's rate
+		# limiter (src/lib/client-ip.ts) trusts the first X-Forwarded-For entry
+		# only because of this line — do not remove it.
+		header_up X-Forwarded-For {remote_host}
+		header_up Host {host}
+	}
+}
+
+# Canonical host: www → apex.
+www.pankajpramanik.com {
+	import common
+	redir https://pankajpramanik.com{uri} permanent
+}
+
+# Notes
+#
+# The app sets its own Cache-Control on HTML (dynamic pages are private,
+# no-store). Do not add a blanket Cache-Control here — it would override those
+# and risk caching one visitor's admin page for another.
+#
+# Behind Cloudflare (orange cloud), {remote_host} is a Cloudflare edge IP, so
+# rate limits apply per edge rather than per visitor. See deploy/OVH.md, "Risks".

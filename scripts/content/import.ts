@@ -64,13 +64,16 @@ async function main() {
   if (s.version !== SNAPSHOT_VERSION)
     throw new Error(`Unsupported snapshot version ${s.version}`);
 
+  // Before the skip below, so fixing ADMIN_EMAIL / ADMIN_PASSWORD and restarting
+  // creates a missing admin even when the snapshot itself is unchanged.
+  const admin = await ensureAdmin();
+
   const last = await prisma.contentSync.findUnique({ where: { id: SYNC_ID } });
   if (last?.hash === hash && !force) {
     console.log(`Content snapshot ${hash.slice(0, 12)} already imported — skipping.`);
     return;
   }
 
-  const admin = await ensureAdmin();
   const users = new Map(
     (await prisma.user.findMany({ select: { id: true, email: true } })).map((u) => [u.email, u.id]),
   );

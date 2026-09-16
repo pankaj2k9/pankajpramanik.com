@@ -25,9 +25,9 @@ jobs:
       contents: read
       packages: write
     outputs:
-      # Surfaced so the deploy job can log exactly which build it shipped,
-      # and so a rollback has a concrete tag to name.
-      image: ${{ env.IMAGE }}:${{ steps.meta.outputs.version }}
+      # The immutable full-commit tag pushed below. Not steps.meta.outputs.version:
+      # on main that resolves to the highest-priority tag, which is `latest`.
+      image: ${{ env.IMAGE }}:sha-${{ github.sha }}
     # `next build` prerenders pages that read PostgreSQL, so provide a
     # throwaway DB, migrate + seed it, then let the Docker build read it
     # over the host network (buildx --network=host).
@@ -97,6 +97,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=tag
             type=sha,format=short
+            type=sha,format=long
 
       - name: Set up Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
@@ -176,6 +177,13 @@ jobs:
 
             APP_DIR=/opt/pankajpramanik
             COMPOSE="docker compose -f docker-compose.prod.yml"
+            APP_CONTAINER=pankajpramanik-app
+            REPO=ghcr.io/pankaj2k9/pankajpramanik
+
+            case "${IMAGE_REF:-}" in
+              "$REPO":sha-*) ;;
+              *) echo "::error::refusing to deploy unexpected image reference '${IMAGE_REF:-}'"; exit 1 ;;
+            esac
 
             # Fail loudly rather than bootstrapping half a stack from CI.
             test -d "$APP_DIR" || { echo "::error::$APP_DIR missing — run deploy/ovh-bootstrap.sh first"; exit 1; }
@@ -194,16 +202,19 @@ jobs:
             docker network inspect proxy >/dev/null 2>&1 || {
               echo "::error::shared 'proxy' network missing — run deploy/ovh-bootstrap.sh"; exit 1; }
 
-            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            # Token goes over stdin (never argv, never echoed); the credential is
+            # removed from the server however this script exits.
+            trap 'docker logout ghcr.io >/dev/null 2>&1 || true' EXIT
+            printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
 
             # Record what is running now, so a rollback has a target.
-            PREVIOUS=$($COMPOSE images -q app | head -1 || true)
-            echo "Currently running image id: ${PREVIOUS:-none}"
-            echo "Deploying: ${IMAGE_REF:-latest tag}"
+            PREVIOUS=$(docker inspect -f '{{.Config.Image}}' "$APP_CONTAINER" 2>/dev/null || true)
+            echo "Currently running: ${PREVIOUS:-none}"
+            echo "Deploying: $IMAGE_REF"
 
             # Pin the exact build from this run (sha tag) so what ships is what
             # was built; shell env wins over APP_IMAGE in .env.
-            export APP_IMAGE="${IMAGE_REF:-ghcr.io/pankaj2k9/pankajpramanik:latest}"
+            export APP_IMAGE="$IMAGE_REF"
             $COMPOSE pull app
 
             # Merge repo media into persistent storage: no-clobber copy, never
@@ -227,23 +238,42 @@ jobs:
             # (skipped when that snapshot was already imported).
             $COMPOSE up -d
 
-            docker logout ghcr.io
-
-            # Wait for the app to answer before calling this a success.
-            for i in $(seq 1 60); do
-              if $COMPOSE exec -T app node -e \
-                   "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"; then
-                echo "App is serving."
-                break
-              fi
-              if [ "$i" = "60" ]; then
-                echo "::error::App did not become healthy in 120s. Recent logs:"
-                $COMPOSE logs --tail=60 app
-                exit 1
-              fi
-              sleep 2
+            # Wait for the container healthcheck (GET /api/health, which needs
+            # PostgreSQL) — checked from inside the container, no public port.
+            fail() {
+              echo "::error::$1"
+              echo "Recent app logs:"
+              $COMPOSE logs --tail=80 app || true
+              [ -n "$PREVIOUS" ] && echo "::error::Previous image was $PREVIOUS — roll back with: cd $APP_DIR && APP_IMAGE=$PREVIOUS $COMPOSE up -d app"
+              exit 1
+            }
+            for i in $(seq 1 50); do
+              STATUS=$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$APP_CONTAINER" 2>/dev/null || echo missing)
+              RESTARTS=$(docker inspect -f '{{.RestartCount}}' "$APP_CONTAINER" 2>/dev/null || echo 0)
+              RUNNING_IMAGE=$(docker inspect -f '{{.Config.Image}}' "$APP_CONTAINER" 2>/dev/null || echo none)
+              echo "[$i] health=$STATUS restarts=$RESTARTS image=$RUNNING_IMAGE"
+              [ "$RUNNING_IMAGE" = "$APP_IMAGE" ] || fail "$APP_CONTAINER is running $RUNNING_IMAGE, expected $APP_IMAGE"
+              case "$STATUS" in
+                healthy) echo "App is healthy."; break ;;
+                unhealthy) fail "$APP_CONTAINER reported unhealthy" ;;
+                missing|exited|dead) fail "$APP_CONTAINER is $STATUS" ;;
+              esac
+              [ "$RESTARTS" -lt 3 ] || fail "$APP_CONTAINER restarted $RESTARTS times (usually prisma migrate deploy failing)"
+              [ "$i" -lt 50 ] || fail "$APP_CONTAINER not healthy after ~250s"
+              sleep 5
             done
 
-            # Dangling images only, and only ones older than three days, so a
-            # concurrent build for another app on this box is never collected.
-            docker image prune -f --filter "until=72h"
+            # Keep the locally cached `latest` equal to what is actually deployed,
+            # so a manual `docker compose up -d` without APP_IMAGE never silently
+            # falls back to an older build. Record the history for rollbacks.
+            docker tag "$APP_IMAGE" "$REPO:latest"
+            echo "$(date -u +%FT%TZ) $APP_IMAGE" >> "$APP_DIR/.deploy/deployed-images.log"
+
+            # Clean up old builds of THIS image only (never other apps' images):
+            # keep the 5 newest; untagging an image a container still uses is
+            # refused by `docker rmi` (no -f), so a running build is never removed.
+            KEEP=$(docker images "$REPO" --format '{{.ID}}' | awk '!seen[$0]++' | head -5 | tr '\n' ' ')
+            docker images "$REPO" --format '{{.ID}} {{.Repository}}:{{.Tag}}' \
+              | awk -v keep="$KEEP" 'BEGIN { n = split(keep, k, " "); for (i = 1; i <= n; i++) K[k[i]] = 1 }
+                                     !($1 in K) && $2 !~ /:<none>$/ { print $2 }' \
+              | xargs -r docker rmi 2>/dev/null || true
