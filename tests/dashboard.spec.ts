@@ -60,7 +60,7 @@ test.describe("authenticated local dashboard", () => {
       .fill(`Website verification ${id}`);
     await page.getByLabel("Slug", { exact: false }).fill(slug);
     await page
-      .getByLabel("Cover image URL", { exact: false })
+      .getByRole("textbox", { name: /^Cover image URL/ })
       .fill("/uploads/2026/06/1762445201199.jpg");
     await page
       .getByLabel("Problem / scope")
@@ -90,7 +90,7 @@ test.describe("authenticated local dashboard", () => {
     await page.goto(`/admin/projects/${project.id}/edit`);
     await page.reload();
     await expect(
-      page.getByLabel("Cover image URL", { exact: false }),
+      page.getByRole("textbox", { name: /^Cover image URL/ }),
     ).toHaveValue(project.coverImage!);
     await page.getByLabel("Slug", { exact: false }).fill(`${slug}-updated`);
     await page.getByRole("button", { name: /Update Project/i }).click();

@@ -18,6 +18,18 @@ for (const path of [
     page.on("pageerror", (error) => errors.push(error.message));
     const response = await page.goto(path);
     expect(response?.status()).toBe(200);
+    // Reveal effects fade content in; measuring contrast mid-fade reports the
+    // partially transparent colour. Wait for every finite animation/transition
+    // (infinite ones such as marquees never finish and do not affect contrast).
+    await page.waitForFunction(() =>
+      document
+        .getAnimations()
+        .every(
+          (a) =>
+            a.playState !== "running" ||
+            a.effect?.getTiming().iterations === Infinity,
+        ),
+    );
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       "href",
@@ -47,39 +59,45 @@ for (const path of [
     expect(errors).toEqual([]);
   });
 }
-test("service nodes and finder lead to a prefilled contact form", async ({
-  page,
-}) => {
+test("service finder leads to a prefilled contact brief", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "03 Automation" }).click();
-  await expect(page.locator(".scene-insight")).toContainText(
+  await page
+    .getByRole("group", { name: "Your project goal" })
+    .getByRole("button", { name: /Automate repetitive work/ })
+    .click();
+  await expect(page.locator(".hm-finder-result h3")).toHaveText(
     "Make room for better work.",
   );
-  await page.getByRole("button", { name: /Automate repetitive work/ }).click();
   await page.getByRole("link", { name: /Discuss this project/ }).click();
   await expect(page).toHaveURL(/contact\?service=automation/);
-  await expect(page.getByLabel("Subject")).toHaveValue(
-    "Automation project inquiry",
-  );
-});
-test("filters, empty state, reset, and expandable case study", async ({
-  page,
-}) => {
-  await page.goto("/portfolio");
-  await page.getByLabel("Service area").selectOption("Data Engineering");
-  await page.getByLabel("Technology", { exact: true }).selectOption("Python");
-  const first = page.locator("article").first();
-  await expect(first).toBeVisible();
-  await first.getByText("Explore case study", { exact: true }).click();
   await expect(
-    first.getByText("Verified outcomes", { exact: true }),
-  ).toBeVisible();
-  await page.getByLabel("Search projects").fill("no-such-project-837194");
+    page.getByRole("button", { name: "Automation", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: /Continue/ })).toBeEnabled();
+});
+test("filters, empty state, reset, and case study link", async ({ page }) => {
+  await page.goto("/portfolio");
+  const tab = page.getByRole("tab", { name: /Data Engineering/ });
+  await tab.click();
+  await expect(tab).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator(".pj-count")).toContainText(" of ");
+  await expect(page.locator(".pj-cell").first()).toBeVisible();
+  const search = page.getByRole("searchbox", { name: "Search projects" });
+  await search.fill("no-such-project-837194");
   await expect(
     page.getByRole("heading", { name: "No matching projects" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Show all projects" }).click();
-  await expect(page.locator("article").first()).toBeVisible();
+  await expect(search).toHaveValue("");
+  await expect(page.getByRole("tab", { name: /^All/ })).toHaveAttribute(
+    "aria-selected",
+    "true",
+  );
+  const first = page.locator('.pj-cell a[href^="/portfolio/"]').first();
+  const href = await first.getAttribute("href");
+  await first.click();
+  await expect(page).toHaveURL(new RegExp(`${href}$`));
+  await expect(page.locator("h1")).toHaveCount(1);
 });
 test("mobile navigation, fallback, WhatsApp placement, and responsive pages", async ({
   browser,
@@ -149,19 +167,29 @@ test("protected deep links, robots, sitemap, and route aliases", async ({
     308,
   );
 });
-test("contact validates input and preserves values after a server error", async ({
+test("contact brief validates each step and preserves values after a server error", async ({
   page,
 }) => {
   await page.goto("/contact");
-  await page.getByRole("button", { name: "Send Message" }).click();
-  await expect(page.getByLabel("Name", { exact: false })).toBeFocused();
-  await page.getByLabel("Name", { exact: false }).fill("Website test");
+  const next = page.getByRole("button", { name: /Continue/ });
+  await expect(next).toBeDisabled();
+  await page.getByRole("button", { name: "Automation", exact: true }).click();
+  await next.click();
+  const goal = page.getByRole("textbox", {
+    name: "Describe the goal and what’s in the way",
+  });
+  await goal.fill("short");
+  await expect(next).toBeDisabled();
+  await goal.fill("Local verification of recoverable contact errors.");
+  await next.click();
+  await page.getByRole("button", { name: "Still exploring" }).click();
+  await next.click();
+  await page.getByRole("button", { name: "Not sure yet" }).click();
+  await next.click();
+  await page.getByRole("textbox", { name: "Your name *" }).fill("Website test");
   await page
     .getByRole("textbox", { name: "Email *", exact: true })
     .fill("website-test@example.invalid");
-  await page
-    .getByLabel("Message", { exact: false })
-    .fill("Local verification of recoverable contact errors.");
   await page.route("**/api/contact", (route) =>
     route.fulfill({
       status: 503,
@@ -171,11 +199,11 @@ test("contact validates input and preserves values after a server error", async 
       }),
     }),
   );
-  await page.getByRole("button", { name: "Send Message" }).click();
+  await page.getByRole("button", { name: /Send brief/ }).click();
   await expect(page.locator("form").getByRole("alert")).toContainText(
     "could not be saved",
   );
-  await expect(page.getByLabel("Name", { exact: false })).toHaveValue(
-    "Website test",
-  );
+  await expect(
+    page.getByRole("textbox", { name: "Your name *" }),
+  ).toHaveValue("Website test");
 });

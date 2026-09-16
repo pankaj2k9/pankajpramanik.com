@@ -381,7 +381,7 @@
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.1em;
-  color: var(--hm-accent);
+  color: var(--hm-accent-ink, var(--hm-accent));
 }
 .ab-approach-card h3,
 .ab-step h3,
@@ -493,8 +493,7 @@
   margin-top: 10px;
   font-size: 14px;
   line-height: 1.55;
-  color: var(--hm-body);
-  opacity: 0.75;
+  color: var(--hm-faint);
 }
 .ab-milestone .ab-tech {
   opacity: 0;
@@ -517,10 +516,10 @@
 }
 .ab-milestone:is([data-focus], :hover, :focus-visible) .ab-year {
   font-size: 22px;
-  color: var(--hm-accent);
+  color: var(--hm-accent-ink, var(--hm-accent));
 }
 .ab-milestone:is([data-focus], :hover, :focus-visible) .ab-summary {
-  opacity: 1;
+  color: var(--hm-body);
 }
 .ab-milestone:is(:hover, :focus-visible) .ab-tech {
   max-height: 120px;
@@ -617,7 +616,7 @@
 }
 .ab-gt {
   font-size: 16px;
-  color: var(--tone) !important;
+  color: var(--tone-ink, var(--tone)) !important;
 }
 .ab-why {
   margin-top: 16px;
@@ -801,7 +800,7 @@
 .sx-arrow {
   opacity: 0;
   translate: -6px 0;
-  color: var(--tone);
+  color: var(--tone-ink, var(--tone));
   transition:
     opacity 0.3s ease,
     translate 0.35s var(--ease);
@@ -817,7 +816,7 @@
   color: var(--hm-fg);
 }
 .sx-tab[aria-selected="true"] .sx-num {
-  color: var(--tone);
+  color: var(--tone-ink, var(--tone));
 }
 .sx-tab:is([aria-selected="true"], :hover) .sx-arrow {
   opacity: 1;
@@ -864,7 +863,7 @@
   align-items: center;
 }
 .sx-panel .hm-label span {
-  color: var(--tone);
+  color: var(--tone-ink, var(--tone));
 }
 .sx-panel h3 {
   margin-top: 14px;
@@ -960,7 +959,7 @@
   translate: 3px 0;
 }
 .sx-links a span {
-  color: var(--tone);
+  color: var(--tone-ink, var(--tone));
 }
 .sx-actions {
   margin-top: 30px;
@@ -1162,7 +1161,7 @@
 .sd-problem-num {
   font-size: 12px;
   font-weight: 600;
-  color: var(--tone);
+  color: var(--tone-ink, var(--tone));
 }
 .sd-problem p {
   margin-top: 14px;
@@ -1730,7 +1729,7 @@
   transition: color 0.35s ease;
 }
 .ex-role[data-focus] .ex-year {
-  color: var(--hm-accent);
+  color: var(--hm-accent-ink, var(--hm-accent));
 }
 .ex-range,
 .ex-place {
@@ -1747,7 +1746,7 @@
   background: color-mix(in srgb, #22c55e 18%, transparent);
   font-size: 11px;
   font-weight: 600;
-  color: #15803d;
+  color: #137538;
 }
 :root[data-theme="dark"] .ex-now {
   color: #6ee7b7;
@@ -1838,7 +1837,7 @@
 .ex-details[open] summary span {
   rotate: 45deg;
   border-color: var(--hm-accent);
-  color: var(--hm-accent);
+  color: var(--hm-accent-ink, var(--hm-accent));
 }
 .ex-details ul {
   display: grid;
@@ -1882,7 +1881,7 @@
 .ex-institution {
   margin-top: 4px;
   font-size: 14px;
-  color: var(--hm-accent);
+  color: var(--hm-accent-ink, var(--hm-accent));
 }
 .ex-certs {
   display: grid;
@@ -1916,7 +1915,7 @@ a.ex-cert:hover {
 .ex-cert-link {
   font-size: 12px;
   font-weight: 600;
-  color: var(--hm-accent);
+  color: var(--hm-accent-ink, var(--hm-accent));
 }
 .ex-quote {
   padding: 28px;
@@ -2031,7 +2030,7 @@ a.ex-cert:hover {
 }
 .sk-chip-count {
   font-size: 11px;
-  color: var(--tone);
+  color: var(--tone-ink, var(--tone));
 }
 .sk-detail {
   position: sticky;
@@ -2171,7 +2170,7 @@ a.ex-cert:hover {
   padding: 4px 11px;
   border: 1px solid color-mix(in srgb, var(--tone) 35%, var(--hm-border));
   border-radius: 999px;
-  color: var(--tone);
+  color: var(--tone-ink, var(--tone));
 }
 .bl-grid {
   display: grid;
@@ -2520,7 +2519,7 @@ a.ex-cert:hover {
   color: var(--hm-fg);
 }
 .ct-steps li[data-state="done"] button {
-  color: var(--hm-accent);
+  color: var(--hm-accent-ink, var(--hm-accent));
 }
 .ct-step-num {
   font-size: 11px;

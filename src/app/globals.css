@@ -1162,7 +1162,7 @@ footer .text-faint {
 .tone-orange { --tone: #f26a1b; }
 .tone-indigo { --tone: #3548d6; }
 .node-icon {
-  color: var(--tone);
+  color: var(--tone-ink, var(--tone));
   display: flex;
 }
 .node-text small {
@@ -1191,7 +1191,7 @@ footer .text-faint {
 .node-chevron {
   font-size: 17px;
   line-height: 1;
-  color: var(--tone);
+  color: var(--tone-ink, var(--tone));
 }
 .node-0 { top: 4%; left: 18%; }
 .node-1 { top: 25%; left: 5%; }
@@ -1618,7 +1618,7 @@ footer .text-faint {
   color: #6a7890;
 }
 .stat-availability dt {
-  color: #15803d;
+  color: #137538;
   font-weight: 550;
 }
 .stat-availability dt svg {
@@ -1700,10 +1700,13 @@ footer .text-faint {
   --hm-border-strong: #b7c5d8;
   --hm-fg: #13233a;
   --hm-body: #50627a;
-  --hm-faint: #6f809a;
+  /* Text tokens below meet WCAG AA (4.5:1) on every light surface above. */
+  --hm-faint: #5b6a81;
   --hm-soft-start: #a3b1c4;
   --hm-soft-final: #5f7290;
   --hm-accent: #e2653d;
+  /* Accent for TEXT; --hm-accent stays the brand colour for fills and lines. */
+  --hm-accent-ink: #b8411c;
   --hm-btn-bg: #1b2c47;
   --hm-btn-fg: #ffffff;
   --hm-btn-hover: #24395b;
@@ -1732,6 +1735,7 @@ footer .text-faint {
   --hm-soft-start: #4a5d7a;
   --hm-soft-final: #93a5bf;
   --hm-accent: #ff9a70;
+  --hm-accent-ink: #ff9a70;
   --hm-btn-bg: #eaf0f8;
   --hm-btn-fg: #0d1829;
   --hm-btn-hover: #ffffff;
@@ -1747,18 +1751,23 @@ footer .text-faint {
 }
 .tone-blue {
   --tone: #4f7cf0;
+  --tone-ink: #245cec;
 }
 .tone-peach {
   --tone: #ec8466;
+  --tone-ink: #bc3c17;
 }
 .tone-mint {
   --tone: #37a88f;
+  --tone-ink: #267564;
 }
 .tone-orange {
   --tone: #ef8a3a;
+  --tone-ink: #a7510e;
 }
 .tone-violet {
   --tone: #7a66e6;
+  --tone-ink: #664fe2;
 }
 [class*="tone-"] {
   --tone-soft: color-mix(in srgb, var(--tone) 45%, #ffffff);
@@ -1766,6 +1775,8 @@ footer .text-faint {
   --tone-glow: color-mix(in srgb, var(--tone) 32%, transparent);
 }
 :root[data-theme="dark"] :is(.home-shell, .inner-shell) [class*="tone-"] {
+  /* Tones are already light enough to read on the dark surfaces. */
+  --tone-ink: var(--tone);
   --tone-wash: color-mix(in srgb, var(--tone) 11%, var(--hm-card));
   --tone-glow: color-mix(in srgb, var(--tone) 22%, transparent);
 }
@@ -1834,7 +1845,7 @@ html.theme-switching :is(.home-shell, .inner-shell) * {
   color: var(--hm-faint);
 }
 .hm-label span {
-  color: var(--hm-accent);
+  color: var(--hm-accent-ink, var(--hm-accent));
 }
 .hm-title {
   margin-top: 18px;
@@ -2475,7 +2486,7 @@ html.theme-switching :is(.home-shell, .inner-shell) * {
   color: #ffffff;
 }
 .hm-option[aria-pressed="true"] .hm-option-arrow {
-  color: var(--tone);
+  color: var(--tone-ink, var(--tone));
   animation: hm-nudge 1.6s var(--ease) infinite;
 }
 @keyframes hm-nudge {
@@ -2512,7 +2523,7 @@ html.theme-switching :is(.home-shell, .inner-shell) * {
   }
 }
 .hm-finder-result .hm-label span {
-  color: var(--tone);
+  color: var(--tone-ink, var(--tone));
 }
 .hm-finder-result h3 {
   margin-top: 16px;
@@ -2599,7 +2610,7 @@ html.theme-switching :is(.home-shell, .inner-shell) * {
   letter-spacing: -0.03em;
 }
 .hf-logo span {
-  color: var(--hm-accent);
+  color: var(--hm-accent-ink, var(--hm-accent));
 }
 .hf-about {
   max-width: 340px;
@@ -2894,7 +2905,7 @@ html.theme-switching :is(.home-shell, .inner-shell) * {
   --surface-raised: #ffffff14;
   --border-strong: #ffffff1f;
   --foreground: #eef3fa;
-  --faint: #93a3ba;
+  --faint: #abb7c9;
   --accent: #ffb08a;
   --accent-strong: #e8744f;
   translate: 0 0;

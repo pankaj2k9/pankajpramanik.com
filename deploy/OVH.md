@@ -260,15 +260,15 @@ Install backups (see below) the same day.
 One workflow, **`.github/workflows/ci-cd.yml`**, with three chained jobs:
 
 ```
-ci  ──needs──►  publish  ──needs──►  deploy (environment: production)
+ci ──needs──► e2e ──needs──► publish ──needs──► deploy (environment: production)
 ```
 
-| Event | ci | publish | deploy |
-|---|---|---|---|
-| Pull request → `main` | ✓ | skipped | skipped |
-| Push to `main` | ✓ | if ci passed | if publish passed |
-| Manual run (Actions → CI/CD → Run workflow) on `main` | ✓ | if ci passed | if publish passed |
-| Manual run on any other branch | ✓ | skipped | skipped |
+| Event | ci | e2e | publish | deploy |
+|---|---|---|---|---|
+| Pull request → `main` | ✓ | if ci passed | skipped | skipped |
+| Push to `main` | ✓ | if ci passed | if ci + e2e passed | if publish passed |
+| Manual run (Actions → CI/CD → Run workflow) on `main` | ✓ | if ci passed | if ci + e2e passed | if publish passed |
+| Manual run on any other branch | ✓ | if ci passed | skipped | skipped |
 
 Each job `needs` the previous one, so a failing CI run on a commit means no
 image is built for it and nothing reaches the server. There is no separate
@@ -277,13 +277,16 @@ deploy workflow that could race ahead of CI.
 1. **ci** (throwaway Postgres): `npm ci` → `prisma validate` → lint →
    typecheck → `prisma migrate deploy` → seed + import content snapshot →
    fail if any `/uploads/…` referenced by content is missing from `storage/` →
-   `npm run build` → start the built app and run the Playwright suite
-   (`npm run test:e2e`, including the database-backed dashboard tests).
-   The Playwright report is uploaded as an artifact on failure.
-2. **publish**: same database preparation, then builds the Docker image and
+   `npm run build`.
+2. **e2e** (own throwaway Postgres): prepare the database, build, start the
+   production server, run the Playwright suite (`npm run test:e2e`, including
+   the database-backed dashboard tests with Chromium). Report, screenshots and
+   server log are uploaded as an artifact on failure. **This is a required
+   gate: a failing browser test blocks the deploy.**
+3. **publish**: same database preparation, then builds the Docker image and
    pushes `ghcr.io/pankaj2k9/pankajpramanik` tagged `latest`, `sha-<short>` and
    `sha-<full>`.
-3. **deploy** (environment `production`), as `deploy` over SSH:
+4. **deploy** (environment `production`), as `deploy` over SSH:
    1. rsync `storage/` and `docker-compose.prod.yml` to `/opt/pankajpramanik/.deploy`
    2. refuse unless `/opt/pankajpramanik`, its `.env` and the `proxy` network exist
    3. install the compose file (keeping `docker-compose.prod.yml.bak-*`)
@@ -303,7 +306,8 @@ run replaces an older queued one. Pull-request runs are cancelled by newer
 pushes to the same PR.
 
 To stop unreviewed code reaching `main` at all, protect the branch: Settings →
-Branches → `main` → require a pull request and the **CI** status check.
+Branches → `main` → require a pull request and the **CI** and **E2E tests**
+status checks.
 
 ### What the deploy job will not do
 

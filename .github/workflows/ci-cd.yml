@@ -1,8 +1,8 @@
 # Single CI/CD pipeline for pankajpramanik.com.
 #
-#   pull_request → main   ci
-#   push → main           ci → publish → deploy
-#   workflow_dispatch     ci → publish → deploy   (only when run on main)
+#   pull_request → main   ci → e2e
+#   push → main           ci → e2e → publish → deploy
+#   workflow_dispatch     ci → e2e → publish → deploy   (publish/deploy only on main)
 #
 # Every job `needs` the previous one, so an image is never built unless CI
 # passed on that exact commit, and production is never touched unless that
@@ -105,10 +105,92 @@ jobs:
       - name: Build
         run: npm run build
 
+  e2e:
+    name: E2E tests
+    needs: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Playwright against the production build (`npm start`), with its own
+    # throwaway database. TEST_ENABLE_DB runs the dashboard/contact tests too;
+    # they only accept a localhost database and clean up their own rows.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: e2e_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/e2e_test
+      AUTH_SECRET: ci-only-secret-not-used-in-production
+      AUTH_URL: http://localhost:3000
+      AUTH_TRUST_HOST: "true"
+      NEXT_PUBLIC_SITE_URL: https://pankajpramanik.com
+      ADMIN_EMAIL: ci@example.com
+      ADMIN_NAME: CI
+      ADMIN_PASSWORD: ci-only-placeholder-pw
+      TEST_ENABLE_DB: "true"
+      TEST_BASE_URL: http://localhost:3000
+      PLAYWRIGHT_CHANNEL: chromium
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prepare database
+        run: |
+          npx prisma migrate deploy
+          npm run db:seed
+          npm run content:import
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Start app
+        run: |
+          nohup npm start > server.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:3000/api/health >/dev/null 2>&1; then
+              echo "App is up."; exit 0
+            fi
+            sleep 2
+          done
+          echo "::error::app did not become healthy"; cat server.log; exit 1
+
+      - name: Run Playwright
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+            server.log
+          if-no-files-found: ignore
+          retention-days: 7
+
   publish:
     name: Docker build + publish
-    needs: ci
-    # Only for main (push or manual run). Implicitly also requires ci success.
+    needs: [ci, e2e]
+    # Only for main (push or manual run). Implicitly also requires ci + e2e success.
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -250,7 +332,10 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script_stop: true
+          # No `script_stop`: drone-ssh implements it by inserting an exit-code
+          # check after EVERY line, which breaks `case`, line continuations and
+          # multi-line quoted strings (bash: syntax error near unexpected token
+          # `;'). The script's own `set -euo pipefail` stops on the first error.
           command_timeout: 20m
           envs: GHCR_USER,GHCR_TOKEN,IMAGE_REF
           script: |

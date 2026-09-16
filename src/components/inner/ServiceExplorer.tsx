@@ -52,7 +52,7 @@ export default function ServiceExplorer({
         </span>
         <ol role="tablist" aria-orientation="vertical">
           {groups.map((g, i) => (
-            <li key={g.id}>
+            <li key={g.id} role="presentation">
               <button
                 type="button"
                 role="tab"
