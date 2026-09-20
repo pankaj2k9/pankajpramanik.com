@@ -124,6 +124,20 @@ const securityHeaders = [
   ...(isDev ? [] : [{ key: "Strict-Transport-Security", value: "max-age=31536000" }]),
 ];
 
+/**
+ * Same headers, minus the CSP — for the XML/text metadata documents.
+ *
+ * Browsers pretty-print an XML document with an internal XSLT stylesheet, and
+ * they refuse to load it when the response carries a Content-Security-Policy
+ * (Firefox bug 1262842; Chrome's XML viewer behaves the same). The result is
+ * sitemap.xml rendering as one run-on wall of text instead of a readable tree.
+ * Nothing scripts or frames inside these documents, so the CSP protects
+ * nothing here — every other header stays.
+ */
+const metadataFileHeaders = securityHeaders.filter(
+  (h) => h.key !== "Content-Security-Policy",
+);
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   output: "standalone",
@@ -143,7 +157,15 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
-      { source: "/:path*", headers: securityHeaders },
+      // Everything except the metadata files, which get the CSP-free set below.
+      {
+        source: "/:path((?!sitemap\\.xml$|robots\\.txt$).*)",
+        headers: securityHeaders,
+      },
+      {
+        source: "/:file(sitemap\\.xml|robots\\.txt)",
+        headers: metadataFileHeaders,
+      },
       {
         source: "/models/:path*",
         headers: [{ key: "Cache-Control", value: "public, max-age=604800" }],
