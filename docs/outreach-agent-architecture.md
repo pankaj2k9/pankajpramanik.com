@@ -80,7 +80,7 @@ The agent cannot live inside a Next.js request. A run takes minutes, survives re
 │                      │        │                        │
 │  /admin/outreach     │        │  LangGraph run loop    │
 │   dashboard          │        │  Tavily / job boards   │
-│  /api/outreach/*     │        │  Hunter / OpenAI       │
+│  outreach actions    │        │  Hunter / OpenAI       │
 │   control + approve  │        │  CV + letter builders  │
 │  Resend send action  │        │                        │
 └──────────┬───────────┘        └───────────┬────────────┘
@@ -448,7 +448,7 @@ Editing an approved draft must reset it to `AWAITING_APPROVAL` and invalidate th
 
 Each phase ends somewhere you could stop and still have something coherent.
 
-1. **Schema + control plane.** Prisma models, migration, `/api/outreach` control routes, dashboard shell with a status pill and START/STOP that move a row between states. No agent yet. Proves the state machine.
+1. **Schema + control plane.** ✅ *Done.* Prisma models, migration, `src/lib/outreach/state.ts` as the only writer of run status, server actions in `src/actions/outreach.ts` (server actions rather than API routes, matching how every other admin mutation in this repo works), and the `/admin/outreach` shell. No agent yet.
 2. **Structured CV.** Derive `master-cv.json` from the existing `Experience` / `Project` / `SkillGroup` / `Education` / `Certification` tables, cross-check against the PDF, review by hand. Everything downstream grounds on this.
 3. **Provider adapters + tests.** Tavily, Himalayas, Hunter, OpenAI, each behind an interface with recorded fixtures. No graph yet.
 4. **Graph, read-only.** Nodes through `scoreOpportunity`. Run it and inspect what it finds and how it scores. **Calibrate the 80 threshold here, against real listings.** The threshold is a guess until it has seen data.

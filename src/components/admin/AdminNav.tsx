@@ -16,6 +16,7 @@ export default function AdminNav() {
         { href: "/admin/skills", label: "Skills" },
         { href: "/admin/comments", label: "Comments" },
         { href: "/admin/messages", label: "Messages" },
+        { href: "/admin/outreach", label: "Outreach agent" },
       ].map((l) => (
         <Link
           key={l.href}

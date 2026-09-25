@@ -390,18 +390,172 @@ model BookingNotification {
 // OAuth connection to an external calendar (Google today). Tokens are
 // AES-256-GCM encrypted at rest and never leave the server.
 model CalendarConnection {
-  id                String   @id @default(cuid())
-  provider          String   @unique // "google"
-  accountEmail      String
-  calendarId        String   @default("primary")
-  accessTokenEnc    String
-  refreshTokenEnc   String
-  expiresAt         DateTime
-  scope             String   @default("")
-  checkBusy         Boolean  @default(true)
-  createEvents      Boolean  @default(true)
-  createMeetLinks   Boolean  @default(true)
-  lastError         String?
-  connectedAt       DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id              String   @id @default(cuid())
+  provider        String   @unique // "google"
+  accountEmail    String
+  calendarId      String   @default("primary")
+  accessTokenEnc  String
+  refreshTokenEnc String
+  expiresAt       DateTime
+  scope           String   @default("")
+  checkBusy       Boolean  @default(true)
+  createEvents    Boolean  @default(true)
+  createMeetLinks Boolean  @default(true)
+  lastError       String?
+  connectedAt     DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Remote Data & AI outreach agent.
+// Design record: docs/outreach-agent-architecture.md
+//
+// The agent itself runs in a separate worker process; these tables are the
+// control plane and the audit trail it shares with the admin dashboard.
+// ---------------------------------------------------------------------------
+
+enum AgentStatus {
+  STOPPED
+  RUNNING
+  PAUSED
+  COMPLETED
+  ERROR
+}
+
+enum ApprovalStatus {
+  DRAFT
+  AWAITING_APPROVAL
+  APPROVED
+  REJECTED
+}
+
+enum SendStatus {
+  NOT_SENT
+  QUEUED
+  SENT
+  FAILED
+}
+
+enum EmailVerification {
+  VALID
+  RISKY
+  UNKNOWN
+  INVALID
+}
+
+enum ReplyClass {
+  POSITIVE
+  INTERVIEW_REQUEST
+  NEUTRAL
+  NOT_NOW
+  WRONG_PERSON
+  NEGATIVE
+  OUT_OF_OFFICE
+  UNSUBSCRIBE
+  OTHER
+}
+
+model OutreachRun {
+  id             String        @id @default(cuid())
+  status         AgentStatus   @default(STOPPED)
+  targetCount    Int           @default(5)
+  qualifiedCount Int           @default(0)
+  // LangGraph thread id. RESUME replays this thread's latest checkpoint
+  // instead of restarting the search.
+  threadId       String        @unique
+  // Surfaced on the dashboard when status is ERROR.
+  lastError      String?
+  startedAt      DateTime?
+  pausedAt       DateTime?
+  resumedAt      DateTime?
+  stoppedAt      DateTime?
+  completedAt    DateTime?
+  opportunities  Opportunity[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model Opportunity {
+  id    String      @id @default(cuid())
+  run   OutreachRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  runId String
+
+  companyName    String
+  companyUrl     String?
+  jobTitle       String
+  jobUrl         String
+  jobSource      String
+  // Kept verbatim — this is the grounding corpus the draft is checked against.
+  jobDescription String
+  remoteStatus   String
+
+  matchScore     Int
+  // Per-dimension scores, so a number on the dashboard can be audited.
+  matchBreakdown Json
+  matchReason    String
+
+  contactName       String?
+  contactTitle      String?
+  contactEmail      String?
+  emailSource       String?
+  emailVerification EmailVerification?
+  linkedinUrl       String?
+
+  emailSubject String?
+  emailBody    String?
+  coverLetter  String?
+  // Path under STORAGE_DIR, same convention as uploads.
+  cvFilePath   String?
+  // Content hash, so approval can assert the file did not change after review.
+  cvVersion    String?
+
+  attachCv          Boolean @default(true)
+  attachCoverLetter Boolean @default(false)
+
+  approvalStatus ApprovalStatus @default(DRAFT)
+  approvedAt     DateTime?
+  sendStatus     SendStatus     @default(NOT_SENT)
+  sentAt         DateTime?
+  messageId      String?
+  // Frozen at approval, compared at send, persisted after. An edit after
+  // approval invalidates these and sends the draft back for re-approval.
+  sentSubject    String?
+  sentBody       String?
+
+  replyStatus ReplyClass?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Guards one run against listing the same job twice. Cross-run dedupe is a
+  // query (contactEmail / companyName / DoNotContact), not a constraint.
+  @@unique([runId, jobUrl])
+  @@index([contactEmail])
+  @@index([approvalStatus, sendStatus])
+  @@index([companyName])
+}
+
+// Global suppression list. Checked before drafting AND again before sending.
+model DoNotContact {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  domain    String?
+  reason    String
+  createdAt DateTime @default(now())
+
+  @@index([domain])
+}
+
+// Append-only audit of state transitions, rejections and external calls.
+model OutreachEvent {
+  id            String   @id @default(cuid())
+  runId         String?
+  opportunityId String?
+  kind          String
+  payload       Json
+  createdAt     DateTime @default(now())
+
+  @@index([runId, createdAt])
+  @@index([opportunityId, createdAt])
 }
