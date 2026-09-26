@@ -1,0 +1,107 @@
+{
+  "_comment": [
+    "Hand-transcribed from public/Pankaj_Kumar_Pramanik_AI_Data_Engineer_CV.pdf",
+    "(LibreOffice, 2 pages, 'Pankaj Kumar Pramanik - ATS CV').",
+    "",
+    "Only records the PDF has and the site database does NOT. Everything else",
+    "is read from the database by scripts/build-master-cv.ts, so editing the",
+    "site keeps the agent's CV current without touching this file.",
+    "",
+    "PANKAJ: review this file. The agent may state anything in it as fact."
+  ],
+  "roles": [
+    {
+      "company": "Robinson & Associates",
+      "title": "AI Engineer",
+      "location": "Maryland, USA - Remote",
+      "start": "2025-03",
+      "end": "present",
+      "summary": "Legal-sector AI automation: lead intake, qualification, outbound calling and case-status reporting.",
+      "bullets": [
+        "Built automated lead intake, qualification, routing, follow-up, and case-status workflows using n8n, Make.com, Google Sheets, and APIs.",
+        "Developed AI outbound calling with Retell AI covering lead qualification, scheduled callbacks, live-agent transfers, voicemail handling, and call-result tracking.",
+        "Integrated OpenAI and Perplexity for legal FAQ support, content enrichment, and AI-assisted workflow decisions.",
+        "Created GoHighLevel workflows for lead tagging, routing, appointment scheduling, communication tracking, DND/opt-out management, and pipeline updates.",
+        "Built an n8n error-monitoring workflow that captures failed executions and sends them to an AI debugging agent for diagnosis.",
+        "Implemented retry controls, STOP/DND handling, validation rules, and scheduling safeguards, and unified transcripts, SMS replies, transfers, and case statuses into structured reporting."
+      ],
+      "tech": [
+        "n8n",
+        "Make.com",
+        "Retell AI",
+        "GoHighLevel",
+        "OpenAI",
+        "Perplexity",
+        "Google Sheets",
+        "REST APIs",
+        "Webhooks"
+      ]
+    },
+    {
+      "company": "Seiton Paw",
+      "title": "AI SaaS Developer",
+      "location": "Florida, USA - Contract / Remote",
+      "start": "2026-05",
+      "end": "2026-07",
+      "summary": "AI pet-travel compliance platform built around a LangGraph agent that turns destination rules into actionable tasks.",
+      "bullets": [
+        "Built an AI pet-travel compliance platform (React, FastAPI, Supabase/PostgreSQL) in which a LangGraph agent reads country-specific destination rules and generates required tasks, deadlines, documents, and a readiness score.",
+        "Integrated Stripe checkout and payment reconciliation, Zoho CRM sync, Resend transactional email, scheduled reminders, and full EN/ES localization.",
+        "Delivered trip management, billing, document upload, and validation workflows, replacing manual research with a guided flow that catches errors before departure."
+      ],
+      "tech": [
+        "LangGraph",
+        "React",
+        "FastAPI",
+        "Supabase",
+        "PostgreSQL",
+        "Stripe",
+        "Zoho CRM",
+        "Resend"
+      ]
+    }
+  ],
+  "achievements": [
+    {
+      "label": "Multi-Agent Production Delivery",
+      "detail": "Designed and deployed TravelCrewAI, a supervisor-based multi-agent LLM platform, to a production VPS with human-in-the-loop approval, guardrails, LangSmith tracing, and CI/CD."
+    },
+    {
+      "label": "Agentic Workflow Automation",
+      "detail": "Replaced manual pet-travel compliance research at Seiton Paw with a LangGraph agent that generates country-specific checklists, deadlines, and readiness scores, integrated with Stripe, Zoho CRM, and EN/ES localization."
+    },
+    {
+      "label": "Reliable AI Operations",
+      "detail": "Automated legal lead intake, AI calling, SMS follow-up, scheduling, and CRM updates at Robinson & Associates, with retry, STOP/DND, and duplicate-prevention safeguards and an AI-assisted n8n error-diagnosis workflow."
+    },
+    {
+      "label": "Analytics Data Quality",
+      "detail": "Delivered a GCP ELT pipeline into a BigQuery star schema with a dbt layer adding lineage and column-level tests for trusted Looker Studio reporting."
+    },
+    {
+      "label": "End-to-End MLOps",
+      "detail": "Reached 87% accuracy on a U.S. visa approval classifier with MLflow-tracked experiments and automated deployment to AWS ECR/EC2 via GitHub Actions."
+    }
+  ],
+  "summary": "Senior Data & AI Engineer with 8+ years of engineering experience spanning full-stack development, data engineering, analytics engineering, generative AI, agentic AI, MLOps/LLMOps, and automation. Builds production-grade multi-agent LLM systems, RAG applications, ETL/ELT pipelines, ML workflows, and AI voice/CRM automations integrated with real business processes. Delivers end to end across data ingestion, modeling, APIs, CI/CD, deployment, guardrails, observability, and monitoring on AWS, GCP, Azure, and VPS infrastructure. Open to international remote roles and contract engagements.",
+  "conflicts": [
+    {
+      "field": "Upwork role title",
+      "db": "LLM & RAG Specialist",
+      "pdf": "Generative AI, Data Engineering & MLOps Specialist",
+      "note": "Same engagement, two titles. The build uses the database wording, so the agent will say 'LLM & RAG Specialist' until you change it on the site. Confirm which title you want."
+    },
+    {
+      "field": "KUET qualification",
+      "db": "Undergraduate Studies, Mechanical Engineering",
+      "pdf": "B.Sc. in Mechanical Engineering",
+      "note": "MATERIAL. 'Undergraduate studies' and an awarded B.Sc. are different claims. The agent must not assert a degree that was not conferred. Resolve before any run."
+    },
+    {
+      "field": "Multi-agent travel project name",
+      "db": "JourneyMesh - Multi-Agent AI Travel Planner (LangGraph + MCP + LLMOps)",
+      "pdf": "TravelCrewAI - Multi-Agent LLMOps Travel Planning Platform",
+      "note": "Same project under two names. Pick one so the CV and the portfolio link agree."
+    }
+  ]
+}

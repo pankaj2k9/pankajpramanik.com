@@ -1,0 +1,706 @@
+{
+  "generatedAt": "2026-09-26T15:21:34.551Z",
+  "name": "Pankaj Kumar Pramanik",
+  "headline": "Senior Data & AI Engineer",
+  "location": "Bangladesh",
+  "email": "me@pankajpramanik.com",
+  "website": "http://localhost:3000",
+  "summary": "Senior Data & AI Engineer with 8+ years of engineering experience spanning full-stack development, data engineering, analytics engineering, generative AI, agentic AI, MLOps/LLMOps, and automation. Builds production-grade multi-agent LLM systems, RAG applications, ETL/ELT pipelines, ML workflows, and AI voice/CRM automations integrated with real business processes. Delivers end to end across data ingestion, modeling, APIs, CI/CD, deployment, guardrails, observability, and monitoring on AWS, GCP, Azure, and VPS infrastructure. Open to international remote roles and contract engagements.",
+  "yearsExperience": 8,
+  "roles": [
+    {
+      "company": "Robinson & Associates",
+      "title": "AI Engineer",
+      "location": "Maryland, USA - Remote",
+      "start": "2025-03",
+      "end": "present",
+      "summary": "Legal-sector AI automation: lead intake, qualification, outbound calling and case-status reporting.",
+      "bullets": [
+        "Built automated lead intake, qualification, routing, follow-up, and case-status workflows using n8n, Make.com, Google Sheets, and APIs.",
+        "Developed AI outbound calling with Retell AI covering lead qualification, scheduled callbacks, live-agent transfers, voicemail handling, and call-result tracking.",
+        "Integrated OpenAI and Perplexity for legal FAQ support, content enrichment, and AI-assisted workflow decisions.",
+        "Created GoHighLevel workflows for lead tagging, routing, appointment scheduling, communication tracking, DND/opt-out management, and pipeline updates.",
+        "Built an n8n error-monitoring workflow that captures failed executions and sends them to an AI debugging agent for diagnosis.",
+        "Implemented retry controls, STOP/DND handling, validation rules, and scheduling safeguards, and unified transcripts, SMS replies, transfers, and case statuses into structured reporting."
+      ],
+      "tech": [
+        "n8n",
+        "Make.com",
+        "Retell AI",
+        "GoHighLevel",
+        "OpenAI",
+        "Perplexity",
+        "Google Sheets",
+        "REST APIs",
+        "Webhooks"
+      ],
+      "source": "pdf"
+    },
+    {
+      "company": "Upwork",
+      "title": "LLM & RAG Specialist",
+      "location": "Remote",
+      "start": "2025-01",
+      "end": "present",
+      "summary": "LangChain · AI Workflow Automation (n8n) · RAG · Voice & Chat Agents",
+      "bullets": [
+        "Built Retrieval-Augmented Generation (RAG) systems using LangChain, vector databases (Pinecone, FAISS), and OpenAI GPT-4",
+        "Automated business processes using n8n, Retell AI, and Google Workspace integrations",
+        "Developed end-to-end GenAI apps for legal intake, customer support, and lead qualification with voice & chat agents",
+        "Architected data pipelines for analytics, reporting, and AI training using Python, PostgreSQL, and Google Sheets",
+        "Integrated full-stack systems with Next.js, Node.js, Supabase, and REST APIs for production-ready AI tools"
+      ],
+      "tech": [
+        "LangChain",
+        "n8n",
+        "RAG",
+        "Pinecone",
+        "FAISS",
+        "OpenAI GPT-4",
+        "Retell AI",
+        "Next.js",
+        "Supabase",
+        "PostgreSQL"
+      ],
+      "source": "db"
+    },
+    {
+      "company": "Seiton Paw",
+      "title": "AI SaaS Developer",
+      "location": "Florida, USA - Contract / Remote",
+      "start": "2026-05",
+      "end": "2026-07",
+      "summary": "AI pet-travel compliance platform built around a LangGraph agent that turns destination rules into actionable tasks.",
+      "bullets": [
+        "Built an AI pet-travel compliance platform (React, FastAPI, Supabase/PostgreSQL) in which a LangGraph agent reads country-specific destination rules and generates required tasks, deadlines, documents, and a readiness score.",
+        "Integrated Stripe checkout and payment reconciliation, Zoho CRM sync, Resend transactional email, scheduled reminders, and full EN/ES localization.",
+        "Delivered trip management, billing, document upload, and validation workflows, replacing manual research with a guided flow that catches errors before departure."
+      ],
+      "tech": [
+        "LangGraph",
+        "React",
+        "FastAPI",
+        "Supabase",
+        "PostgreSQL",
+        "Stripe",
+        "Zoho CRM",
+        "Resend"
+      ],
+      "source": "pdf"
+    },
+    {
+      "company": "Subhub",
+      "title": "Generative AI & Full Stack Developer",
+      "location": "Remote",
+      "start": "2024-05",
+      "end": "2025-01",
+      "summary": "LangChain · PineconeDB · Supabase · Twilio · Eleven Labs",
+      "bullets": [
+        "Developed AI-driven solutions using LangChain, PineconeDB, and LangFlow for advanced NLP workflows and RAG systems",
+        "Built real-time applications with Supabase and PostgreSQL Realtime for seamless data sync",
+        "Integrated Twilio for SMS notifications and Eleven Labs for voice capabilities to enhance user engagement",
+        "Designed scalable solutions with Python, Next.js, and Supabase - translating business needs into robust APIs"
+      ],
+      "tech": [
+        "LangChain",
+        "Pinecone",
+        "LangFlow",
+        "Supabase",
+        "PostgreSQL",
+        "Twilio",
+        "Eleven Labs",
+        "Python",
+        "Next.js"
+      ],
+      "source": "db"
+    },
+    {
+      "company": "Most Loved Workplace",
+      "title": "Machine Learning Engineer",
+      "location": "Remote",
+      "start": "2023-05",
+      "end": "2023-12",
+      "summary": "Text Analytics · Statistical ML · Data Mining · Python",
+      "bullets": [
+        "Developed statistical machine learning and data mining solutions for text analytics and business problems",
+        "Transformed business requirements into analytical models, algorithms, and reporting solutions at scale",
+        "Implemented ML algorithms on large structured and unstructured datasets to surface hidden patterns and insights"
+      ],
+      "tech": [
+        "Python",
+        "scikit-learn",
+        "Text Analytics",
+        "Statistical ML",
+        "Data Mining"
+      ],
+      "source": "db"
+    },
+    {
+      "company": "Crewfare.com",
+      "title": "Full Stack Engineer",
+      "location": "Remote",
+      "start": "2022-08",
+      "end": "2023-04",
+      "summary": "Node.js · AWS Lambda · Serverless · React · Storybook",
+      "bullets": [
+        "Built APIs and web services in Node.js using MVC architecture and AWS Serverless Framework",
+        "Refactored Redux actions to Promises and lifecycle methods to async/await, cutting container dev time by 80%",
+        "Built features for 100,000+ users using CSS3, Flexbox, Storybook, React Navigation, and Animated APIs",
+        "Deployed in-house applications to AWS using EC2, RDS, S3, CloudFront, ELB, and CloudSearch"
+      ],
+      "tech": [
+        "Node.js",
+        "AWS Lambda",
+        "Serverless Framework",
+        "React",
+        "Storybook",
+        "AWS EC2",
+        "RDS",
+        "S3",
+        "CloudFront"
+      ],
+      "source": "db"
+    },
+    {
+      "company": "Vircadia",
+      "title": "3D Web Graphics & Blockchain Developer",
+      "location": "Remote",
+      "start": "2021-11",
+      "end": "2022-08",
+      "summary": "Solidity · Web3.js · Three.js · Babylon.js · WebGL",
+      "bullets": [
+        "Created Ethereum smart contracts in Solidity and built DApps with HTML, JavaScript, Node.js, and Web3.js",
+        "Developed accurate, simultaneous rendering of heterogeneous and multi-resolution meshes (Biva Visibility Test - patent pending)",
+        "Worked on Mindbenders WebGL engine - optimized Virtual Texturing and rendering passes",
+        "Built 2D/3D rendering with Three.js, Babylon.js, Fabric.js; handled OBJ/3DS to CTM/FBX conversions via Blender"
+      ],
+      "tech": [
+        "Solidity",
+        "Web3.js",
+        "Three.js",
+        "Babylon.js",
+        "WebGL",
+        "Blender"
+      ],
+      "source": "db"
+    },
+    {
+      "company": "Breaker Nation",
+      "title": "Full Stack Engineer",
+      "location": "Remote",
+      "start": "2020-11",
+      "end": "2022-02",
+      "summary": "React Native · Redux Saga · Push Notifications · App Store Deployment",
+      "bullets": [
+        "Built static UI and dynamic attributes for large automotive applications with custom push notifications and REST APIs",
+        "Refactored error handling with React Native alert dialogs - reduced user input errors by ~44%",
+        "Deployed apps to Google Play Store and Apple App Store; led adoption of React Native best practices",
+        "Authored UML-compliant high-level designs (Class, Sequence, Activity diagrams, Use Cases)"
+      ],
+      "tech": [
+        "React Native",
+        "Redux Saga",
+        "Push Notifications",
+        "REST APIs"
+      ],
+      "source": "db"
+    },
+    {
+      "company": "Anekonnect Incorporated",
+      "title": "Full Stack Developer",
+      "location": "Remote",
+      "start": "2019-08",
+      "end": "2021-02",
+      "summary": "React · Next.js · Node.js · Redux-Saga · Ant Design · SQL",
+      "bullets": [
+        "Built RESTful web services and SPAs with React, React Native, Next.js, and Node.js",
+        "Implemented middleware with Redux-Thunk, Redux-Saga, Redux-Logger, and Universal React Redux",
+        "Followed Agile/Scrum methodology with Rally for sprint tracking",
+        "Wrote complex SQL queries, stored procedures, functions, and packages - DDL and DML operations"
+      ],
+      "tech": [
+        "React",
+        "Next.js",
+        "Node.js",
+        "Redux-Saga",
+        "Ant Design",
+        "SQL",
+        "React Native"
+      ],
+      "source": "db"
+    }
+  ],
+  "projects": [
+    {
+      "slug": "journeymesh-multi-agent-ai-travel-planner-langgraph-mcp-llmops",
+      "title": "JourneyMesh - Multi-Agent AI Travel Planner (LangGraph + MCP + LLMOps)",
+      "summary": "Supervisor-routed multi-agent travel planning with guardrails, evaluation and human review",
+      "problem": "Turn a free-text trip request into a trustworthy, editable travel plan without hallucinated prices or flights, without running agents a request does not need, and without leaking PII or letting a model act unchecked.",
+      "approach": "A LangGraph supervisor routes each request to only the specialist agents it needs (flight, hotel, weather, budget, itinerary). Every external call passes an MCP tool guard; input and output guardrails screen prompt injection, unlawful intent and PII; a ten-dimension evaluator scores each draft; a human approves or requests changes, and only the affected agents re-run. State is checkpointed in PostgreSQL, traced with structured logs and optional LangSmith, and shipped as one Docker image through GitHub Actions to an OVHcloud VPS.",
+      "outcome": "Deployed live with an open-source codebase covered by 218 backend tests, 21 frontend tests and an offline evaluation suite gated in CI.",
+      "tech": [
+        "Python",
+        "LangGraph",
+        "LangChain",
+        "MCP",
+        "FastAPI",
+        "Groq",
+        "PostgreSQL",
+        "React",
+        "TypeScript",
+        "Docker",
+        "GitHub Actions",
+        "LangSmith"
+      ],
+      "category": "AI / LLM",
+      "url": "http://51.79.166.97",
+      "source": "db"
+    },
+    {
+      "slug": "ai-automation-engineer-n8n-gohighlevel-ai-automation-engineer",
+      "title": "AI Automation Engineer | n8n, GoHighLevel, AI Automation Engineer",
+      "summary": "AI automation engineer building end-to-end workflow systems with n8n, integrating Retell AI voice agents, OpenAI GPT-4, and Claude with GoHighLevel CRM, Twilio, and Make.com. Delivered voice-agent platforms that automated 1,000+ monthly sales calls with real-time transcription, sentiment analysis, and follow-up automation - saving clients hundreds of hours every month.",
+      "problem": "",
+      "approach": "",
+      "outcome": "",
+      "tech": [
+        "OpenAI",
+        "GPT-4",
+        "Claude",
+        "n8n",
+        "GoHighLevel",
+        "Retell AI",
+        "Twilio",
+        "AWS",
+        "Supabase",
+        "PostgreSQL"
+      ],
+      "category": "AI / LLM",
+      "url": "https://github.com/pankaj2k9/n8n-Integration-Manager",
+      "source": "db"
+    },
+    {
+      "slug": "medical-rag-chatbot-langchain-pinecone-flask",
+      "title": "Medical RAG Chatbot (LangChain + Pinecone + Flask)",
+      "summary": "AI-Powered Medical Knowledge Assistant Retrieval-Augmented Generation (RAG) Chatbot",
+      "problem": "",
+      "approach": "",
+      "outcome": "",
+      "tech": [
+        "Python",
+        "LangChain",
+        "Pinecone",
+        "OpenAI",
+        "RAG",
+        "Flask"
+      ],
+      "category": "AI / LLM",
+      "url": "https://github.com/pankaj2k9/caresage-rag-langchain-pinecone",
+      "source": "db"
+    },
+    {
+      "slug": "bird-disease-prediction-end-to-end-mlops-deep-learning",
+      "title": "Bird Disease Prediction - End-to-End MLOps (Deep Learning)",
+      "summary": "End-to-End MLOps Deep Learning Pipeline for Computer Vision CNN Training | Transfer Learning | Production Deployment",
+      "problem": "",
+      "approach": "",
+      "outcome": "",
+      "tech": [
+        "Docker",
+        "CI/CD",
+        "REST",
+        "Computer Vision",
+        "Deep Learning"
+      ],
+      "category": "MLOps",
+      "url": "https://github.com/pankaj2k9/MLOpsE2EBirdDiseaseClassificationDeepLearningProject",
+      "source": "db"
+    },
+    {
+      "slug": "end-to-end-mlops-classification-aws-fastapi-ci-cd",
+      "title": "End-to-End MLOps Classification (AWS + FastAPI + CI/CD)",
+      "summary": "End-to-End MLOps Pipeline with CI/CD & Production Monitoring Data Ingestion → Training → Deployment → Monitoring",
+      "problem": "",
+      "approach": "",
+      "outcome": "",
+      "tech": [
+        "FastAPI",
+        "Docker",
+        "CI/CD",
+        "GitHub Actions",
+        "AWS",
+        "EC2",
+        "S3",
+        "REST"
+      ],
+      "category": "MLOps",
+      "url": "https://github.com/pankaj2k9/MLOpsE2EClassificationTermProject",
+      "source": "db"
+    },
+    {
+      "slug": "moviemate-tf-idf-cosine-similarity-movie-recommender",
+      "title": "MovieMate - TF-IDF & Cosine Similarity Movie Recommender",
+      "summary": "Content-Based Recommendation System with TF-IDF & Cosine Similarity Machine Learning | Streamlit | TMDB API Integration",
+      "problem": "",
+      "approach": "",
+      "outcome": "",
+      "tech": [
+        "Streamlit",
+        "Angular",
+        "TMDB API",
+        "TF-IDF",
+        "Cosine Similarity",
+        "Machine Learning"
+      ],
+      "category": "Machine Learning",
+      "url": "https://github.com/pankaj2k9/moviemate-personalized-movie-recommender",
+      "source": "db"
+    },
+    {
+      "slug": "uber-data-engineering-etl-project",
+      "title": "Uber Data Engineering ETL Project",
+      "summary": "End-to-End Data Engineering on Google Cloud Platform ETL Orchestration | BigQuery Analytics | Real-Time Reporting",
+      "problem": "",
+      "approach": "",
+      "outcome": "",
+      "tech": [
+        "Python",
+        "GCP",
+        "BigQuery",
+        "Mage.ai",
+        "Serverless",
+        "Data Engineering",
+        "ETL",
+        "Looker Studio"
+      ],
+      "category": "Data Engineering",
+      "url": "https://github.com/pankaj2k9/uber-data-engineering-etl-project",
+      "source": "db"
+    },
+    {
+      "slug": "angular-app-development",
+      "title": "Angular App Development",
+      "summary": "BlueSurge Technologies Generator Monitoring | Asset Dashboard | Alarm Console",
+      "problem": "",
+      "approach": "",
+      "outcome": "",
+      "tech": [
+        "Angular",
+        "TypeScript"
+      ],
+      "category": "Web Development",
+      "url": "http://localhost:3000/portfolio/angular-app-development",
+      "source": "db"
+    },
+    {
+      "slug": "react-app-development",
+      "title": "React App Development",
+      "summary": "Sportunity React | Node.js | GraphQL | Relay",
+      "problem": "",
+      "approach": "",
+      "outcome": "",
+      "tech": [
+        "React",
+        "Node.js",
+        "JavaScript",
+        "GraphQL",
+        "Relay"
+      ],
+      "category": "Web Development",
+      "url": "http://localhost:3000/portfolio/react-app-development",
+      "source": "db"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Data Science & Machine Learning",
+      "items": [
+        "Python",
+        "NumPy",
+        "Pandas",
+        "Matplotlib",
+        "Seaborn",
+        "scikit-learn",
+        "TensorFlow",
+        "SQL",
+        "ANN / CNN / RNN",
+        "Linear / Logistic Regression",
+        "Decision Trees",
+        "SVM",
+        "k-NN",
+        "Naive Bayes",
+        "PCA",
+        "k-Means",
+        "Tokenization & Stemming",
+        "Jupyter"
+      ]
+    },
+    {
+      "category": "Generative AI · LLM · Agentic AI",
+      "items": [
+        "LLM (GPT-4, Claude)",
+        "LangChain",
+        "LangGraph",
+        "RAG Systems",
+        "Pinecone / FAISS",
+        "OpenAI API",
+        "n8n",
+        "Retell AI",
+        "GoHighLevel",
+        "Chatbot Development",
+        "Agent Development",
+        "Workflow Automation"
+      ]
+    },
+    {
+      "category": "Frontend",
+      "items": [
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "Next.js",
+        "React Native",
+        "Three.js",
+        "Redux"
+      ]
+    },
+    {
+      "category": "Backend",
+      "items": [
+        "Node.js",
+        "FastAPI",
+        "Flask",
+        "Django",
+        "Serverless Framework",
+        "PostgreSQL",
+        "Supabase"
+      ]
+    },
+    {
+      "category": "Cloud & DevOps",
+      "items": [
+        "AWS",
+        "GCP",
+        "Azure",
+        "Docker",
+        "Kubernetes",
+        "CI/CD",
+        "AWS Lambda",
+        "EC2 / S3 / RDS"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Science (Honours) in Data Science and Artificial Intelligence",
+      "institution": "Indian Institute of Technology Guwahati",
+      "startYear": 2023,
+      "endYear": 2027,
+      "note": "Practical, industry-aligned curriculum across data engineering, MLOps, and applied AI at one of India's premier technology institutes.",
+      "source": "db"
+    },
+    {
+      "degree": "Undergraduate Studies, Mechanical Engineering",
+      "institution": "Khulna University of Engineering and Technology",
+      "startYear": 2009,
+      "endYear": 2015,
+      "note": "Studied Mechanical Engineering before transitioning into software and technology. I later pursued a professional career in software engineering, data engineering, automation, and AI.",
+      "source": "db"
+    },
+    {
+      "degree": "Higher Secondary Certificate (H.S.C)",
+      "institution": "Govt. Azizul Haque College, Bogura",
+      "startYear": 2007,
+      "endYear": 2009,
+      "note": "GPA 5.00/5.00 - strongest subjects: Mathematics, Physics, and English.",
+      "source": "db"
+    }
+  ],
+  "certifications": [
+    {
+      "title": "Generative AI Essentials: A Comprehensive Introduction",
+      "issuer": "COURSERA · IBM",
+      "url": "https://www.coursera.org/account/accomplishments/certificate/AA1JDCGD2ZN2",
+      "source": "db"
+    },
+    {
+      "title": "Hands-on Introduction to Linux Commands & Shell Scripting",
+      "issuer": "COURSERA · IBM",
+      "url": "https://www.coursera.org/account/accomplishments/certificate/AJDB58VNVSW6",
+      "source": "db"
+    },
+    {
+      "title": "Multiplatform Mobile App Development with React Native",
+      "issuer": "COURSERA · HKUST",
+      "url": "https://www.coursera.org/account/accomplishments/certificate/4TGP93HYJG7V",
+      "source": "db"
+    },
+    {
+      "title": "Front-End Web UI Frameworks & Tools: Bootstrap 4",
+      "issuer": "COURSERA · HKUST",
+      "url": "https://www.coursera.org/account/accomplishments/certificate/ZN5DYKPHSGNZ",
+      "source": "db"
+    },
+    {
+      "title": "Using Databases with Python",
+      "issuer": "COURSERA · MICHIGAN",
+      "url": "https://coursera.org/share/7e18d6be9baaa4fd8aa192abb3bbf7f9",
+      "source": "db"
+    },
+    {
+      "title": "The Complete Guide to Becoming a Software Architect",
+      "issuer": "UDEMY",
+      "url": "https://www.udemy.com/certificate/UC-6e23330d-2f37-42d5-88ee-a0658b99304a/",
+      "source": "db"
+    },
+    {
+      "title": "Solana Blockchain Developer Bootcamp (Rust + JavaScript)",
+      "issuer": "UDEMY",
+      "url": "https://www.udemy.com/certificate/UC-79217275-948b-4ddf-ad98-ad218d25b701/",
+      "source": "db"
+    },
+    {
+      "title": "Write Professional Emails in English",
+      "issuer": "COURSERA · GEORGIA TECH",
+      "url": "https://www.coursera.org/account/accomplishments/certificate/PKPVECCDADKN",
+      "source": "db"
+    },
+    {
+      "title": "Introduction to Software Engineering",
+      "issuer": "COURSERA · IBM",
+      "url": "https://www.coursera.org/account/accomplishments/certificate/JWVNKVQKUE3R",
+      "source": "db"
+    },
+    {
+      "title": "Developing AI Applications with Python and Flask",
+      "issuer": "COURSERA · IBM",
+      "url": "https://coursera.org/share/acfa2d10c5a748a7d14b84aa50a49667",
+      "source": "db"
+    },
+    {
+      "title": "Server-side Development with NodeJS, Express & MongoDB",
+      "issuer": "COURSERA · HKUST",
+      "url": "https://www.coursera.org/account/accomplishments/certificate/MUF4HDWWKSY5",
+      "source": "db"
+    },
+    {
+      "title": "Programming for Everybody (Python)",
+      "issuer": "COURSERA · MICHIGAN",
+      "url": "https://coursera.org/share/82c86225c559a5fd9eff86d390f6fe85",
+      "source": "db"
+    },
+    {
+      "title": "Using Python to Access Web Data",
+      "issuer": "COURSERA · MICHIGAN",
+      "url": "https://coursera.org/share/40ec8742bedfcc31b8937f260b498181",
+      "source": "db"
+    },
+    {
+      "title": "Three.js with React.js Course",
+      "issuer": "UDEMY",
+      "url": "https://www.udemy.com/certificate/UC-0b47901a-60a6-44ac-b23b-34bf771a1c01/",
+      "source": "db"
+    },
+    {
+      "title": "TypeScript: The Complete Developer's Guide",
+      "issuer": "UDEMY",
+      "url": "https://www.udemy.com/certificate/UC-0Y1L77J5/",
+      "source": "db"
+    },
+    {
+      "title": "Speak English Professionally: In Person, Online & On the Phone",
+      "issuer": "COURSERA · GEORGIA TECH",
+      "url": "https://www.coursera.org/account/accomplishments/certificate/8KY3XFCMWJ64",
+      "source": "db"
+    },
+    {
+      "title": "Introduction to DevOps",
+      "issuer": "COURSERA · IBM",
+      "url": "https://www.coursera.org/account/accomplishments/certificate/2YABHRSDDJMX",
+      "source": "db"
+    },
+    {
+      "title": "Front-End Web Development with React",
+      "issuer": "COURSERA · HKUST",
+      "url": "https://www.coursera.org/account/accomplishments/certificate/DV3NZPF5UYYB",
+      "source": "db"
+    },
+    {
+      "title": "Front-End JavaScript Frameworks: Angular",
+      "issuer": "COURSERA · HKUST",
+      "url": "https://www.coursera.org/account/accomplishments/certificate/42EZVBW67PA5",
+      "source": "db"
+    },
+    {
+      "title": "Python Data Structures",
+      "issuer": "COURSERA · MICHIGAN",
+      "url": "https://coursera.org/share/6eff7e9e72b3f10e1072c45cef2a1729",
+      "source": "db"
+    },
+    {
+      "title": "Data Science Certificate Program",
+      "issuer": "OSTAD.APP",
+      "url": "https://ostad.app/share/certificate/a7031-pankaj-kumar-pramanik",
+      "source": "db"
+    },
+    {
+      "title": "Advanced Solidity: Understanding & Optimizing Gas Costs",
+      "issuer": "UDEMY",
+      "url": "https://www.udemy.com/certificate/UC-4c25d204-7c9b-46f1-8fbd-c7471da2dec5/",
+      "source": "db"
+    },
+    {
+      "title": "Node.js Microservices for Beginners",
+      "issuer": "UDEMY",
+      "url": "https://www.udemy.com/certificate/UC-B7AWPE0H/",
+      "source": "db"
+    }
+  ],
+  "achievements": [
+    {
+      "label": "Multi-Agent Production Delivery",
+      "detail": "Designed and deployed TravelCrewAI, a supervisor-based multi-agent LLM platform, to a production VPS with human-in-the-loop approval, guardrails, LangSmith tracing, and CI/CD.",
+      "source": "pdf"
+    },
+    {
+      "label": "Agentic Workflow Automation",
+      "detail": "Replaced manual pet-travel compliance research at Seiton Paw with a LangGraph agent that generates country-specific checklists, deadlines, and readiness scores, integrated with Stripe, Zoho CRM, and EN/ES localization.",
+      "source": "pdf"
+    },
+    {
+      "label": "Reliable AI Operations",
+      "detail": "Automated legal lead intake, AI calling, SMS follow-up, scheduling, and CRM updates at Robinson & Associates, with retry, STOP/DND, and duplicate-prevention safeguards and an AI-assisted n8n error-diagnosis workflow.",
+      "source": "pdf"
+    },
+    {
+      "label": "Analytics Data Quality",
+      "detail": "Delivered a GCP ELT pipeline into a BigQuery star schema with a dbt layer adding lineage and column-level tests for trusted Looker Studio reporting.",
+      "source": "pdf"
+    },
+    {
+      "label": "End-to-End MLOps",
+      "detail": "Reached 87% accuracy on a U.S. visa approval classifier with MLflow-tracked experiments and automated deployment to AWS ECR/EC2 via GitHub Actions.",
+      "source": "pdf"
+    }
+  ],
+  "conflicts": [
+    {
+      "field": "Upwork role title",
+      "db": "LLM & RAG Specialist",
+      "pdf": "Generative AI, Data Engineering & MLOps Specialist",
+      "note": "Same engagement, two titles. The build uses the database wording, so the agent will say 'LLM & RAG Specialist' until you change it on the site. Confirm which title you want."
+    },
+    {
+      "field": "KUET qualification",
+      "db": "Undergraduate Studies, Mechanical Engineering",
+      "pdf": "B.Sc. in Mechanical Engineering",
+      "note": "MATERIAL. 'Undergraduate studies' and an awarded B.Sc. are different claims. The agent must not assert a degree that was not conferred. Resolve before any run."
+    },
+    {
+      "field": "Multi-agent travel project name",
+      "db": "JourneyMesh - Multi-Agent AI Travel Planner (LangGraph + MCP + LLMOps)",
+      "pdf": "TravelCrewAI - Multi-Agent LLMOps Travel Planning Platform",
+      "note": "Same project under two names. Pick one so the CV and the portfolio link agree."
+    }
+  ]
+}

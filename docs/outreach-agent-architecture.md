@@ -367,6 +367,29 @@ No PDF library in the repo today. Recommend **`@react-pdf/renderer`** — pure J
 
 Rejected alternative: Playwright HTML→PDF. It is already a devDependency, but shipping Chromium into the production image for this is disproportionate.
 
+### 6.5 The PDF and the database disagree — resolve before any run
+
+The build found that neither source contains the other. This is why the merge records provenance per record rather than trusting one side.
+
+**Only in the PDF** (added via `cv-overlay.json`, both recent and highly relevant):
+- AI Engineer, Robinson & Associates — Mar 2025 to present
+- AI SaaS Developer, Seiton Paw — May 2026 to Jul 2026
+
+**Only in the database** (older full-stack roles the ATS CV trims):
+- Crewfare.com, Vircadia, Breaker Nation, Anekonnect Incorporated
+
+The database also holds nine further employers as "Work Experience" portfolio entries (ByDesign, Prime Lab, XR Foundation, Podscribe, Spotter Labs, Nivan Tech, Naked Media). The build excludes that category from `projects` so the CV cannot count one job twice.
+
+**Three conflicts need a decision from Pankaj:**
+
+| Field | Database | PDF |
+|---|---|---|
+| Upwork role title | LLM & RAG Specialist | Generative AI, Data Engineering & MLOps Specialist |
+| KUET qualification | Undergraduate Studies, Mechanical Engineering | B.Sc. in Mechanical Engineering |
+| Travel project name | JourneyMesh | TravelCrewAI |
+
+The KUET one is **material**: "undergraduate studies" and a conferred B.Sc. are different factual claims, and the agent must not assert a degree that was not awarded. The build carries all three forward in `conflicts` and prints them on every run, so they cannot be forgotten. The database wording wins wherever both sources have a value.
+
 Write to `STORAGE_DIR` (`/app/storage`, the existing bind mount) under `outreach/<runId>/<opportunityId>.pdf`, so generated CVs survive redeploys exactly like uploads do. Store `cvVersion` as a content hash so approval can assert the file did not change after review.
 
 ---
@@ -449,7 +472,7 @@ Editing an approved draft must reset it to `AWAITING_APPROVAL` and invalidate th
 Each phase ends somewhere you could stop and still have something coherent.
 
 1. **Schema + control plane.** ✅ *Done.* Prisma models, migration, `src/lib/outreach/state.ts` as the only writer of run status, server actions in `src/actions/outreach.ts` (server actions rather than API routes, matching how every other admin mutation in this repo works), and the `/admin/outreach` shell. No agent yet.
-2. **Structured CV.** Derive `master-cv.json` from the existing `Experience` / `Project` / `SkillGroup` / `Education` / `Certification` tables, cross-check against the PDF, review by hand. Everything downstream grounds on this.
+2. **Structured CV.** ✅ *Done.* `scripts/build-master-cv.ts` merges the database with `prisma/content/cv-overlay.json` into `prisma/content/master-cv.json`. `npm run cv:build` regenerates it; `npm run cv:check` fails if it is stale. **Three conflicts are unresolved — see §6.5.**
 3. **Provider adapters + tests.** Tavily, Himalayas, Hunter, OpenAI, each behind an interface with recorded fixtures. No graph yet.
 4. **Graph, read-only.** Nodes through `scoreOpportunity`. Run it and inspect what it finds and how it scores. **Calibrate the 80 threshold here, against real listings.** The threshold is a guess until it has seen data.
 5. **Contact + drafting.** `findDecisionMaker` through `buildEmailDraft`, plus `groundingCheck`. Still nothing sendable.

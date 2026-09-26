@@ -22,7 +22,9 @@
     "content:import": "tsx scripts/content/import.ts",
     "content:bundle": "esbuild scripts/content/import.ts --bundle --platform=node --target=node22 --format=cjs --external:@prisma/client --outfile=dist/content-import.cjs",
     "models:brain": "node scripts/models/generate-brain.mjs",
-    "photo": "node scripts/set-photo.mjs"
+    "photo": "node scripts/set-photo.mjs",
+    "cv:build": "tsx scripts/build-master-cv.ts",
+    "cv:check": "tsx scripts/build-master-cv.ts --check"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
