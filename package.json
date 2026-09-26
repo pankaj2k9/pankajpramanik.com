@@ -26,7 +26,7 @@
     "cv:build": "tsx scripts/build-master-cv.ts",
     "cv:check": "tsx scripts/build-master-cv.ts --check",
     "outreach:worker": "tsx --env-file=.env scripts/outreach-worker.ts",
-    "outreach:bundle": "esbuild scripts/outreach-worker.ts --bundle --platform=node --target=node22 --format=esm --external:@prisma/client --external:@react-pdf/renderer --outfile=dist/outreach-worker.mjs"
+    "outreach:bundle": "esbuild scripts/outreach-worker.ts --bundle --platform=node --target=node22 --format=esm --external:@prisma/client --external:@react-pdf/renderer --banner:js='import{createRequire as __createRequire}from\"node:module\";const require=__createRequire(import.meta.url);' --outfile=dist/outreach-worker.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

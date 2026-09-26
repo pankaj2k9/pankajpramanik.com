@@ -62,6 +62,21 @@ RUN node -e 'const fs = require("fs"); \
   && npm cache clean --force \
   && node node_modules/prisma/build/index.js --version
 
+# ---- pdf-deps: @react-pdf/renderer and its tree ----
+# The outreach worker bundle deliberately leaves this package EXTERNAL.
+# @react-pdf/hyphenate is ESM-only and its asset resolution relies on ESM
+# semantics, so bundling it produces a renderer that throws ERR_INVALID_URL
+# the moment it is asked for a PDF. Installed separately and merged into the
+# runtime node_modules so the worker can import it for real at runtime.
+FROM node:22-alpine AS pdf-deps
+WORKDIR /pdf
+COPY --from=deps /app/node_modules/@react-pdf/renderer/package.json /tmp/rp.json
+RUN node -e 'const v=require("/tmp/rp.json").version; \
+      require("fs").writeFileSync("package.json", JSON.stringify({ private: true, \
+        dependencies: { "@react-pdf/renderer": v } }));' \
+  && npm install --omit=dev --no-audit --no-fund \
+  && npm cache clean --force
+
 # ---- runner: minimal standalone image ----
 FROM node:22-alpine AS runner
 WORKDIR /app
@@ -89,7 +104,10 @@ COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=prisma-cli /prisma-cli/node_modules ./prisma-cli/node_modules
 COPY --from=builder /app/dist/content-import.cjs ./scripts/content-import.cjs
-COPY --from=builder /app/dist/outreach-worker.cjs ./scripts/outreach-worker.cjs
+COPY --from=builder /app/dist/outreach-worker.mjs ./scripts/outreach-worker.mjs
+# Merged into the standalone node_modules, so `import("@react-pdf/renderer")`
+# resolves at runtime. COPY merges directories, it does not replace them.
+COPY --from=pdf-deps /pdf/node_modules ./node_modules
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
 ENV STORAGE_DIR=/app/storage
 RUN chmod +x docker-entrypoint.sh && chown -R nextjs:nodejs /app/.next \

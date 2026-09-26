@@ -92,7 +92,7 @@ services:
     volumes:
       - ./storage:/app/storage
     # --watch keeps it polling; the dashboard decides when there is work.
-    command: ["node", "scripts/outreach-worker.cjs", "--watch"]
+    command: ["node", "scripts/outreach-worker.mjs", "--watch"]
     depends_on:
       db:
         condition: service_healthy
