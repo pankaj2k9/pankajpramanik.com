@@ -473,7 +473,17 @@ Each phase ends somewhere you could stop and still have something coherent.
 
 1. **Schema + control plane.** ✅ *Done.* Prisma models, migration, `src/lib/outreach/state.ts` as the only writer of run status, server actions in `src/actions/outreach.ts` (server actions rather than API routes, matching how every other admin mutation in this repo works), and the `/admin/outreach` shell. No agent yet.
 2. **Structured CV.** ✅ *Done.* `scripts/build-master-cv.ts` merges the database with `prisma/content/cv-overlay.json` into `prisma/content/master-cv.json`. `npm run cv:build` regenerates it; `npm run cv:check` fails if it is stale. **Three conflicts are unresolved — see §6.5.**
-3. **Provider adapters + tests.** Tavily, Himalayas, Hunter, OpenAI, each behind an interface with recorded fixtures. No graph yet.
+3. **Provider adapters + tests.** 🔶 *Partly done.* Job boards, config and the remote-eligibility classifier are built and tested live. Tavily, Hunter and OpenAI adapters remain.
+
+   What the live probes established, which changed the design:
+   - **Remotive** is the only board with working server-side search, but its terms allow ~4 calls/day and require naming Remotive as the source and linking back. `minIntervalSeconds` is 6h and every listing carries `attribution`; the cache enforces this even without Redis.
+   - **Himalayas** ignores `search` entirely and caps a page at 20 however large `limit` is. It is a recency feed, so the adapter pages a bounded window and filters locally.
+   - **Arbeitnow** returns 250 per page with an explicit `remote` flag, but skews German — the jurisdiction with the strictest cold-outreach rules (§2.2).
+   - Together the free boards yield only a handful of eligible Data/AI roles per sweep. **Tavily is therefore the primary discovery channel, not a supplement.**
+
+   Two defects found by testing against real listings rather than fixtures:
+   - Substring keyword matching made `ai` hit inside *available*, *maintain*, *training* and *email*. Matching is now word-boundary aware, with punctuation-tolerant edges so `node.js` and `c++` still match.
+   - Even then, sales and transcription roles matched because their descriptions mention AI. Inclusion now requires the keyword in the **title or tags**; the description is kept for the scoring step but no longer admits a listing on its own.
 4. **Graph, read-only.** Nodes through `scoreOpportunity`. Run it and inspect what it finds and how it scores. **Calibrate the 80 threshold here, against real listings.** The threshold is a guess until it has seen data.
 5. **Contact + drafting.** `findDecisionMaker` through `buildEmailDraft`, plus `groundingCheck`. Still nothing sendable.
 6. **CV rendering.** `@react-pdf/renderer`, storage paths, versioning.

@@ -89,19 +89,29 @@
       "field": "Upwork role title",
       "db": "LLM & RAG Specialist",
       "pdf": "Generative AI, Data Engineering & MLOps Specialist",
-      "note": "Same engagement, two titles. The build uses the database wording, so the agent will say 'LLM & RAG Specialist' until you change it on the site. Confirm which title you want."
+      "note": "Same engagement, two titles. The build uses the database wording, so the agent will say 'LLM & RAG Specialist' until you change it on the site. Confirm which title you want.",
+      "decision": "",
+      "forbidden": []
     },
     {
       "field": "KUET qualification",
       "db": "Undergraduate Studies, Mechanical Engineering",
       "pdf": "B.Sc. in Mechanical Engineering",
-      "note": "MATERIAL. 'Undergraduate studies' and an awarded B.Sc. are different claims. The agent must not assert a degree that was not conferred. Resolve before any run."
+      "note": "The published PDF still reads 'B.Sc. in Mechanical Engineering'. That claim is not accurate and the agent must never repeat it. The PDF itself needs correcting separately.",
+      "decision": "RESOLVED 2026-09-26 by Pankaj: undergraduate studies, no B.Sc. conferred. The database wording is correct and authoritative.",
+      "forbidden": [
+        "B.Sc. in Mechanical Engineering",
+        "BSc in Mechanical Engineering",
+        "Bachelor of Science in Mechanical Engineering"
+      ]
     },
     {
       "field": "Multi-agent travel project name",
       "db": "JourneyMesh - Multi-Agent AI Travel Planner (LangGraph + MCP + LLMOps)",
       "pdf": "TravelCrewAI - Multi-Agent LLMOps Travel Planning Platform",
-      "note": "Same project under two names. Pick one so the CV and the portfolio link agree."
+      "note": "Same project under two names. Pick one so the CV and the portfolio link agree.",
+      "decision": "",
+      "forbidden": []
     }
   ]
 }

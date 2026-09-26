@@ -90,9 +90,23 @@ export const masterCvSchema = z.object({
   education: z.array(educationSchema),
   certifications: z.array(certificationSchema),
   achievements: z.array(achievementSchema),
-  /** Conflicts the build found between the database and the PDF. */
+  /**
+   * Disagreements between the database and the published PDF.
+   *
+   * `decision` empty means unresolved — the build prints it on every run.
+   * `forbidden` lists wording the agent must never emit; the build fails if
+   * any of it reaches the grounding corpus, so a resolved conflict cannot
+   * quietly come back.
+   */
   conflicts: z.array(
-    z.object({ field: z.string(), db: z.string(), pdf: z.string(), note: z.string() }),
+    z.object({
+      field: z.string(),
+      db: z.string(),
+      pdf: z.string(),
+      note: z.string(),
+      decision: z.string().default(""),
+      forbidden: z.array(z.string()).default([]),
+    }),
   ),
 });
 

@@ -16,7 +16,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { PrismaClient } from "@prisma/client";
-import { masterCvSchema, type MasterCv } from "../src/lib/outreach/master-cv";
+import { groundingCorpus, masterCvSchema, type MasterCv } from "../src/lib/outreach/master-cv";
 import { site } from "../src/lib/site";
 
 const prisma = new PrismaClient();
@@ -121,8 +121,27 @@ async function build(): Promise<MasterCv> {
   });
 }
 
+/**
+ * A resolved conflict names wording the agent must never emit. If any of it
+ * reaches the grounding corpus, the agent could state it as fact, so the build
+ * refuses rather than shipping a CV that can repeat a rejected claim.
+ */
+function assertNoForbiddenWording(cv: MasterCv): void {
+  const { text } = groundingCorpus(cv);
+  const found = cv.conflicts.flatMap((c) =>
+    c.forbidden.filter((phrase) => text.includes(phrase)).map((phrase) => ({ c, phrase })),
+  );
+  if (found.length === 0) return;
+  for (const { c, phrase } of found) {
+    console.error(`Forbidden wording reached the CV corpus: "${phrase}" (${c.field})`);
+    console.error(`  ${c.decision || c.note}`);
+  }
+  process.exit(1);
+}
+
 async function main() {
   const cv = await build();
+  assertNoForbiddenWording(cv);
   // Trailing newline included, so --check compares like for like with the file.
   const json = JSON.stringify(cv, null, 2) + "\n";
 
@@ -152,9 +171,17 @@ async function main() {
   console.log(`  certifications ${cv.certifications.length}`);
   console.log(`  achievements ${cv.achievements.length}`);
 
-  if (cv.conflicts.length) {
-    console.log(`\n  ${cv.conflicts.length} unresolved conflict(s) — review before any run:`);
-    for (const c of cv.conflicts) {
+  const unresolved = cv.conflicts.filter((c) => !c.decision);
+  const resolved = cv.conflicts.filter((c) => c.decision);
+
+  if (resolved.length) {
+    console.log(`\n  ${resolved.length} resolved conflict(s):`);
+    for (const c of resolved) console.log(`    ${c.field} — ${c.decision}`);
+  }
+
+  if (unresolved.length) {
+    console.log(`\n  ${unresolved.length} unresolved conflict(s) — review before any run:`);
+    for (const c of unresolved) {
       console.log(`\n  ${c.field}`);
       console.log(`    db:  ${c.db}`);
       console.log(`    pdf: ${c.pdf}`);
