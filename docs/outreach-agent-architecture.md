@@ -46,9 +46,17 @@ Design consequences, all mandatory:
 - Store the lawful-basis rationale per contact (role relevance) — that is the legitimate-interest paper trail.
 - Applying to an *advertised* position is the safest category. Prefer it. Unsolicited pitches to companies with no open role carry more risk and should be a separate, clearly-labelled mode.
 
-### 2.3 LinkedIn scraping is off the table
+### 2.3 LinkedIn and Indeed cannot be sources
 
-The spec mentions "public professional profiles". Automated LinkedIn scraping violates their terms and will get the account banned. Use provider APIs (Hunter/Apollo return LinkedIn URLs as *data*) and company career pages. Store `linkedin_url` when a provider hands it over; never crawl for it.
+Both were asked for. Neither can be built legitimately, so neither is in the design.
+
+**LinkedIn.** There is no public jobs API — the only jobs API is partner-gated for *posting*, and LinkedIn is not accepting new partners. Their User Agreement explicitly prohibits automated scraping, crawling or data extraction. *hiQ v. LinkedIn* means scraping public data likely survives a CFAA claim, but it remains a breach of contract, and the practical risk is not a lawsuit: it is LinkedIn restricting **Pankaj's own account**, the one he needs for this job search. The downside is directly opposed to the goal.
+
+**Indeed.** The Publisher API was retired in 2023 and the XML feed in 2024, with no self-serve replacement. The affiliate program has been closed to new publishers since 2022. What remains is employer-side, behind partner approval and a multi-month sales process.
+
+What is used instead: seven keyless boards (§7), plus Tavily over company career pages. A LinkedIn or Indeed posting can still *surface as a search result* and be applied to by its public URL — that is a person following a link, not a scraper harvesting a site.
+
+Where a provider hands back a LinkedIn profile URL as data (Hunter does), it is stored. Nothing crawls for it.
 
 ### 2.4 LangGraph's Postgres checkpointer and Prisma will collide
 
@@ -398,14 +406,22 @@ Write to `STORAGE_DIR` (`/app/storage`, the existing bind mount) under `outreach
 
 | Concern | Choice | Auth | Notes |
 |---|---|---|---|
-| Web research | **Tavily** | API key | Confirmed with you. Company research, decision-maker discovery. |
-| Job listings | **Himalayas** public JSON API | none | Free, no key, supports keyword/country/seniority/timezone filters. |
-| Job listings | **Remotive**, **Arbeitnow** | none | Free JSON feeds. Use as breadth. |
-| Job listings | Apify aggregators | key | ~$0.50–2.00 per 1,000 jobs. Only if the free feeds prove thin. |
+| Web research | **Tavily** | API key | Company research, decision-maker discovery. The primary discovery channel. |
+| Job listings | **We Work Remotely** | none | RSS. States `Anywhere in the World` explicitly — the strongest worldwide signal of any source. |
+| Job listings | **Jobicy** | none | The only board with a server-side `geo=anywhere` filter. |
+| Job listings | **Remote OK** | none | Large feed. Terms require a followed link back and attribution. |
+| Job listings | **Himalayas** | none | Recency feed, 20/page, no server-side search. |
+| Job listings | **Remotive** | none | Real keyword search, but ~4 calls/day and attribution required. |
+| Job listings | **Working Nomads** | none | Breadth. Often omits the company name; those rows are dropped. |
+| Job listings | **Arbeitnow** | none | 250/page, explicit remote flag, German-skewed (§2.2). |
+| ~~LinkedIn~~ | **not possible** | — | No public API; scraping breaches ToS and risks Pankaj's own account (§2.3). |
+| ~~Indeed~~ | **not possible** | — | Publisher API retired 2023/24; partner-only since (§2.3). |
 | Email find + verify | **Hunter.io** | API key | Free tier is the bottleneck — see §2.1. |
-| LLM | **OpenAI** | API key | Model from `OPENAI_MODEL`. **Unconfirmed — you must set it.** |
-| Sending | **Resend** | API key | Already a dependency and already wired for booking mail. |
+| LLM | **OpenAI** | API key | `OPENAI_MODEL`, with fast/reasoning variants. |
+| Sending | **Resend** | API key | Already wired for booking mail. |
 | PDF | `@react-pdf/renderer` | — | New dependency. |
+
+A live sweep across all seven returns ~119 listings, of which ~29 are open worldwide. `searchAllBoards` ranks **WORLDWIDE first**, then COMPATIBLE, then UNKNOWN, with recency breaking ties, so globally-open roles reach the expensive scoring step first. `searchWorldwide()` returns only the unrestricted ones.
 
 All behind interfaces in `src/lib/outreach/providers/`, so each is swappable and mockable in tests.
 
