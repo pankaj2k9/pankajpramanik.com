@@ -514,7 +514,17 @@ Each phase ends somewhere you could stop and still have something coherent.
    Two defects found by testing against real listings rather than fixtures:
    - Substring keyword matching made `ai` hit inside *available*, *maintain*, *training* and *email*. Matching is now word-boundary aware, with punctuation-tolerant edges so `node.js` and `c++` still match.
    - Even then, sales and transcription roles matched because their descriptions mention AI. Inclusion now requires the keyword in the **title or tags**; the description is kept for the scoring step but no longer admits a listing on its own.
-4. **Graph, read-only.** Nodes through `scoreOpportunity`. Run it and inspect what it finds and how it scores. **Calibrate the 80 threshold here, against real listings.** The threshold is a guess until it has seen data.
+4. **Scoring.** ✅ *Done.* `src/lib/outreach/scoring.ts`, deterministic rather than LLM-based: every number is reproducible and auditable in `matchBreakdown`, costs nothing per listing, and does not depend on a model id.
+
+   **Calibration against 132 live listings** found two problems the rubric alone did not catch:
+   - **Talent marketplaces dominated the top.** Lemon.io, Toptal, Proxify and similar post constantly and score well on every technical axis — but cold outreach has no addressee there. The "role" is a pool and the contact would be their sales team. They are now a hard gate, not a penalty.
+   - **Generic software roles cleared 80.** A .NET, QA or React posting scored 84-91 on technical overlap, because Data/AI relevance is only a fifth of the total. The spec allows a general role only where Data/AI is significant, so `OUTREACH_MIN_RELEVANCE` (default 8 of 20) is now a gate too.
+
+   Three gates apply before the total is even considered: ineligible location, intermediary employer, insufficient Data/AI relevance.
+
+   **Funnel at threshold 80, gates applied: 3 qualified from 132 listings** (Faire, Canonical ×2 — all worldwide). At 70 it is 6.
+
+   This is the important operational finding: **the free boards alone cannot sustain 5 qualified opportunities a day.** Either the threshold drops to ~70, or Tavily must widen sourcing beyond the boards. Tavily is the better answer; the threshold is left at the spec's 80.
 5. **Contact + drafting.** `findDecisionMaker` through `buildEmailDraft`, plus `groundingCheck`. Still nothing sendable.
 6. **CV rendering.** `@react-pdf/renderer`, storage paths, versioning.
 7. **Approval + send.** The seven gates, Resend integration, audit persistence. `OUTREACH_ENABLED` stays `false` until you have manually inspected a full run.
