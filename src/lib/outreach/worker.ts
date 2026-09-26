@@ -125,12 +125,13 @@ export async function runAgent(runId: string): Promise<RunOutcome> {
       }
 
       const opportunity = await persistOpportunity(runId, listing, score);
-      await countQualified(runId);
 
-      // Enrichment comes after the count: the opportunity is real either way,
-      // and a research failure must not silently cost the run a slot.
+      // Enrichment runs BEFORE the count. Counting first reaches the target,
+      // which auto-completes the run, which makes the next checkpoint abort —
+      // so the last opportunity of every run would never get a contact or a
+      // draft. It is best-effort either way: the opportunity is already
+      // stored, so a research failure never loses the find.
       if (contactDiscoveryEnabled()) {
-        await checkpoint(runId);
         try {
           const outcome: EnrichOutcome = await enrichOpportunity(opportunity, listing, score, cv);
           console.log(`[worker] ${listing.company}: ${outcome}`);
@@ -141,6 +142,8 @@ export async function runAgent(runId: string): Promise<RunOutcome> {
           await record(runId, "opportunity.enrich_failed", { company: listing.company, error: message }, opportunity.id);
         }
       }
+
+      await countQualified(runId);
     }
 
     const finalRun = await prisma.outreachRun.findUniqueOrThrow({ where: { id: runId } });
@@ -156,7 +159,10 @@ export async function runAgent(runId: string): Promise<RunOutcome> {
   } catch (error) {
     if (error instanceof AgentStopped) {
       const run = await prisma.outreachRun.findUniqueOrThrow({ where: { id: runId } });
-      return { status: "STOPPED", qualified: run.qualifiedCount, scanned, rejected };
+      // Reaching the target auto-completes the run, and the next checkpoint
+      // then reads as "not RUNNING". That is success, not a stop.
+      const status = run.status === AgentStatus.COMPLETED ? "COMPLETED" : "STOPPED";
+      return { status, qualified: run.qualifiedCount, scanned, rejected };
     }
     if (error instanceof AgentPaused) {
       const run = await prisma.outreachRun.findUniqueOrThrow({ where: { id: runId } });
