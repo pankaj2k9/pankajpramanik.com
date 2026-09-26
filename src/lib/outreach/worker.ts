@@ -6,6 +6,7 @@ import { masterCvSchema, type MasterCv } from "./master-cv";
 import { searchAllBoards } from "./providers/job-boards";
 import type { JobListing } from "./providers/types";
 import { qualifies, scoreOpportunity, type Score } from "./scoring";
+import { contactDiscoveryEnabled, enrichOpportunity, type EnrichOutcome } from "./enrich";
 import {
   countQualified, currentStatus, heartbeat, record,
 } from "./state";
@@ -17,9 +18,12 @@ import {
  * records what was ASKED for; this is what does the work, and its heartbeat
  * is what makes "RUNNING" mean something.
  *
- * Cheap-by-default: sourcing and scoring cost nothing, so a run produces
- * visible results without spending an OpenAI token or one of the 25 monthly
- * Hunter credits. Contact discovery and drafting are opt-in per §2.1.
+ * Sourcing and scoring cost nothing. Contact discovery, drafting and CV
+ * rendering spend OpenAI tokens and one of the 25 monthly Hunter credits per
+ * contact, so they can be switched off with OUTREACH_CONTACT_DISCOVERY=false.
+ *
+ * A qualified opportunity is stored BEFORE it is enriched, so a failure in
+ * research or drafting never loses the find.
  *
  * Design record: docs/outreach-agent-architecture.md
  */
@@ -120,8 +124,23 @@ export async function runAgent(runId: string): Promise<RunOutcome> {
         continue;
       }
 
-      await persistOpportunity(runId, listing, score);
+      const opportunity = await persistOpportunity(runId, listing, score);
       await countQualified(runId);
+
+      // Enrichment comes after the count: the opportunity is real either way,
+      // and a research failure must not silently cost the run a slot.
+      if (contactDiscoveryEnabled()) {
+        await checkpoint(runId);
+        try {
+          const outcome: EnrichOutcome = await enrichOpportunity(opportunity, listing, score, cv);
+          console.log(`[worker] ${listing.company}: ${outcome}`);
+        } catch (error) {
+          // Enrichment is best-effort. The opportunity stays for review.
+          const message = error instanceof Error ? error.message : String(error);
+          console.error(`[worker] enrichment failed for ${listing.company}:`, message);
+          await record(runId, "opportunity.enrich_failed", { company: listing.company, error: message }, opportunity.id);
+        }
+      }
     }
 
     const finalRun = await prisma.outreachRun.findUniqueOrThrow({ where: { id: runId } });
