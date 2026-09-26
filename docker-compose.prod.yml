@@ -72,6 +72,32 @@ services:
           # changing /opt/proxy/sites/pankajpramanik.caddy too.
           - pankajpramanik-app
 
+  # Outreach agent worker. Drives runs the dashboard marks RUNNING: sources,
+  # scores and stores opportunities. It sends nothing — sending is gated behind
+  # explicit approval in the dashboard and OUTREACH_ENABLED.
+  #
+  # Internal only: no proxy network, no published ports, nothing reaches it
+  # from outside. It shares the app image, so it is always the same commit.
+  agent-worker:
+    image: ${APP_IMAGE:-ghcr.io/pankaj2k9/pankajpramanik:latest}
+    container_name: pankajpramanik-agent-worker
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
+      REDIS_URL: redis://redis:6379
+    # Generated CVs land in the same bind mount as uploads, so they survive
+    # a redeploy.
+    volumes:
+      - ./storage:/app/storage
+    # --watch keeps it polling; the dashboard decides when there is work.
+    command: ["node", "scripts/outreach-worker.cjs", "--watch"]
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [internal]
+
   db:
     image: postgres:16-alpine
     restart: unless-stopped

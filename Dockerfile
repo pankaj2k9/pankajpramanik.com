@@ -37,6 +37,9 @@ RUN npm run build
 # Self-contained content importer (prisma/content/snapshot.json → database),
 # run by the entrypoint on every start.
 RUN npm run content:bundle
+# Same treatment for the outreach agent worker: the runtime image carries no
+# tsx and no TypeScript sources, so the worker ships as one bundled file.
+RUN npm run outreach:bundle
 
 # ---- prisma-cli: Prisma CLI with its full dependency tree ----
 # The entrypoint runs `prisma migrate deploy` on every start. The CLI needs its
@@ -86,6 +89,7 @@ COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=prisma-cli /prisma-cli/node_modules ./prisma-cli/node_modules
 COPY --from=builder /app/dist/content-import.cjs ./scripts/content-import.cjs
+COPY --from=builder /app/dist/outreach-worker.cjs ./scripts/outreach-worker.cjs
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
 ENV STORAGE_DIR=/app/storage
 RUN chmod +x docker-entrypoint.sh && chown -R nextjs:nodejs /app/.next \

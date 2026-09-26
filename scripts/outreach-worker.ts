@@ -13,6 +13,7 @@
  */
 import { AgentStatus } from "@prisma/client";
 import { prisma } from "../src/lib/prisma";
+import { getRedis } from "../src/lib/redis";
 import { activeRun, transition } from "../src/lib/outreach/state";
 import { runAgent } from "../src/lib/outreach/worker";
 
@@ -43,11 +44,23 @@ async function once(): Promise<boolean> {
   }
 }
 
+/**
+ * Releases everything holding the event loop open.
+ *
+ * The Redis client keeps a live socket, so without this a one-shot run
+ * finishes its work and then hangs forever instead of exiting — which would
+ * wedge any cron-style invocation.
+ */
+async function shutdown(): Promise<void> {
+  await prisma.$disconnect().catch(() => {});
+  await getRedis()?.quit().catch(() => {});
+}
+
 async function main() {
   if (!WATCH) {
     const worked = await once();
     if (!worked) console.log("[worker] no run is marked RUNNING — nothing to do");
-    await prisma.$disconnect();
+    await shutdown();
     return;
   }
 
@@ -64,6 +77,6 @@ async function main() {
 
 main().catch(async (error) => {
   console.error(error);
-  await prisma.$disconnect();
+  await shutdown();
   process.exit(1);
 });
