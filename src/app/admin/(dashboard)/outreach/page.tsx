@@ -1,7 +1,8 @@
 import type { AgentStatus } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { latestRun } from "@/lib/outreach/state";
+import { configGaps } from "@/lib/outreach/env";
+import { HEARTBEAT_STALE_SECONDS, latestRun, liveness } from "@/lib/outreach/state";
 import { formatDate } from "@/lib/utils";
 import OutreachControls from "@/components/admin/OutreachControls";
 
@@ -30,6 +31,9 @@ export default async function AdminOutreachPage() {
       })
     : [];
 
+  const live = run ? liveness(run) : "IDLE";
+  const gaps = configGaps();
+
   return (
     <div>
       <h1 className="font-display text-2xl font-bold">Outreach agent</h1>
@@ -39,8 +43,8 @@ export default async function AdminOutreachPage() {
       </p>
 
       <section className="card mt-6 p-5">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-3">
             <span
               className={`rounded-full border px-3 py-1 text-sm ${run ? TONE[run.status] : "border-border text-muted"}`}
             >
@@ -51,9 +55,33 @@ export default async function AdminOutreachPage() {
                 Qualified: {run.qualifiedCount} / {run.targetCount}
               </span>
             )}
+            {live === "WORKING" && (
+              <span className="text-sm text-accent">Worker active</span>
+            )}
           </div>
-          <OutreachControls runId={run?.id ?? null} status={run?.status ?? null} />
+          <OutreachControls
+            runId={run?.id ?? null}
+            status={run?.status ?? null}
+            targetCount={run?.targetCount ?? 5}
+            qualifiedCount={run?.qualifiedCount ?? 0}
+          />
         </div>
+
+        {/*
+          The status above is what was ASKED for. This says whether anything is
+          actually happening — otherwise a down or undeployed worker reads as
+          progress forever.
+        */}
+        {live === "NO_WORKER" && (
+          <p role="status" className="mt-4 rounded-md border border-border p-3 text-sm">
+            <strong>Marked RUNNING, but no worker is attached.</strong>{" "}
+            {run?.workerSeenAt
+              ? `Last seen ${formatDate(run.workerSeenAt)}; nothing for over ${HEARTBEAT_STALE_SECONDS}s.`
+              : "No worker has ever checked in on this run."}{" "}
+            The agent worker is not built yet, so this is expected — the run
+            will sit here until it is.
+          </p>
+        )}
 
         {run?.lastError && (
           <p role="alert" className="mt-4 text-sm text-red-500">
@@ -61,8 +89,16 @@ export default async function AdminOutreachPage() {
           </p>
         )}
 
+        {gaps.length > 0 && (
+          <p className="mt-4 rounded-md border border-border p-3 text-sm">
+            <strong>Not ready to run.</strong> Missing configuration:{" "}
+            <span className="font-mono text-xs">{gaps.join(", ")}</span>. See{" "}
+            <span className="font-mono text-xs">.env.example</span>.
+          </p>
+        )}
+
         {run && (
-          <dl className="mt-5 grid gap-4 border-t border-border pt-5 text-sm sm:grid-cols-3">
+          <dl className="mt-5 grid gap-4 border-t border-border pt-5 text-sm sm:grid-cols-4">
             <div>
               <dt className="text-faint">Started</dt>
               <dd>{run.startedAt ? formatDate(run.startedAt) : "—"}</dd>
@@ -70,6 +106,10 @@ export default async function AdminOutreachPage() {
             <div>
               <dt className="text-faint">Last change</dt>
               <dd>{formatDate(run.updatedAt)}</dd>
+            </div>
+            <div>
+              <dt className="text-faint">Worker last seen</dt>
+              <dd>{run.workerSeenAt ? formatDate(run.workerSeenAt) : "never"}</dd>
             </div>
             <div>
               <dt className="text-faint">Run id</dt>

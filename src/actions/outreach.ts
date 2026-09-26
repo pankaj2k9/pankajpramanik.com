@@ -5,7 +5,9 @@ import { AgentStatus } from "@prisma/client";
 import { requireAdmin } from "@/lib/auth";
 import {
   IllegalTransition,
+  InvalidTarget,
   RunAlreadyActive,
+  setTargetCount,
   startRun,
   transition,
 } from "@/lib/outreach/state";
@@ -32,16 +34,29 @@ async function guard(run: () => Promise<unknown>): Promise<ControlResult> {
     refresh();
     return { ok: true };
   } catch (error) {
-    if (error instanceof RunAlreadyActive || error instanceof IllegalTransition) {
+    if (
+      error instanceof RunAlreadyActive ||
+      error instanceof IllegalTransition ||
+      error instanceof InvalidTarget
+    ) {
       return { ok: false, error: error.message };
     }
     throw error;
   }
 }
 
-export async function startOutreachRun(): Promise<ControlResult> {
+export async function startOutreachRun(targetCount = 5): Promise<ControlResult> {
   await requireAdmin();
-  return guard(() => startRun());
+  return guard(() => startRun(targetCount));
+}
+
+/** Changes the goal of an existing run; may reopen a COMPLETED one. */
+export async function setOutreachTarget(
+  runId: string,
+  targetCount: number,
+): Promise<ControlResult> {
+  await requireAdmin();
+  return guard(() => setTargetCount(runId, targetCount));
 }
 
 export async function stopOutreachRun(runId: string): Promise<ControlResult> {

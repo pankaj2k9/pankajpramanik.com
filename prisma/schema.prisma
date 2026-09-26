@@ -465,6 +465,10 @@ model OutreachRun {
   threadId       String        @unique
   // Surfaced on the dashboard when status is ERROR.
   lastError      String?
+  // Worker liveness. status RUNNING only records what was ASKED for; this
+  // records that a worker is actually turning the graph. A stale or null
+  // value against a RUNNING status means nobody is doing the work.
+  workerSeenAt   DateTime?
   startedAt      DateTime?
   pausedAt       DateTime?
   resumedAt      DateTime?

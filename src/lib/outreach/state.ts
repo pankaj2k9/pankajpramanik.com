@@ -50,6 +50,23 @@ export class IllegalTransition extends Error {
   }
 }
 
+/** Sane bounds for a run target. One is useful for a smoke test. */
+export const MIN_TARGET = 1;
+export const MAX_TARGET = 25;
+
+/**
+ * A worker beats between graph nodes. Longer than the slowest single node,
+ * short enough that a dead worker is obvious within a page refresh or two.
+ */
+export const HEARTBEAT_STALE_SECONDS = 90;
+
+export class InvalidTarget extends Error {
+  constructor(value: number) {
+    super(`Target must be a whole number between ${MIN_TARGET} and ${MAX_TARGET}; got ${value}.`);
+    this.name = "InvalidTarget";
+  }
+}
+
 export class RunAlreadyActive extends Error {
   constructor(id: string) {
     super(`Run ${id} is still active. Stop it before starting another.`);
@@ -88,6 +105,7 @@ export function latestRun() {
  * runs would race on the qualified count and could double-contact a company.
  */
 export async function startRun(targetCount = 5) {
+  assertValidTarget(targetCount);
   const existing = await activeRun();
   if (existing) throw new RunAlreadyActive(existing.id);
 
@@ -147,19 +165,46 @@ export async function transition(
   return updated[0];
 }
 
+export class TargetAlreadyMet extends Error {
+  constructor(runId: string) {
+    super(`Run ${runId} has already reached its target; refusing to qualify another.`);
+    this.name = "TargetAlreadyMet";
+  }
+}
+
 /**
  * Records one qualified opportunity and closes the run when the target is met.
- * The spec is explicit: stop at the target, do not look for one more.
+ *
+ * The count is NOT a blind increment. The spec forbids exceeding the target,
+ * so this refuses once the goal is reached rather than overshooting, and the
+ * update is conditional on the count it just read, so two workers finishing
+ * at the same moment cannot both take the last slot.
  */
 export async function countQualified(runId: string): Promise<OutreachRun> {
-  const run = await prisma.outreachRun.update({
-    where: { id: runId },
-    data: { qualifiedCount: { increment: 1 } },
-  });
+  const run = await prisma.outreachRun.findUniqueOrThrow({ where: { id: runId } });
+
   if (run.qualifiedCount >= run.targetCount) {
+    // Already done. Make the state say so rather than silently going over.
+    if (run.status === AgentStatus.RUNNING) {
+      return transition(runId, AgentStatus.COMPLETED);
+    }
+    throw new TargetAlreadyMet(runId);
+  }
+
+  const updated = await prisma.outreachRun.updateManyAndReturn({
+    where: { id: runId, qualifiedCount: run.qualifiedCount },
+    data: { qualifiedCount: run.qualifiedCount + 1 },
+  });
+  if (updated.length === 0) {
+    // Another worker claimed the slot between our read and write.
+    throw new TargetAlreadyMet(runId);
+  }
+
+  const next = updated[0];
+  if (next.qualifiedCount >= next.targetCount) {
     return transition(runId, AgentStatus.COMPLETED);
   }
-  return run;
+  return next;
 }
 
 /**
@@ -172,6 +217,91 @@ export async function currentStatus(runId: string): Promise<AgentStatus> {
     select: { status: true },
   });
   return run.status;
+}
+
+export function assertValidTarget(value: number): void {
+  if (!Number.isInteger(value) || value < MIN_TARGET || value > MAX_TARGET) {
+    throw new InvalidTarget(value);
+  }
+}
+
+/**
+ * Changes how many opportunities a run is aiming for.
+ *
+ * Refused below the number already qualified: lowering the target under the
+ * work already done would strand finished drafts outside the run's own goal.
+ * Raising the target on a COMPLETED run reopens it, which is the whole point
+ * of being able to edit it.
+ */
+export async function setTargetCount(
+  runId: string,
+  targetCount: number,
+): Promise<OutreachRun> {
+  assertValidTarget(targetCount);
+  const run = await prisma.outreachRun.findUniqueOrThrow({ where: { id: runId } });
+  if (targetCount < run.qualifiedCount) {
+    throw new InvalidTarget(targetCount);
+  }
+
+  const reopen =
+    run.status === AgentStatus.COMPLETED && targetCount > run.qualifiedCount;
+  // Lowering the goal onto work already done means the run is finished now;
+  // leaving it RUNNING would let it qualify one more and overshoot.
+  const nowComplete = isActive(run.status) && targetCount <= run.qualifiedCount;
+
+  const updated = await prisma.outreachRun.update({
+    where: { id: runId },
+    data: {
+      targetCount,
+      ...(reopen ? { status: AgentStatus.PAUSED, completedAt: null } : {}),
+      ...(nowComplete
+        ? { status: AgentStatus.COMPLETED, completedAt: new Date() }
+        : {}),
+    },
+  });
+  await record(runId, "run.target_changed", {
+    from: run.targetCount,
+    to: targetCount,
+    reopened: reopen,
+  });
+  return updated;
+}
+
+/** Called by the worker between nodes to prove it is alive. */
+export async function heartbeat(runId: string): Promise<void> {
+  try {
+    await prisma.outreachRun.update({
+      where: { id: runId },
+      data: { workerSeenAt: new Date() },
+    });
+  } catch (error) {
+    console.error("[outreach] heartbeat failed", error);
+  }
+}
+
+export type Liveness =
+  /** State says RUNNING and a worker beat recently. */
+  | "WORKING"
+  /** State says RUNNING but no worker has beaten recently. Nothing is happening. */
+  | "NO_WORKER"
+  /** The run is not meant to be progressing. */
+  | "IDLE";
+
+/**
+ * Distinguishes "we asked for a run" from "a run is actually happening".
+ *
+ * Without this the dashboard shows RUNNING forever whenever the worker is
+ * down, stopped or not yet deployed, which reads as progress when there is
+ * none.
+ */
+export function liveness(
+  run: Pick<OutreachRun, "status" | "workerSeenAt">,
+  now = new Date(),
+): Liveness {
+  if (run.status !== AgentStatus.RUNNING) return "IDLE";
+  if (!run.workerSeenAt) return "NO_WORKER";
+  const ageSeconds = (now.getTime() - run.workerSeenAt.getTime()) / 1000;
+  return ageSeconds <= HEARTBEAT_STALE_SECONDS ? "WORKING" : "NO_WORKER";
 }
 
 /** Append-only audit row. Never throws into the caller's path. */
