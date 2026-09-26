@@ -24,7 +24,8 @@
     "models:brain": "node scripts/models/generate-brain.mjs",
     "photo": "node scripts/set-photo.mjs",
     "cv:build": "tsx scripts/build-master-cv.ts",
-    "cv:check": "tsx scripts/build-master-cv.ts --check"
+    "cv:check": "tsx scripts/build-master-cv.ts --check",
+    "outreach:worker": "tsx --env-file=.env scripts/outreach-worker.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

@@ -534,7 +534,13 @@ Each phase ends somewhere you could stop and still have something coherent.
 
    The build also now refuses to put a `localhost` URL on a CV.
 7. **Approval + send.** The seven gates, Resend integration, audit persistence. `OUTREACH_ENABLED` stays `false` until you have manually inspected a full run.
-8. **Worker container.** Add `agent-worker` to both compose files, checkpoint resume across restarts, deploy.
+8. **Worker container.** 🔶 *Partly done.* The run loop exists (`src/lib/outreach/worker.ts`) and is driven by `npm run outreach:worker`, or `-- --watch` to keep polling. It checks the run's state between every step, so STOP and PAUSE are honoured and the dashboard stays in control, and it heartbeats so `RUNNING` means something. Still to do: package it as the `agent-worker` service in both compose files.
+
+   **Cheap by default.** Sourcing and scoring cost nothing, so a run produces visible opportunities without spending an OpenAI token or one of the 25 monthly Hunter credits. Contact discovery and drafting stay opt-in.
+
+   Dedupe is checked across *all* runs, not just the current one, because contacting the same company twice is the failure the spec is most explicit about.
+
+   When the sources run dry before the target is met the run is left RUNNING and `search.exhausted` is recorded, rather than declaring a false completion.
 9. **Replies.** Optional and last. Inbound webhook, classification, `REPLY_DRAFT` records. The spec correctly says never auto-reply.
 
 Phases 1–5 are usable from a local `tsx` script before the worker container exists. Build the container when the graph is stable, not before.

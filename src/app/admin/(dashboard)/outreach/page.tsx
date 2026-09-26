@@ -24,13 +24,19 @@ export default async function AdminOutreachPage() {
   await requireAdmin();
 
   const run = await latestRun();
-  const events = run
-    ? await prisma.outreachEvent.findMany({
-        where: { runId: run.id },
-        orderBy: { createdAt: "desc" },
-        take: 20,
-      })
-    : [];
+  const [events, opportunities] = run
+    ? await Promise.all([
+        prisma.outreachEvent.findMany({
+          where: { runId: run.id },
+          orderBy: { createdAt: "desc" },
+          take: 20,
+        }),
+        prisma.opportunity.findMany({
+          where: { runId: run.id },
+          orderBy: { matchScore: "desc" },
+        }),
+      ])
+    : [[], []];
 
   const live = run ? liveness(run) : "IDLE";
   const gaps = configGaps();
@@ -84,8 +90,10 @@ export default async function AdminOutreachPage() {
             {run?.workerSeenAt
               ? `Last seen ${formatDate(run.workerSeenAt)}; nothing for over ${HEARTBEAT_STALE_SECONDS}s.`
               : "No worker has ever checked in on this run."}{" "}
-            The agent worker is not built yet, so this is expected — the run
-            will sit here until it is.
+            Nothing progresses until a worker is running. Start one with{" "}
+            <span className="font-mono text-xs">npm run outreach:worker</span>{" "}
+            (add <span className="font-mono text-xs">-- --watch</span> to keep
+            it polling).
           </p>
         )}
 
@@ -132,10 +140,72 @@ export default async function AdminOutreachPage() {
         )}
       </section>
 
-      <h2 className="mt-10 font-display text-lg font-semibold">Opportunities</h2>
-      <p className="mt-2 text-muted">
-        No opportunities yet — the agent worker is not built.
-      </p>
+      <h2 className="mt-10 font-display text-lg font-semibold">
+        Opportunities{opportunities.length > 0 ? ` (${opportunities.length})` : ""}
+      </h2>
+      {opportunities.length === 0 ? (
+        <p className="mt-2 text-muted">
+          {live === "WORKING"
+            ? "Searching — qualified opportunities will appear here."
+            : "None yet. Start a run, then run the agent worker."}
+        </p>
+      ) : (
+        <ul className="mt-4 space-y-4">
+          {opportunities.map((o) => {
+            const breakdown = (o.matchBreakdown ?? {}) as Record<string, unknown>;
+            const dims = Object.entries(breakdown).filter(
+              ([, v]) => typeof v === "number",
+            ) as [string, number][];
+            return (
+              <li key={o.id} className="card p-5">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="font-semibold">{o.jobTitle}</p>
+                    <p className="text-sm text-muted">
+                      {o.companyName} · {o.remoteStatus} · via {o.jobSource}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="rounded-full border border-accent px-3 py-1 text-sm text-accent">
+                      {o.matchScore}/100
+                    </span>
+                    <span className="rounded-full border border-border px-3 py-1 text-xs text-muted">
+                      {o.approvalStatus}
+                    </span>
+                  </div>
+                </div>
+
+                <p className="mt-3 text-sm text-muted">{o.matchReason}</p>
+
+                {/* The score is auditable on purpose: every dimension is shown. */}
+                {dims.length > 0 && (
+                  <dl className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-faint">
+                    {dims.map(([key, value]) => (
+                      <div key={key} className="flex gap-1">
+                        <dt>{key}</dt>
+                        <dd className="text-muted">{value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+
+                <div className="mt-4 flex flex-wrap gap-4 text-sm">
+                  <a href={o.jobUrl} target="_blank" rel="noopener noreferrer" className="underline">
+                    View job ↗
+                  </a>
+                  {o.contactEmail ? (
+                    <span className="text-muted">
+                      {o.contactName ?? "contact"} &lt;{o.contactEmail}&gt; ({o.emailVerification})
+                    </span>
+                  ) : (
+                    <span className="text-faint">no contact found yet</span>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
       {events.length > 0 && (
         <>
