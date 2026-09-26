@@ -525,8 +525,14 @@ Each phase ends somewhere you could stop and still have something coherent.
    **Funnel at threshold 80, gates applied: 3 qualified from 132 listings** (Faire, Canonical ×2 — all worldwide). At 70 it is 6.
 
    This is the important operational finding: **the free boards alone cannot sustain 5 qualified opportunities a day.** Either the threshold drops to ~70, or Tavily must widen sourcing beyond the boards. Tavily is the better answer; the threshold is left at the spec's 80.
-5. **Contact + drafting.** `findDecisionMaker` through `buildEmailDraft`, plus `groundingCheck`. Still nothing sendable.
-6. **CV rendering.** `@react-pdf/renderer`, storage paths, versioning.
+5. **Contact + drafting.** ✅ *Done.* Tavily, Hunter and OpenAI adapters, the mechanical grounding check, and drafting. Both model ids were verified live before being built on. Hunter counts its own usage and refuses when the month's budget is spent. Testing the grounding check against real generated drafts found three false positives that would have blocked every valid draft — a numbered list's `2.` read as an invented figure, the recipient's own title read as an invented entity, and `LLMs` read as invented because the CV says `LLM`.
+6. **CV rendering.** ✅ *Done.* `src/lib/outreach/cv-pdf.ts`, written against text EXTRACTION rather than appearance, because an applicant tracking system reads the PDF the way `pdftotext` does. Three findings:
+
+   - `@react-pdf/hyphenate` is **ESM-only** — its exports map has `import` and no `require` — so a static import fails under CommonJS, which is how a plain Node worker resolves this file. The renderer is loaded with a dynamic `import()` and the tree is built with `createElement`, which works in both the Next runtime and the worker.
+   - **`lineHeight` silently broke the name.** The page's base `lineHeight: 1.45`, inherited by the 19pt heading, made the line box tall enough that `PANKAJ KUMAR PRAMANIK` extracted as `PANKAJ` alone. Any text much larger than the page's base size now sets its own line height. `letterSpacing` was removed for the same reason.
+   - **Hashing the PDF bytes does not work.** The format embeds a creation timestamp and document id, so identical content hashes differently every render. `cvVersion()` hashes the selected *content*, which is what the approval gate actually needs to assert.
+
+   The build also now refuses to put a `localhost` URL on a CV.
 7. **Approval + send.** The seven gates, Resend integration, audit persistence. `OUTREACH_ENABLED` stays `false` until you have manually inspected a full run.
 8. **Worker container.** Add `agent-worker` to both compose files, checkpoint resume across restarts, deploy.
 9. **Replies.** Optional and last. Inbound webhook, classification, `REPLY_DRAFT` records. The spec correctly says never auto-reply.

@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-09-26T15:33:14.678Z",
+  "generatedAt": "2026-09-26T16:56:01.560Z",
   "name": "Pankaj Kumar Pramanik",
   "headline": "Senior Data & AI Engineer",
   "location": "Bangladesh",
   "email": "me@pankajpramanik.com",
-  "website": "http://localhost:3000",
+  "website": "https://pankajpramanik.com",
   "summary": "Senior Data & AI Engineer with 8+ years of engineering experience spanning full-stack development, data engineering, analytics engineering, generative AI, agentic AI, MLOps/LLMOps, and automation. Builds production-grade multi-agent LLM systems, RAG applications, ETL/ELT pipelines, ML workflows, and AI voice/CRM automations integrated with real business processes. Delivers end to end across data ingestion, modeling, APIs, CI/CD, deployment, guardrails, observability, and monitoring on AWS, GCP, Azure, and VPS infrastructure. Open to international remote roles and contract engagements.",
   "yearsExperience": 8,
   "roles": [

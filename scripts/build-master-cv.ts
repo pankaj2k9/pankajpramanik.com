@@ -81,7 +81,9 @@ async function build(): Promise<MasterCv> {
     headline: "Senior Data & AI Engineer",
     location: "Bangladesh",
     email: site.businessEmail,
-    website: site.url,
+    // NEXT_PUBLIC_SITE_URL is localhost in development, and a CV sent to an
+    // employer must never carry that. The public site is the canonical value.
+    website: site.url.includes("localhost") ? "https://pankajpramanik.com" : site.url,
     summary: overlay.summary,
     yearsExperience: site.yearsExperience,
     roles,
