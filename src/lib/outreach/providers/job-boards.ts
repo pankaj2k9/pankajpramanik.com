@@ -58,7 +58,7 @@ function keywordPattern(keyword: string): RegExp {
  * transcription listing routinely mentions AI in its body copy.
  */
 const NOT_THE_JOB =
-  /(account executive|sales|business development|recruit|talent acquisition|customer success|support (agent|representative)|transcription|translator|copywriter|content writer|contract writer|trainer|teacher|tutor|marketing|community manager|designer|accountant|paralegal)/i;
+  /(account (executive|manager)|sales|business development|recruit|talent acquisition|customer success|support (agent|representative)|transcription|translator|copywriter|content writer|contract writer|trainer|teacher|tutor|marketing|community manager|designer|accountant|paralegal|bookkeep|virtual assistant)/i;
 
 /**
  * Whether a listing is plausibly the work Pankaj does.
@@ -256,7 +256,263 @@ export const arbeitnow: JobBoard = {
   },
 };
 
-export const jobBoards: JobBoard[] = [remotive, himalayas, arbeitnow];
+
+// --------------------------------------------------------------------------
+// RemoteOK — one large feed. Its terms require a followed link back and
+// naming Remote OK as the source, so `attribution` is carried and the apply
+// URL is theirs, never rewritten.
+// --------------------------------------------------------------------------
+type RemoteOkJob = {
+  id?: string;
+  slug?: string;
+  position?: string;
+  company?: string;
+  url?: string;
+  apply_url?: string;
+  description?: string;
+  location?: string;
+  tags?: string[];
+  epoch?: number;
+  salary_min?: number;
+  salary_max?: number;
+};
+
+export const remoteOk: JobBoard = {
+  name: "remoteok",
+  minIntervalSeconds: 60 * 60,
+
+  async search(query: JobQuery): Promise<JobListing[]> {
+    const rows = await cached("remoteok:all", remoteOk.minIntervalSeconds, () =>
+      getJson<RemoteOkJob[]>("https://remoteok.com/api"),
+    );
+
+    // The first element is a legal/terms notice, not a job.
+    return (rows ?? [])
+      .filter((j) => j.position && j.company)
+      .map((j): JobListing => {
+        const locations = j.location ? [j.location] : [];
+        const description = j.description ?? "";
+        return {
+          externalId: `remoteok:${j.id ?? j.slug}`,
+          source: "remoteok",
+          title: j.position!,
+          company: j.company!,
+          url: j.url ?? j.apply_url ?? "",
+          description,
+          locations,
+          remoteFit: classifyRemoteFit(locations, description),
+          tags: j.tags ?? [],
+          postedAt: j.epoch ? new Date(j.epoch * 1000) : null,
+          salary:
+            j.salary_min && j.salary_max ? `${j.salary_min}-${j.salary_max}` : null,
+          attribution: "Sourced via Remote OK (remoteok.com)",
+        };
+      })
+      .filter((l) => l.url && matches(l, query.keywords))
+      .slice(0, query.limit);
+  },
+};
+
+// --------------------------------------------------------------------------
+// Jobicy — the only source with a server-side "anywhere" filter, which is
+// exactly the worldwide-remote case, so it is queried that way directly.
+// --------------------------------------------------------------------------
+type JobicyJob = {
+  id: number;
+  jobTitle: string;
+  companyName: string;
+  jobGeo: string;
+  jobLevel: string;
+  jobType: string[] | string;
+  jobIndustry: string[] | string;
+  jobExcerpt: string;
+  jobDescription: string;
+  pubDate: string;
+  url: string;
+};
+
+export const jobicy: JobBoard = {
+  name: "jobicy",
+  minIntervalSeconds: 60 * 60,
+
+  async search(query: JobQuery): Promise<JobListing[]> {
+    // geo=anywhere returns only globally-open roles — no local filtering needed.
+    const data = await cached("jobicy:anywhere", jobicy.minIntervalSeconds, () =>
+      getJson<{ jobs: JobicyJob[] }>(
+        "https://jobicy.com/api/v2/remote-jobs?count=50&geo=anywhere",
+      ),
+    );
+
+    const asArray = (v: string[] | string | undefined): string[] =>
+      Array.isArray(v) ? v : v ? [v] : [];
+
+    return (data.jobs ?? [])
+      .map((j): JobListing => {
+        const locations = j.jobGeo ? j.jobGeo.split(",").map((x) => x.trim()) : [];
+        const description = j.jobDescription || j.jobExcerpt || "";
+        return {
+          externalId: `jobicy:${j.id}`,
+          source: "jobicy",
+          title: j.jobTitle,
+          company: j.companyName,
+          url: j.url,
+          description,
+          locations,
+          remoteFit: classifyRemoteFit(locations, description),
+          tags: [...asArray(j.jobIndustry), ...asArray(j.jobType), j.jobLevel].filter(Boolean),
+          postedAt: j.pubDate ? new Date(j.pubDate) : null,
+          salary: null,
+          attribution: "Sourced via Jobicy (jobicy.com)",
+        };
+      })
+      .filter((l) => matches(l, query.keywords))
+      .slice(0, query.limit);
+  },
+};
+
+// --------------------------------------------------------------------------
+// We Work Remotely — RSS only. Its <region> field states "Anywhere in the
+// World" explicitly, which is the strongest worldwide signal of any source.
+// --------------------------------------------------------------------------
+const WWR_FEEDS = [
+  "https://weworkremotely.com/categories/remote-programming-jobs.rss",
+  "https://weworkremotely.com/categories/remote-back-end-programming-jobs.rss",
+  "https://weworkremotely.com/categories/remote-devops-sysadmin-jobs.rss",
+];
+
+/** RSS carries titles HTML-escaped; "Java &amp; React" must not reach a draft. */
+const ENTITIES: Record<string, string> = {
+  "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#39;": "'", "&apos;": "'", "&nbsp;": " ",
+};
+
+function decodeEntities(value: string): string {
+  return value
+    .replace(/&(amp|lt|gt|quot|apos|nbsp|#39);/g, (m) => ENTITIES[m] ?? m)
+    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)));
+}
+
+/** Minimal RSS reader. The feed is flat and regular; a parser dependency would be overkill. */
+function rssItems(xml: string): Record<string, string>[] {
+  const unwrap = (v: string) =>
+    decodeEntities(v.replace(/^<!\[CDATA\[/, "").replace(/\]\]>$/, "").trim());
+
+  return [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map((m) => {
+    const body = m[1];
+    const fields: Record<string, string> = {};
+    for (const f of body.matchAll(/<([a-zA-Z:]+)>([\s\S]*?)<\/\1>/g)) {
+      fields[f[1]] = unwrap(f[2]);
+    }
+    return fields;
+  });
+}
+
+export const weWorkRemotely: JobBoard = {
+  name: "weworkremotely",
+  minIntervalSeconds: 60 * 60,
+
+  async search(query: JobQuery): Promise<JobListing[]> {
+    const found: JobListing[] = [];
+
+    for (const feed of WWR_FEEDS) {
+      const xml = await cached(`wwr:${feed}`, weWorkRemotely.minIntervalSeconds, async () => {
+        const response = await fetch(feed, { headers: { "user-agent": UA } });
+        if (!response.ok) throw new Error(`${feed} responded ${response.status}`);
+        return response.text();
+      });
+
+      for (const item of rssItems(xml)) {
+        // Titles read "Company: Role".
+        const raw = item.title ?? "";
+        const split = raw.indexOf(":");
+        const company = split > 0 ? raw.slice(0, split).trim() : (item.company ?? "");
+        const title = split > 0 ? raw.slice(split + 1).trim() : raw;
+        const region = item.region ?? "";
+        const description = (item.description ?? "").replace(/<[^>]+>/g, " ");
+        if (!title || !company || !item.link) continue;
+
+        const listing: JobListing = {
+          externalId: `weworkremotely:${item.link}`,
+          source: "weworkremotely",
+          title,
+          company,
+          url: item.link,
+          description,
+          locations: region ? [region] : [],
+          remoteFit: classifyRemoteFit(region ? [region] : [], description),
+          tags: item.category ? [item.category] : [],
+          postedAt: item.pubDate ? new Date(item.pubDate) : null,
+          salary: null,
+          attribution: "Sourced via We Work Remotely (weworkremotely.com)",
+        };
+        if (matches(listing, query.keywords)) found.push(listing);
+      }
+    }
+    return found.slice(0, query.limit);
+  },
+};
+
+// --------------------------------------------------------------------------
+// Working Nomads. Useful breadth, but its feed often omits the company name,
+// and a listing without one cannot be researched or addressed, so those are
+// dropped here rather than failing later in the graph.
+// --------------------------------------------------------------------------
+type WorkingNomadsJob = {
+  title?: string;
+  company_name?: string;
+  url?: string;
+  description?: string;
+  location?: string;
+  tags?: string;
+  category_name?: string;
+  pub_date?: string;
+};
+
+export const workingNomads: JobBoard = {
+  name: "workingnomads",
+  minIntervalSeconds: 60 * 60,
+
+  async search(query: JobQuery): Promise<JobListing[]> {
+    const rows = await cached("workingnomads:all", workingNomads.minIntervalSeconds, () =>
+      getJson<WorkingNomadsJob[]>("https://www.workingnomads.com/api/exposed_jobs/"),
+    );
+
+    return (rows ?? [])
+      .filter((j) => j.title && j.company_name && j.url)
+      .map((j): JobListing => {
+        const locations = j.location ? [j.location] : [];
+        const description = j.description ?? "";
+        return {
+          externalId: `workingnomads:${j.url}`,
+          source: "workingnomads",
+          title: j.title!,
+          company: j.company_name!,
+          url: j.url!,
+          description,
+          locations,
+          remoteFit: classifyRemoteFit(locations, description),
+          tags: [
+            ...(j.tags ? j.tags.split(",").map((t) => t.trim()) : []),
+            ...(j.category_name ? [j.category_name] : []),
+          ].filter(Boolean),
+          postedAt: j.pub_date ? new Date(j.pub_date) : null,
+          salary: null,
+          attribution: "Sourced via Working Nomads (workingnomads.com)",
+        };
+      })
+      .filter((l) => matches(l, query.keywords))
+      .slice(0, query.limit);
+  },
+};
+
+export const jobBoards: JobBoard[] = [
+  remotive,
+  himalayas,
+  arbeitnow,
+  remoteOk,
+  jobicy,
+  weWorkRemotely,
+  workingNomads,
+];
 
 /**
  * Queries every board and merges the results, newest first.
@@ -281,7 +537,25 @@ export async function searchAllBoards(query: JobQuery): Promise<JobListing[]> {
     if (!byUrl.has(listing.url)) byUrl.set(listing.url, listing);
   }
 
-  return [...byUrl.values()].sort(
-    (a, b) => (b.postedAt?.getTime() ?? 0) - (a.postedAt?.getTime() ?? 0),
-  );
+  /**
+   * Worldwide first, then regionally compatible, then unstated.
+   *
+   * A globally-open role is worth more than a newer regional one: it is the
+   * only category with no eligibility doubt for someone contracting from
+   * Bangladesh, so it should reach the expensive scoring step first.
+   * Recency breaks ties within a band.
+   */
+  const RANK: Record<string, number> = { WORLDWIDE: 0, COMPATIBLE: 1, UNKNOWN: 2, INELIGIBLE: 3 };
+
+  return [...byUrl.values()].sort((a, b) => {
+    const byFit = RANK[a.remoteFit] - RANK[b.remoteFit];
+    if (byFit !== 0) return byFit;
+    return (b.postedAt?.getTime() ?? 0) - (a.postedAt?.getTime() ?? 0);
+  });
+}
+
+/** Only roles open worldwide — no eligibility doubt at all. */
+export async function searchWorldwide(query: JobQuery): Promise<JobListing[]> {
+  const all = await searchAllBoards({ ...query, limit: query.limit * 4 });
+  return all.filter((l) => l.remoteFit === "WORLDWIDE").slice(0, query.limit);
 }
