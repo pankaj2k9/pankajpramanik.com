@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { AgentStatus, type OutreachRun, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { DailyLimitReached, QUALIFIED_EVENT, dailyLimit, remainingToday } from "./quota";
 
 /**
  * Run lifecycle for the outreach agent.
@@ -104,20 +105,35 @@ export function latestRun() {
  * Opens a new run. Refuses while another is RUNNING or PAUSED: two concurrent
  * runs would race on the qualified count and could double-contact a company.
  */
+/**
+ * Opens a new run, clamped to what the daily cap still allows.
+ *
+ * Refuses while another is RUNNING or PAUSED: two concurrent runs would race
+ * on the qualified count and could double-contact a company.
+ */
 export async function startRun(targetCount = 5) {
   assertValidTarget(targetCount);
   const existing = await activeRun();
   if (existing) throw new RunAlreadyActive(existing.id);
 
+  // The per-run target cannot exceed what is left in the day's budget.
+  const remaining = await remainingToday();
+  if (remaining === 0) throw new DailyLimitReached(dailyLimit());
+  const effective = Math.min(targetCount, remaining);
+
   const run = await prisma.outreachRun.create({
     data: {
       status: AgentStatus.RUNNING,
-      targetCount,
+      targetCount: effective,
       threadId: randomUUID(),
       startedAt: new Date(),
     },
   });
-  await record(run.id, "run.started", { targetCount });
+  await record(run.id, "run.started", {
+    requested: targetCount,
+    targetCount: effective,
+    remainingToday: remaining,
+  });
   return run;
 }
 
@@ -201,6 +217,9 @@ export async function countQualified(runId: string): Promise<OutreachRun> {
   }
 
   const next = updated[0];
+  // The daily cap counts these, so it must be written for every qualification.
+  await record(runId, QUALIFIED_EVENT, { qualifiedCount: next.qualifiedCount });
+
   if (next.qualifiedCount >= next.targetCount) {
     return transition(runId, AgentStatus.COMPLETED);
   }

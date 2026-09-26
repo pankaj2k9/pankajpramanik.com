@@ -11,6 +11,7 @@ import {
   startRun,
   transition,
 } from "@/lib/outreach/state";
+import { DailyLimitReached } from "@/lib/outreach/quota";
 
 /**
  * Dashboard controls for the outreach agent.
@@ -37,7 +38,8 @@ async function guard(run: () => Promise<unknown>): Promise<ControlResult> {
     if (
       error instanceof RunAlreadyActive ||
       error instanceof IllegalTransition ||
-      error instanceof InvalidTarget
+      error instanceof InvalidTarget ||
+      error instanceof DailyLimitReached
     ) {
       return { ok: false, error: error.message };
     }

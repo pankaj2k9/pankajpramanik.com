@@ -3,6 +3,7 @@ import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { configGaps } from "@/lib/outreach/env";
 import { HEARTBEAT_STALE_SECONDS, latestRun, liveness } from "@/lib/outreach/state";
+import { dailyLimit, qualifiedToday, timezone } from "@/lib/outreach/quota";
 import { formatDate } from "@/lib/utils";
 import OutreachControls from "@/components/admin/OutreachControls";
 
@@ -33,6 +34,8 @@ export default async function AdminOutreachPage() {
 
   const live = run ? liveness(run) : "IDLE";
   const gaps = configGaps();
+  const today = await qualifiedToday();
+  const limit = dailyLimit();
 
   return (
     <div>
@@ -55,6 +58,9 @@ export default async function AdminOutreachPage() {
                 Qualified: {run.qualifiedCount} / {run.targetCount}
               </span>
             )}
+            <span className="text-sm text-muted">
+              Today: {today} / {limit}
+            </span>
             {live === "WORKING" && (
               <span className="text-sm text-accent">Worker active</span>
             )}
@@ -86,6 +92,13 @@ export default async function AdminOutreachPage() {
         {run?.lastError && (
           <p role="alert" className="mt-4 text-sm text-red-500">
             {run.lastError}
+          </p>
+        )}
+
+        {today >= limit && (
+          <p role="status" className="mt-4 rounded-md border border-border p-3 text-sm">
+            <strong>Daily limit reached.</strong> {today} of {limit} collected
+            today ({timezone()}). New runs are refused until tomorrow.
           </p>
         )}
 

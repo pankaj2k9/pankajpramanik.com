@@ -452,6 +452,20 @@ Route protection is already solved: `src/proxy.ts` matches `/admin/:path*` and `
 
 Rate limiting: reuse `src/lib/rate-limit.ts`. Cap sends per hour and per day regardless of approvals, as a blast-radius limit against a UI mistake.
 
+### 8.1 Daily collection cap
+
+A run stops at its own target, but nothing stopped someone opening run after run. `src/lib/outreach/quota.ts` adds a ceiling that spans runs:
+
+- `OUTREACH_DAILY_LIMIT` (default 5) qualified opportunities per day, in `OUTREACH_TIMEZONE` (default `Asia/Dhaka`, so "today" means Pankaj's day rather than UTC).
+- `startRun` **clamps** the target to what is left in the budget and refuses outright at zero, so a manual start cannot exceed the cap either.
+- The count comes from `OutreachEvent` rows, not `Opportunity` rows, so deleting a draft does not refund the day's budget — the provider credits and the research were still spent.
+
+`GET /api/cron/outreach` opens the day's run, authenticated with `CRON_SECRET` like the booking cron. It is idempotent by design: it no-ops while a run is active and no-ops once the budget is spent, so a retry or an overlapping schedule cannot over-collect. It only opens a run; the worker does the work and nothing is sent without approval.
+
+```
+0 6 * * *  curl -fsS -H "Authorization: Bearer $CRON_SECRET" https://pankajpramanik.com/api/cron/outreach
+```
+
 ---
 
 ## 9. Dashboard
