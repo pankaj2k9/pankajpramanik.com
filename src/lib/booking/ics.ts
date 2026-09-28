@@ -71,6 +71,7 @@ export function googleCalendarUrl(booking: BookingWithType) {
     dates: `${stamp(booking.startTimeUTC)}/${stamp(booking.endTimeUTC)}`,
     details: details(booking),
     location: booking.meetingUrl ?? LOCATION_LABELS[booking.locationType],
+    ctz: booking.visitorTimezone,
   });
   return `https://calendar.google.com/calendar/render?${params}`;
 }

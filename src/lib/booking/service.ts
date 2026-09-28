@@ -187,6 +187,18 @@ async function syncCalendar(
   }
 }
 
+/**
+ * Link stored before the calendar sync. For Google Meet, a fixed Meet URL in
+ * the meeting type's location detail is the fallback when Google cannot
+ * create a per-booking link; a link from Google always replaces it.
+ */
+function defaultMeetingUrl(meetingType: MeetingType) {
+  const detail = meetingType.locationDetail.trim();
+  if (meetingType.locationType === "PHONE" || !detail) return null;
+  if (meetingType.locationType === "GOOGLE_MEET") return /^https:\/\/meet\.google\.com\//.test(detail) ? detail : null;
+  return detail;
+}
+
 export async function createBooking(
   meetingType: MeetingType,
   start: Date,
@@ -229,7 +241,7 @@ export async function createBooking(
         locationType: meetingType.locationType,
         status: status ?? (source === "PUBLIC" && settings.requireApproval ? "PENDING" : "CONFIRMED"),
         source,
-        meetingUrl: meetingUrl || (meetingType.locationType !== "GOOGLE_MEET" && meetingType.locationType !== "PHONE" ? meetingType.locationDetail || null : null),
+        meetingUrl: meetingUrl || defaultMeetingUrl(meetingType),
         adminNotes: adminNotes || null,
       },
       include: { meetingType: true },

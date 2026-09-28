@@ -206,8 +206,18 @@ type GoogleEvent = {
   id: string;
   status?: string;
   hangoutLink?: string;
+  conferenceData?: {
+    createRequest?: { status?: { statusCode?: string } };
+    entryPoints?: { entryPointType?: string; uri?: string }[];
+  };
   attendees?: { email?: string }[];
 };
+
+const meetLink = (event: GoogleEvent) =>
+  event.hangoutLink ?? event.conferenceData?.entryPoints?.find((e) => e.entryPointType === "video")?.uri ?? null;
+
+const meetPending = (event: GoogleEvent) =>
+  !meetLink(event) && event.conferenceData?.createRequest?.status?.statusCode === "pending";
 
 /**
  * Deterministic event id (hex is valid base32hex), so a create that timed out
@@ -227,7 +237,7 @@ const hasAttendee = (event: GoogleEvent, email: string) =>
 function toResult(event: GoogleEvent, booking: Booking, notify: boolean): CalendarSyncResult {
   return {
     eventId: event.id,
-    meetingUrl: event.hangoutLink ?? null,
+    meetingUrl: meetLink(event),
     attendeeNotified: notify && event.status !== "cancelled" && hasAttendee(event, booking.email),
   };
 }
@@ -256,27 +266,35 @@ function eventDescription(booking: BookingWithType) {
 const attendeeList = (booking: Booking) =>
   invitesAttendee(booking) ? [{ email: booking.email, displayName: booking.fullName }] : [];
 
+const meetRequest = (booking: Booking) => ({
+  conferenceData: {
+    createRequest: {
+      requestId: booking.bookingToken.slice(0, 32),
+      conferenceSolutionKey: { type: "hangoutsMeet" },
+    },
+  },
+});
+
+/**
+ * Event times carry the visitor's zone, so Google's invitation shows their
+ * local time even when they do not use Google Calendar.
+ */
+const eventTimes = (booking: Booking) => ({
+  start: { dateTime: booking.startTimeUTC.toISOString(), timeZone: booking.visitorTimezone },
+  end: { dateTime: booking.endTimeUTC.toISOString(), timeZone: booking.visitorTimezone },
+});
+
 function eventBody(booking: BookingWithType, withMeet: boolean) {
   return {
     id: eventIdFor(booking),
     summary: eventSummary(booking),
     description: eventDescription(booking),
-    start: { dateTime: booking.startTimeUTC.toISOString(), timeZone: "UTC" },
-    end: { dateTime: booking.endTimeUTC.toISOString(), timeZone: "UTC" },
+    ...eventTimes(booking),
     attendees: attendeeList(booking),
     guestsCanModify: false,
     location: booking.locationType === "GOOGLE_MEET" ? undefined : booking.meetingType.locationDetail || undefined,
     reminders: { useDefault: true },
-    ...(withMeet
-      ? {
-          conferenceData: {
-            createRequest: {
-              requestId: booking.bookingToken.slice(0, 32),
-              conferenceSolutionKey: { type: "hangoutsMeet" },
-            },
-          },
-        }
-      : {}),
+    ...(withMeet ? meetRequest(booking) : {}),
     source: { title: `${site.name} booking`, url: absoluteUrl("/booking") },
   };
 }
@@ -291,6 +309,28 @@ async function getEvent(conn: CalendarConnection, eventId: string): Promise<Goog
 }
 
 /**
+ * Google can create the Meet conference asynchronously: the insert returns
+ * status "pending" without a link. Re-read the event briefly so the link is
+ * in the confirmation email instead of missing.
+ */
+async function withResolvedMeet(conn: CalendarConnection, event: GoogleEvent): Promise<GoogleEvent> {
+  let current = event;
+  for (let attempt = 0; attempt < 5 && meetPending(current); attempt++) {
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    const fresh = await getEvent(conn, current.id).catch(() => null);
+    if (!fresh) break;
+    current = fresh;
+  }
+  if (!meetLink(current) && current.conferenceData) {
+    console.error(`Google Meet link missing for event ${current.id}:`, JSON.stringify(current.conferenceData));
+  }
+  return current;
+}
+
+const wantsMeet = (conn: CalendarConnection, booking: Booking) =>
+  booking.locationType === "GOOGLE_MEET" && conn.createMeetLinks;
+
+/**
  * Creates the event (and a Meet link when asked). Confirmed bookings get the
  * visitor as attendee and, when `notify`, Google emails them the invitation.
  * Returns null when Google is not connected or event creation is disabled.
@@ -301,7 +341,7 @@ export async function createGoogleEvent(
 ): Promise<CalendarSyncResult | null> {
   const conn = await getGoogleConnection();
   if (!conn?.createEvents) return null;
-  const withMeet = booking.locationType === "GOOGLE_MEET" && conn.createMeetLinks;
+  const withMeet = wantsMeet(conn, booking);
   const shouldNotify = notify && invitesAttendee(booking);
   try {
     const res = await googleFetch(
@@ -309,12 +349,13 @@ export async function createGoogleEvent(
       `${eventsPath(conn)}?sendUpdates=${sendUpdates(shouldNotify)}${withMeet ? "&conferenceDataVersion=1" : ""}`,
       { method: "POST", body: JSON.stringify(eventBody(booking, withMeet)) },
     );
-    return toResult((await res.json()) as GoogleEvent, booking, shouldNotify);
+    const event = (await res.json()) as GoogleEvent;
+    return toResult(withMeet ? await withResolvedMeet(conn, event) : event, booking, shouldNotify);
   } catch (error) {
     // A timeout or 409 may mean Google stored the event (and emailed the
     // invitation) anyway; report that instead of letting Resend send another.
     const existing = await getEvent(conn, eventIdFor(booking)).catch(() => null);
-    if (existing) return toResult(existing, booking, shouldNotify);
+    if (existing) return toResult(withMeet ? await withResolvedMeet(conn, existing) : existing, booking, shouldNotify);
     throw error;
   }
 }
@@ -331,24 +372,27 @@ export async function updateGoogleEvent(
   const conn = await getGoogleConnection();
   if (!conn?.createEvents || !booking.calendarEventId) return null;
   const shouldNotify = notify && invitesAttendee(booking);
+  // Add a Meet conference when the event has none yet (e.g. Meet links were
+  // switched on after the event was created); the request id makes it idempotent.
+  const withMeet = wantsMeet(conn, booking) && !booking.meetingUrl;
   const res = await googleFetch(
     conn,
-    `${eventsPath(conn)}/${encodeURIComponent(booking.calendarEventId)}?sendUpdates=${sendUpdates(shouldNotify)}`,
+    `${eventsPath(conn)}/${encodeURIComponent(booking.calendarEventId)}?sendUpdates=${sendUpdates(shouldNotify)}${withMeet ? "&conferenceDataVersion=1" : ""}`,
     {
       method: "PATCH",
       body: JSON.stringify({
         summary: eventSummary(booking),
         description: eventDescription(booking),
-        start: { dateTime: booking.startTimeUTC.toISOString(), timeZone: "UTC" },
-        end: { dateTime: booking.endTimeUTC.toISOString(), timeZone: "UTC" },
+        ...eventTimes(booking),
         ...(invitesAttendee(booking) ? { attendees: attendeeList(booking), guestsCanModify: false } : {}),
+        ...(withMeet ? meetRequest(booking) : {}),
       }),
     },
   );
   if (res.status === 404 || res.status === 410) return null;
   const event = (await res.json()) as GoogleEvent;
   if (event.status === "cancelled") return null;
-  return toResult(event, booking, shouldNotify);
+  return toResult(withMeet ? await withResolvedMeet(conn, event) : event, booking, shouldNotify);
 }
 
 /**

@@ -65,8 +65,10 @@ export default function BookingFlow({
 }) {
   const router = useRouter();
   const detected = useSyncExternalStore(noSubscribe, browserTimeZone, () => null);
-  const [tzOverride, setTzOverride] = useState<string | null>(reschedule?.visitorTimezone ?? null);
-  const timeZone = tzOverride ?? detected ?? adminTimezone;
+  // The visitor's current location wins, also on reschedule; the stored zone
+  // is only a fallback when the browser does not report one.
+  const [tzOverride, setTzOverride] = useState<string | null>(null);
+  const timeZone = tzOverride ?? detected ?? reschedule?.visitorTimezone ?? adminTimezone;
 
   const [typeSlug, setTypeSlug] = useState(
     reschedule?.typeSlug ?? types.find((t) => t.slug === initialType)?.slug ?? "",

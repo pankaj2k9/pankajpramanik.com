@@ -187,7 +187,12 @@ async function compose(kind: NotificationKind, booking: BookingWithType, offsetM
           ["Company", booking.company || "-"],
           ["Purpose", booking.purpose],
           ["Notes", booking.notes || "-"],
-          ["Method", locationDescription(booking.locationType, booking.meetingType.locationDetail, booking.meetingUrl)],
+          [
+            "Method",
+            booking.locationType === "GOOGLE_MEET" && !booking.meetingUrl
+              ? "Google Meet - NO LINK was created. Check the Google connection in booking settings and add a link to this booking."
+              : locationDescription(booking.locationType, booking.meetingType.locationDetail, booking.meetingUrl),
+          ],
           ["Reference", booking.reference],
         ],
         [["Open in admin", manage.replace(/\/booking\/.*$/, `/admin/booking/bookings/${booking.id}`)]],

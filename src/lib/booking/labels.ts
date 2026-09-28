@@ -46,7 +46,7 @@ export function locationDescription(type: MeetingLocation, detail: string, meeti
     case "PHONE":
       return detail ? `Phone call: ${detail}` : "Phone call - I will call the number you provide.";
     case "GOOGLE_MEET":
-      return "Google Meet - the link is sent by email.";
+      return "Google Meet - I will email you the join link before the meeting.";
     default:
       return detail || `${LOCATION_LABELS[type]} - the link is sent by email.`;
   }
