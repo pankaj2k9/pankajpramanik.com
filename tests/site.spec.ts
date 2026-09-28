@@ -63,10 +63,15 @@ for (const path of [
 }
 test("service finder leads to a prefilled contact brief", async ({ page }) => {
   await page.goto("/");
-  await page
+  const option = page
     .getByRole("group", { name: "Your project goal" })
-    .getByRole("button", { name: /Automate repetitive work/ })
-    .click();
+    .getByRole("button", { name: /Automate repetitive work/ });
+  // The server-rendered button is clickable before React hydrates the heavy
+  // homepage (slow on CI), and that click is lost. Retry until it registers.
+  await expect(async () => {
+    await option.click();
+    await expect(option).toHaveAttribute("aria-pressed", "true", { timeout: 1000 });
+  }).toPass({ timeout: 30_000 });
   await expect(page.locator(".hm-finder-result h3")).toHaveText(
     "Make room for better work.",
   );
