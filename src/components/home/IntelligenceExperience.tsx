@@ -182,7 +182,6 @@ export default function IntelligenceExperience() {
             <NeuralScene
               selected={selected}
               hovered={hovered}
-              region={service.region}
               onSelect={setSelected}
               playing={visible && !paused}
               onReady={markReady}

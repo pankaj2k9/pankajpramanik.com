@@ -36,15 +36,14 @@ export const servicePaths = [
   },
 ] as const;
 
-/** The six capability cards orbiting the homepage brain. `region` maps each
- * card onto one of the model's three glow masks (Data / Intelligence / Automation). */
+/** The six capability cards around the homepage hero model. Each has its
+ * own 3D model on desktop (HeroModels.tsx) and a node in the mobile orbit. */
 export const heroServices = [
   {
     id: "data",
     label: "Data",
     tags: "Collect • Process • Transform",
     slug: "data-engineering-excellence",
-    region: 0,
     tone: "blue",
     title: "Give your data direction.",
   },
@@ -53,25 +52,22 @@ export const heroServices = [
     label: "AI / ML",
     tags: "Models • Insights • Prediction",
     slug: "data-science-and-machine-learning",
-    region: 1,
     tone: "violet",
     title: "Models that earn their place.",
   },
   {
-    id: "intelligence",
-    label: "Intelligence",
-    tags: "Understand • Reason • Plan",
-    slug: "llm-rag-developer-hire",
-    region: 1,
+    id: "agents",
+    label: "AI Agents",
+    tags: "RAG • Tools • Reasoning",
+    slug: "agentic-ai-development",
     tone: "coral",
-    title: "Turn knowledge into answers.",
+    title: "Agents that do the work.",
   },
   {
     id: "automation",
     label: "Automation",
-    tags: "Agents • Workflows • Scale",
+    tags: "n8n • Workflows • Integrations",
     slug: "ai-automation",
-    region: 2,
     tone: "teal",
     title: "Make room for better work.",
   },
@@ -80,7 +76,6 @@ export const heroServices = [
     label: "Data Analytics",
     tags: "Dashboards • BI • Insights",
     slug: "hire-data-analytics-visualization-expert",
-    region: 0,
     tone: "orange",
     title: "Numbers your team can act on.",
   },
@@ -89,7 +84,6 @@ export const heroServices = [
     label: "LLMOps / MLOps",
     tags: "Evaluation • Deployment • Monitoring",
     slug: "llmops",
-    region: 2,
     tone: "indigo",
     title: "AI that keeps working in production.",
   },

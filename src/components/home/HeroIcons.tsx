@@ -21,6 +21,14 @@ const paths: Record<string, React.ReactNode> = {
       <path d="M12 7v3.5M3 9.5h1.5M19.5 9.5H21M5.2 3.8l1 1M18.8 3.8l-1 1" />
     </>
   ),
+  agents: (
+    <>
+      <rect x="4.5" y="7.5" width="15" height="11" rx="3.5" />
+      <path d="M12 7.5V4.5M12 4.5h.01" />
+      <circle cx="12" cy="3.6" r="1" />
+      <path d="M9.3 12.2v1.2M14.7 12.2v1.2M9.8 16h4.4M2.5 12v2.5M21.5 12v2.5" />
+    </>
+  ),
   automation: (
     <>
       <circle cx="12" cy="12" r="3" />

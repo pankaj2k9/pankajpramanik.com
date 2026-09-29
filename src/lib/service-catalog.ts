@@ -188,7 +188,12 @@ export const serviceGroups: ServiceGroup[] = [
     ],
     tools: ["LangGraph", "MCP", "OpenAI", "Claude", "Groq", "LangSmith"],
     projectTags: ["agents"],
-    serviceSlugs: ["agentic-ai-development", "ai-chatbot-agent-designer", "ai-voice-assistant-developer"],
+    serviceSlugs: [
+      "agentic-ai-development",
+      "forward-deployed-engineer",
+      "ai-chatbot-agent-designer",
+      "ai-voice-assistant-developer",
+    ],
     architectureTitle: "From a request to a reviewed action",
     stages: [
       { name: "Request", detail: "A goal in plain language, with user context." },
@@ -284,7 +289,6 @@ export const serviceGroups: ServiceGroup[] = [
     serviceSlugs: [
       "hire-cloud-devops-engineer-ai",
       "aws-serverless-app-development",
-      "forward-deployed-engineer",
       "ai-based-software-development",
       "chatting-app-development",
       "data-structure-and-algorithm-problem-solving",
