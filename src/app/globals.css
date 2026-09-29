@@ -1627,8 +1627,10 @@ footer .text-faint {
   }
 }
 @media (max-width: 560px) {
+  /* Sized so "INTELLIGENCE." fits one line on every phone width
+     (about 2px smaller than 12.5vw); the period used to wrap alone. */
   .hero-copy h1 {
-    font-size: clamp(40px, 12.5vw, 64px);
+    font-size: clamp(32px, calc(12.9vw - 4px), 64px);
   }
 
   .scene-selector {
