@@ -225,53 +225,56 @@ export default function MusicPlayer({
         }
         aria-pressed={playing}
         title={playing ? "Pause music" : "Play music"}
-        className="flex h-10 w-10 items-center justify-center rounded-full text-accent transition hover:bg-accent-strong hover:text-white"
+        className="group flex items-center gap-1 rounded-full text-left"
       >
-        {playing ? (
-          <div
-            ref={barsRef}
-            className="flex h-4 items-end gap-[3px]"
-            aria-hidden
-          >
-            {/* The CSS loop is the baseline; the analyser overrides it inline
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-accent transition group-hover:bg-accent-strong group-hover:text-white">
+          {playing ? (
+            <div
+              ref={barsRef}
+              className="flex h-4 items-end gap-[3px]"
+              aria-hidden
+            >
+              {/* The CSS loop is the baseline; the analyser overrides it inline
                 when Web Audio is available. */}
-            {[0, 0.25, 0.5, 0.75].map((delay) => (
-              <span
-                key={delay}
-                style={{ animationDelay: `${delay}s` }}
-                className="h-[30%] w-[3px] animate-[eq_1s_ease-in-out_infinite] rounded-full bg-accent transition-[height] duration-75"
-              />
-            ))}
-          </div>
-        ) : (
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden
-          >
-            <path d="M9 18V5l12-2v13" />
-            <circle cx="6" cy="18" r="3" />
-            <circle cx="18" cy="16" r="3" />
-          </svg>
-        )}
-      </button>
+              {[0, 0.25, 0.5, 0.75].map((delay) => (
+                <span
+                  key={delay}
+                  style={{ animationDelay: `${delay}s` }}
+                  className="h-[30%] w-[3px] animate-[eq_1s_ease-in-out_infinite] rounded-full bg-accent transition-[height] duration-75"
+                />
+              ))}
+            </div>
+          ) : (
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <path d="M9 18V5l12-2v13" />
+              <circle cx="6" cy="18" r="3" />
+              <circle cx="18" cy="16" r="3" />
+            </svg>
+          )}
+        </span>
 
-      {/* Title is decoration for a control that is already labelled, so it is
-          hidden from assistive tech and from narrow screens. */}
-      <span className="hidden pr-1 leading-tight sm:block" aria-hidden>
-        <span className="block font-mono text-[11px] font-semibold tracking-wide text-foreground">
-          {TRACK.title}
+        {/* Part of the play button so the whole pill (except volume) toggles
+            playback. Decorative: the button is already labelled, and the
+            title is hidden on narrow screens. */}
+        <span className="hidden pr-1 leading-tight sm:block" aria-hidden>
+          <span className="block font-mono text-[11px] font-semibold tracking-wide text-foreground">
+            {TRACK.title}
+          </span>
+          <span className="block font-mono text-[10px] text-faint">
+            {TRACK.subtitle}
+          </span>
         </span>
-        <span className="block font-mono text-[10px] text-faint">
-          {TRACK.subtitle}
-        </span>
-      </span>
+      </button>
 
       {expandable && playing && (
         <label className="music-volume">
