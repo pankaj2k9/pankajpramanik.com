@@ -4,10 +4,10 @@ import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 
 /**
- * Procedural hero models, one per service (the brain for Intelligence lives
- * in NeuralScene). Everything is built from three.js primitives, so nothing
- * is downloaded. Each model sits inside a radius of about 1.6 scene units,
- * the same footprint as the brain, so the camera never has to move.
+ * Procedural hero models, one per service card, shown by ServiceScene.
+ * Everything is built from three.js primitives, so nothing is downloaded.
+ * Each model fits inside a radius of about 1.6 to 2 scene units, so the
+ * camera never has to move.
  */
 
 type ModelProps = { color: string; playing: boolean };
@@ -236,82 +236,8 @@ export function NetworkModel({ color, playing }: ModelProps) {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Automation: three meshing gears.
-// ---------------------------------------------------------------------------
-function gearGeometry(teeth: number, radius: number) {
-  const shape = new THREE.Shape();
-  const inner = radius - 0.13;
-  const steps = teeth * 4;
-  for (let i = 0; i <= steps; i++) {
-    const a = (i / steps) * Math.PI * 2;
-    const r = i % 4 < 2 ? radius : inner;
-    const x = Math.cos(a) * r;
-    const y = Math.sin(a) * r;
-    if (i === 0) shape.moveTo(x, y);
-    else shape.lineTo(x, y);
-  }
-  const hole = new THREE.Path();
-  hole.absarc(0, 0, radius * 0.28, 0, Math.PI * 2, true);
-  shape.holes.push(hole);
-  const geometry = new THREE.ExtrudeGeometry(shape, {
-    depth: 0.24,
-    bevelEnabled: true,
-    bevelThickness: 0.03,
-    bevelSize: 0.02,
-    bevelSegments: 2,
-    curveSegments: 6,
-  });
-  geometry.center();
-  return geometry;
-}
-
-const GEARS = [
-  { teeth: 14, radius: 0.95, position: [-0.42, 0.18, 0] },
-  { teeth: 9, radius: 0.62, position: [0.99, -0.62, 0.02] },
-  { teeth: 7, radius: 0.48, position: [-1.52, 1.02, -0.02] },
-] as const;
-
-export function GearsModel({ color, playing }: ModelProps) {
-  const gloss = useGloss(color);
-  const glow = useGlow(color, 0.7);
-  const time = useSceneTime(playing);
-  const group = useRef<THREE.Group>(null);
-  const gears = useRef<(THREE.Group | null)[]>([]);
-  const geometries = useMemo(() => GEARS.map((g) => gearGeometry(g.teeth, g.radius)), []);
-  useEffect(() => () => geometries.forEach((g) => g.dispose()), [geometries]);
-
-  useFrame(() => {
-    const t = time.current;
-    if (group.current) group.current.rotation.y = -0.45 + Math.sin(t * 0.3) * 0.3;
-    // Meshing gears turn in opposite directions at the tooth-count ratio.
-    const drive = t * 0.7;
-    gears.current.forEach((gear, i) => {
-      if (!gear) return;
-      const ratio = GEARS[0].teeth / GEARS[i].teeth;
-      gear.rotation.z = i === 0 ? drive : -drive * ratio + Math.PI / GEARS[i].teeth;
-    });
-  });
-
-  return (
-    <group ref={group} rotation={[-0.35, 0, 0]} position={[0.2, -0.05, 0]}>
-      {GEARS.map((g, i) => (
-        <group
-          key={i}
-          ref={(el) => {
-            gears.current[i] = el;
-          }}
-          position={g.position as unknown as [number, number, number]}
-        >
-          <mesh geometry={geometries[i]} material={gloss} />
-          <mesh material={glow} position={[0, 0, 0.16]}>
-            <torusGeometry args={[g.radius * 0.28, 0.025, 8, 48]} />
-          </mesh>
-        </group>
-      ))}
-    </group>
-  );
-}
+// The isometric automation ecosystem has its own geometry and materials.
+export { AutomationModel } from "./AutomationModel";
 
 // ---------------------------------------------------------------------------
 // Data Analytics: a live 3D bar chart with a trend line over the front row.

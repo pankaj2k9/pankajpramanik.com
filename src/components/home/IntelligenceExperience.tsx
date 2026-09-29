@@ -13,7 +13,7 @@ import {
 import { heroNiches, heroServices } from "@/lib/services";
 import HeroIcon from "./HeroIcons";
 import MobileOrbit from "./MobileOrbit";
-import type { NodeAnchors } from "./NeuralScene";
+import type { NodeAnchors } from "./ServiceScene";
 
 /** Distance (px) from a card's edge to the centre of its sphere. */
 const NODE_GAP = 22;
@@ -54,7 +54,7 @@ function measureAnchors(
   });
 }
 
-const NeuralScene = dynamic(() => import("./NeuralScene"), { ssr: false });
+const ServiceScene = dynamic(() => import("./ServiceScene"), { ssr: false });
 class SceneBoundary extends Component<
   { children: ReactNode },
   { failed: boolean }
@@ -179,7 +179,7 @@ export default function IntelligenceExperience() {
         )}
         {enabled && (
           <SceneBoundary>
-            <NeuralScene
+            <ServiceScene
               selected={selected}
               hovered={hovered}
               onSelect={setSelected}

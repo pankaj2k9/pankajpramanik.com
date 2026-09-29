@@ -5,9 +5,9 @@ import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import {
   AgentModel,
+  AutomationModel,
   ChartModel,
   DataModel,
-  GearsModel,
   NetworkModel,
   OpsModel,
 } from "./HeroModels";
@@ -96,7 +96,7 @@ function applyEnvironment(gl: THREE.WebGLRenderer, scene: THREE.Scene) {
 }
 
 /** Which model shows for each service, in heroServices order. */
-const MODELS = [DataModel, NetworkModel, AgentModel, GearsModel, ChartModel, OpsModel] as const;
+const MODELS = [DataModel, NetworkModel, AgentModel, AutomationModel, ChartModel, OpsModel] as const;
 
 /**
  * All six models, only the selected one at full size. A change shrinks the
@@ -116,7 +116,7 @@ function Stage({
   // Everything is procedural, so the scene is ready as soon as it mounts.
   useEffect(() => onReady?.(), [onReady]);
   const slots = useRef<(THREE.Group | null)[]>([]);
-  const scales = useRef(MODELS.map((_, i) => (i === selected ? 1 : 0)));
+  const scales = useRef<number[]>(MODELS.map((_, i) => (i === selected ? 1 : 0)));
 
   // Drag anywhere on the canvas to turn the model; momentum carries on after.
   // The grab cursor is CSS (.neural-canvas canvas).
@@ -170,12 +170,15 @@ function Stage({
     slots.current.forEach((slot, i) => {
       if (!slot) return;
       const target = i === selected ? 1 : 0;
-      scales.current[i] += (target - scales.current[i]) * ease;
+      // Demand rendering may provide only one frame after a paused selection.
+      scales.current[i] = playing
+        ? scales.current[i] + (target - scales.current[i]) * ease
+        : target;
       const k = scales.current[i];
       slot.visible = k > 0.003;
       slot.scale.setScalar(k);
       // Spin in on arrival, spin away on exit.
-      slot.rotation.y = (1 - k) * (target ? -2.4 : 2.4);
+      slot.rotation.y = playing ? (1 - k) * (target ? -2.4 : 2.4) : 0;
     });
   });
 
@@ -193,7 +196,7 @@ function Stage({
             if (drag.moved < 6) pulse.at = performance.now() / 1000;
           }}
         >
-          <Model color={NODE_COLORS[i]} playing={playing} />
+          <Model color={NODE_COLORS[i]} playing={playing && i === selected} />
         </group>
       ))}
     </group>
@@ -451,7 +454,7 @@ function Signals({
         </group>
       ))}
       {/* orbit ring around the model */}
-      <group ref={orbit}>
+      <group ref={orbit} visible={selected !== 3}>
         <mesh>
           <torusGeometry args={[2.75, 0.009, 8, 160]} />
           <meshBasicMaterial ref={orbitMaterial} color="#9fb3cf" transparent opacity={0.35} />
@@ -477,7 +480,7 @@ function supportsWebGL2() {
   }
 }
 
-export default function NeuralScene(props: {
+export default function ServiceScene(props: {
   selected: number;
   hovered: number | null;
   onSelect: (i: number) => void;
