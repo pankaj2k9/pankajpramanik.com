@@ -224,6 +224,13 @@ function Signals({
   const orbit = useRef<THREE.Group>(null);
   const orbitMaterial = useRef<THREE.MeshBasicMaterial>(null);
   const time = useRef(0);
+  /** Per-path clocks and liveness (0 = resting, 1 = selected or hovered). */
+  const motion = useRef({
+    live: new Float32Array(NODE_COLORS.length),
+    wobble: new Float32Array(NODE_COLORS.length),
+    spin: new Float32Array(NODE_COLORS.length),
+    flow: new Float32Array(NODE_COLORS.length),
+  });
   const [hoverNode, setHoverNode] = useState<number | null>(null);
   const focus = hoverNode ?? hovered;
   const aspect = useThree((s) => s.size.width / s.size.height);
@@ -275,20 +282,28 @@ function Signals({
   }, [nodes]);
 
   useFrame((state, delta) => {
-    if (playing) time.current += Math.min(delta, 0.05);
+    const dt = playing ? Math.min(delta, 0.05) : 0;
+    time.current += dt;
     const t = time.current;
     const now = performance.now() / 1000;
     const burstLeft = Math.max(0, 1 - (now - burst.at) / 1.4);
     const { x: px, y: py } = state.pointer;
+    const m = motion.current;
 
     for (let c = 0; c < curves.length; c++) {
       const active = c === selected;
       const lit = active || c === focus;
+      // Only the selected (or hovered) path animates; the others ease almost
+      // to a stop. Each path keeps its own clock so speed changes never jump.
+      m.live[c] += ((lit ? 1 : 0) - m.live[c]) * 0.08;
+      const live = m.live[c];
+      m.wobble[c] += dt * (0.05 + live);
+      m.spin[c] += dt * (0.02 + live * (active ? 1.1 : 0.6));
       // Lines lean toward the pointer, the lit ones more.
-      const pull = lit ? 0.9 : 0.4;
+      const pull = 0.06 + live * 0.84;
       curves[c].v1.set(
-        mids[c].x + px * pull + Math.sin(t * 1.3 + c) * 0.05,
-        mids[c].y + py * pull * 0.8 + Math.cos(t * 1.1 + c) * 0.05,
+        mids[c].x + px * pull + Math.sin(m.wobble[c] * 1.3 + c) * 0.05 * live,
+        mids[c].y + py * pull * 0.8 + Math.cos(m.wobble[c] * 1.1 + c) * 0.05 * live,
         mids[c].z,
       );
       const line = lineRefs.current[c] as THREE.Points | null;
@@ -309,7 +324,7 @@ function Signals({
         const target = c === focus ? 1.45 : active ? 1.25 : 1;
         const k = node.scale.x + (target - node.scale.x) * 0.18;
         node.scale.setScalar(k);
-        node.rotation.set(Math.sin(t * 0.7 + c) * 0.4, t * (active ? 1.1 : 0.35), 0);
+        node.rotation.set(Math.sin(m.wobble[c] * 0.7 + c) * 0.4 * live, m.spin[c], 0);
       }
       const glow = glowMaterials[c].uniforms.uStrength;
       glow.value += ((active ? 0.55 : c === focus ? 0.45 : 0.18) - glow.value) * 0.12;
@@ -329,15 +344,17 @@ function Signals({
       const col = pts.geometry.attributes.color as THREE.BufferAttribute;
       for (let c = 0; c < curves.length; c++) {
         const active = c === selected;
-        const speed = active ? 0.16 + burstLeft * 0.5 : c === focus ? 0.12 : 0.07;
+        // Unselected paths crawl at about 5% speed.
+        const speed = active ? 0.16 + burstLeft * 0.5 : c === focus ? 0.12 : 0.008;
+        m.flow[c] += dt * speed;
         for (let i = 0; i < PARTICLES_PER_PATH; i++) {
           const k = c * PARTICLES_PER_PATH + i;
           // flow from node → model; the selected path runs faster and brighter
-          const u = (i / PARTICLES_PER_PATH + t * speed + (active ? burstLeft * 0.4 : 0)) % 1;
+          const u = (i / PARTICLES_PER_PATH + m.flow[c] + (active ? burstLeft * 0.4 : 0)) % 1;
           curves[c].getPoint(u, scratchPoint);
           pos.setXYZ(k, scratchPoint.x, scratchPoint.y, scratchPoint.z);
           const fade = Math.sin(u * Math.PI);
-          const gain = active ? 1.3 + burstLeft : c === focus ? 1 : 0.5;
+          const gain = active ? 1.3 + burstLeft : c === focus ? 1 : 0.4;
           scratchColor.set(NODE_COLORS[c]).multiplyScalar(gain * fade);
           col.setXYZ(k, scratchColor.r, scratchColor.g, scratchColor.b);
         }

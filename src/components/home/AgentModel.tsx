@@ -48,7 +48,41 @@ function lineGeometry(points: [number, number, number][], radius = 0.016) {
   return new THREE.TubeGeometry(curve, 24, radius, 5, false);
 }
 
-function useAgentResources() {
+/** Shallow plates get their own bevels, avoiding stretched specular edges. */
+function roundedPlate(
+  width: number,
+  height: number,
+  depth: number,
+  radius: number,
+) {
+  const x = width / 2,
+    y = height / 2;
+  const shape = new THREE.Shape();
+  shape.moveTo(-x + radius, -y);
+  shape.lineTo(x - radius, -y);
+  shape.quadraticCurveTo(x, -y, x, -y + radius);
+  shape.lineTo(x, y - radius);
+  shape.quadraticCurveTo(x, y, x - radius, y);
+  shape.lineTo(-x + radius, y);
+  shape.quadraticCurveTo(-x, y, -x, y - radius);
+  shape.lineTo(-x, -y + radius);
+  shape.quadraticCurveTo(-x, -y, -x + radius, -y);
+  const geometry = new THREE.ExtrudeGeometry(shape, {
+    depth,
+    bevelEnabled: true,
+    bevelSize: 0.006,
+    bevelThickness: 0.005,
+    bevelSegments: 3,
+    curveSegments: 12,
+  });
+  geometry.translate(0, 0, -depth / 2);
+  return geometry;
+}
+
+/** A light tint of the AI Agents node colour: white lerped toward it. */
+const tint = (color: string, amount: number) => new THREE.Color("#ffffff").lerp(new THREE.Color(color), amount);
+
+function useAgentResources(color: string) {
   const resources = useMemo(() => {
     const pearl = new THREE.MeshPhysicalMaterial({
       color: "#f9fcff",
@@ -59,41 +93,43 @@ function useAgentResources() {
     });
     const silver = new THREE.MeshStandardMaterial({
       color: "#b6cadd",
-      metalness: 0.3,
-      roughness: 0.4,
+      metalness: 0.1,
+      roughness: 0.6,
     });
+    // Accents follow the AI Agents node colour, kept light so the model
+    // stays in the same white family as the other service models.
     const ice = new THREE.MeshPhysicalMaterial({
-      color: "#c6e2f2",
+      color: tint(color, 0.3),
       roughness: 0.26,
       clearcoat: 0.75,
       metalness: 0.08,
     });
     const lavender = new THREE.MeshPhysicalMaterial({
-      color: "#d1c9ed",
+      color: tint(color, 0.42),
       roughness: 0.3,
       clearcoat: 0.65,
     });
     const visor = new THREE.MeshPhysicalMaterial({
-      color: "#88abc4",
+      color: new THREE.Color("#4a4f63").lerp(new THREE.Color(color), 0.3),
       roughness: 0.23,
       metalness: 0.18,
       clearcoat: 1,
       clearcoatRoughness: 0.16,
     });
     const blue = new THREE.MeshStandardMaterial({
-      color: "#549dcf",
-      emissive: "#4ba6d4",
+      color: tint(color, 0.85),
+      emissive: color,
       emissiveIntensity: 0.2,
       roughness: 0.3,
     });
     const violet = new THREE.MeshStandardMaterial({
-      color: "#9d8bd8",
-      emissive: "#a29ce7",
+      color: tint(color, 0.65),
+      emissive: tint(color, 0.75),
       emissiveIntensity: 0.16,
       roughness: 0.3,
     });
     const light = new THREE.MeshBasicMaterial({
-      color: "#87d7f2",
+      color: tint(color, 0.8),
       toneMapped: false,
     });
     const whiteLight = new THREE.MeshBasicMaterial({
@@ -106,9 +142,15 @@ function useAgentResources() {
       vertexShader: `varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
       fragmentShader: `varying vec2 vUv; void main(){float d=length(vUv-.5)*2.;gl_FragColor=vec4(.33,.40,.59,pow(max(0.,1.-d),2.4)*.23);}`,
     });
+    const detail = new THREE.BoxGeometry(1, 1, 1);
     const rounded = new RoundedBoxGeometry(1, 1, 1, 3, 0.15);
     const soft = new RoundedBoxGeometry(1, 1, 1, 4, 0.24);
     const arrow = processArrow();
+    const panel = roundedPlate(1.08, 0.87, 0.12, 0.13);
+    const panelInset = roundedPlate(0.96, 0.75, 0.026, 0.1);
+    const bezel = roundedPlate(0.83, 0.58, 0.035, 0.2);
+    const faceplate = roundedPlate(0.76, 0.51, 0.03, 0.18);
+    const controls = roundedPlate(0.69, 0.28, 0.021, 0.06);
     const shieldShape = new THREE.Shape();
     shieldShape.moveTo(0, 0.24);
     shieldShape.quadraticCurveTo(0.09, 0.17, 0.19, 0.16);
@@ -177,7 +219,13 @@ function useAgentResources() {
       light,
       whiteLight,
       shadow,
+      detail,
       rounded,
+      panel,
+      panelInset,
+      bezel,
+      faceplate,
+      controls,
       soft,
       arrow,
       shield,
@@ -186,7 +234,7 @@ function useAgentResources() {
       routes,
       paths,
     };
-  }, []);
+  }, [color]);
   useEffect(
     () => () => {
       const r = resources;
@@ -203,7 +251,13 @@ function useAgentResources() {
         r.shadow,
       ].forEach((m) => m.dispose());
       [
+        r.detail,
         r.rounded,
+        r.panel,
+        r.panelInset,
+        r.bezel,
+        r.faceplate,
+        r.controls,
         r.soft,
         r.arrow,
         r.shield,
@@ -227,17 +281,8 @@ function ContextPanel({
 }) {
   return (
     <>
-      <mesh
-        geometry={r.rounded}
-        material={r.pearl}
-        scale={[1.08, 0.87, 0.12]}
-      />
-      <mesh
-        geometry={r.rounded}
-        material={r.ice}
-        scale={[0.96, 0.75, 0.026]}
-        position={[0, 0, 0.105]}
-      />
+      <mesh geometry={r.panel} material={r.pearl} />
+      <mesh geometry={r.panelInset} material={r.ice} position={[0, 0, 0.105]} />
       <group position={[0, 0, 0.07]}>
         {kind === "analytics" ? (
           <>
@@ -264,7 +309,7 @@ function ContextPanel({
             {[0.06, -0.025].map((y, i) => (
               <mesh
                 key={y}
-                geometry={r.rounded}
+                geometry={r.detail}
                 material={r.silver}
                 scale={[i === 0 ? 0.26 : 0.2, 0.022, 0.012]}
                 position={[0.23, y + 0.14, 0.107]}
@@ -295,14 +340,14 @@ function ContextPanel({
             {[0.05, -0.03].map((y, i) => (
               <mesh
                 key={y}
-                geometry={r.rounded}
+                geometry={r.detail}
                 material={r.silver}
                 scale={[i === 0 ? 0.28 : 0.18, 0.022, 0.012]}
                 position={[0.22, y + 0.2, 0.107]}
               />
             ))}
             <mesh
-              geometry={r.rounded}
+              geometry={r.detail}
               material={r.silver}
               scale={[0.72, 0.025, 0.015]}
               position={[0, -0.28, 0.104]}
@@ -324,13 +369,14 @@ function ContextPanel({
   );
 }
 
-export function AgentModel({ playing }: { color: string; playing: boolean }) {
-  const r = useAgentResources();
+export function AgentModel({ color, playing }: { color: string; playing: boolean }) {
+  const r = useAgentResources(color);
   const invalidate = useThree((state) => state.invalidate);
   const viewportWidth = useThree((state) => state.viewport.width);
   const time = useRef(0);
   const dirty = useRef(true);
   const interaction = useRef({ started: -10, hovered: false });
+  const root = useRef<THREE.Group>(null);
   const head = useRef<THREE.Group>(null);
   const eyes = useRef<THREE.Group>(null);
   const process = useRef<THREE.Group>(null);
@@ -339,6 +385,8 @@ export function AgentModel({ playing }: { color: string; playing: boolean }) {
   const packets = useRef<THREE.InstancedMesh>(null);
   const antenna = useRef<THREE.Mesh>(null);
   const dots = useRef<(THREE.Mesh | null)[]>([]);
+  /** Per-route packet clocks, so a speed change never makes packets jump. */
+  const routePhase = useRef(new Float32Array(3));
 
   useFrame((state, delta) => {
     if (!playing && !dirty.current) return;
@@ -347,40 +395,74 @@ export function AgentModel({ playing }: { color: string; playing: boolean }) {
     time.current += dt;
     const t = time.current;
     const active = Math.max(0, 1 - (t - interaction.current.started) / 1.8);
-    ringAngle.current += dt * (0.1 + active * 0.9);
+    const hovered = interaction.current.hovered;
+    const { x: px, y: py } = state.pointer;
+    // The agent loops through a small routine: think, act on one context
+    // panel (alternating sides), then confirm. A click restarts it at "act".
+    const CYCLE = 4.8;
+    const clicked = t - interaction.current.started < CYCLE;
+    const local = clicked ? (t - interaction.current.started + 1.6) % CYCLE : t % CYCLE;
+    const cycleIndex = Math.floor(t / CYCLE);
+    const thinking = local < 1.6;
+    const acting = local >= 1.6 && local < 3.4;
+    const done = local >= 3.4;
+    const target = cycleIndex % 2; // 0 = left panel, 1 = right panel
+    const actAmount = acting ? Math.sin(((local - 1.6) / 1.8) * Math.PI) : 0;
+
+    ringAngle.current += dt * (0.35 + (thinking ? 1.2 : 0) + active * 0.9);
     if (process.current) process.current.rotation.z = ringAngle.current;
+    // The whole model floats and turns gently on its own, like a turntable.
+    if (root.current) {
+      root.current.position.y = 0.04 + Math.sin(t * 0.9) * 0.035;
+      root.current.rotation.y = -0.2 + Math.sin(t * 0.35) * 0.22;
+    }
     if (head.current) {
       head.current.position.y = 0.18 + Math.sin(t * 1.3) * 0.025;
-      head.current.rotation.y = THREE.MathUtils.clamp(
-        state.pointer.x * 0.1,
-        -0.09,
-        0.09,
-      );
+      // Looks at the pointer; while acting it turns toward the panel it uses.
+      const look = acting ? (target === 0 ? -0.32 : 0.32) * actAmount : 0;
+      const follow = hovered ? 0.4 : 0.22;
+      const wantY = THREE.MathUtils.clamp(px * follow, -0.35, 0.35) + look;
+      head.current.rotation.y += (wantY - head.current.rotation.y) * 0.08;
+      // A small nod when a task is confirmed.
+      const nod = done ? Math.sin(((local - 3.4) / 1.4) * Math.PI * 2) * 0.12 * (1 - (local - 3.4) / 1.4) : 0;
+      const wantX = -py * 0.12 + nod;
+      head.current.rotation.x += (wantX - head.current.rotation.x) * 0.12;
       head.current.rotation.z = Math.sin(t * 0.7) * 0.018;
     }
     if (eyes.current) {
       const blink = (t + 1.4) % 5.2;
-      eyes.current.scale.y =
-        blink < 0.15 ? Math.max(0.12, Math.abs(blink - 0.075) / 0.075) : 1;
-      eyes.current.position.x = THREE.MathUtils.clamp(
-        state.pointer.x * 0.025,
-        -0.025,
-        0.025,
-      );
+      const blinkY = blink < 0.15 ? Math.max(0.12, Math.abs(blink - 0.075) / 0.075) : 1;
+      // Narrow, scanning eyes while thinking; happy squint when done.
+      const mood = thinking ? 0.62 : done ? 0.75 : 1;
+      eyes.current.scale.y = blinkY * mood;
+      const scan = thinking ? Math.sin(t * 5) * 0.035 : 0;
+      eyes.current.position.x = THREE.MathUtils.clamp(px * 0.06, -0.05, 0.05) + scan;
+      eyes.current.position.y = THREE.MathUtils.clamp(py * 0.04, -0.03, 0.03);
     }
     antenna.current?.scale.setScalar(
-      1 + active * 0.28 + (interaction.current.hovered ? 0.1 : 0),
+      1 +
+        (thinking ? Math.max(0, Math.sin(t * 9)) * 0.3 : Math.max(0, Math.sin(t * 2.2)) * 0.12) +
+        active * 0.28 +
+        (hovered ? 0.1 : 0),
     );
     panels.current.forEach((panel, i) => {
-      if (panel)
-        panel.position.y =
-          PANEL_POSITIONS[i][1] + Math.sin(t * 0.8 + i * 2) * 0.025;
+      if (!panel) return;
+      const pop = i === target ? actAmount : 0;
+      panel.position.y = PANEL_POSITIONS[i][1] + Math.sin(t * 0.8 + i * 2) * 0.05 + pop * 0.12;
+      panel.rotation.y = (i === 0 ? 0.2 : -0.22) + Math.sin(t * 0.6 + i) * 0.1 - pop * (i === 0 ? 0.2 : -0.2);
+      panel.scale.setScalar(1 + pop * 0.12);
     });
+    // Packets rush along the route to the panel in use.
+    for (let k = 0; k < 3; k++) {
+      const busy = acting && (k === target || k === 2);
+      routePhase.current[k] += dt * (busy ? 0.7 : 0.18);
+    }
     for (let i = 0; i < PACKET_COUNT; i++) {
-      const route = r.routes[Math.floor(i / 3)];
-      route.getPoint((t * 0.18 + (i % 3) / 3) % 1, sample);
+      const k = Math.floor(i / 3);
+      const route = r.routes[k];
+      route.getPoint((routePhase.current[k] + (i % 3) / 3) % 1, sample);
       transform.position.copy(sample);
-      transform.scale.setScalar(0.027);
+      transform.scale.setScalar(acting && k === target ? 0.036 : 0.027);
       transform.updateMatrix();
       packets.current?.setMatrixAt(i, transform.matrix);
     }
@@ -399,10 +481,11 @@ export function AgentModel({ playing }: { color: string; playing: boolean }) {
 
   return (
     <group
+      ref={root}
       name="agent-studio"
       rotation={[0.24, -0.2, 0]}
       position={[-0.13, 0.04, 0]}
-      scale={Math.min(0.94, viewportWidth * 0.125)}
+      scale={Math.min(0.78, viewportWidth * 0.1)}
     >
       <mesh
         material={r.shadow}
@@ -462,10 +545,9 @@ export function AgentModel({ playing }: { color: string; playing: boolean }) {
           scale={[0.87, 0.48, 0.56]}
         />
         <mesh
-          geometry={r.rounded}
+          geometry={r.controls}
           material={r.ice}
           position={[0, -0.48, 0.47]}
-          scale={[0.69, 0.28, 0.021]}
         />
         {[-0.21, -0.11, -0.01].map((x, i) => (
           <mesh
@@ -501,16 +583,14 @@ export function AgentModel({ playing }: { color: string; playing: boolean }) {
             scale={[1.04, 0.81, 0.66]}
           />
           <mesh
-            geometry={r.soft}
+            geometry={r.bezel}
             material={r.silver}
             position={[0, -0.005, 0.465]}
-            scale={[0.83, 0.58, 0.045]}
           />
           <mesh
-            geometry={r.soft}
+            geometry={r.faceplate}
             material={r.visor}
             position={[0, -0.005, 0.524]}
-            scale={[0.76, 0.51, 0.045]}
           />
           <group ref={eyes} position={[0, 0, 0.57]}>
             {[-0.17, 0.17].map((x) => (
@@ -566,7 +646,7 @@ export function AgentModel({ playing }: { color: string; playing: boolean }) {
         frustumCulled={false}
       >
         <sphereGeometry args={[1, 10, 6]} />
-        <meshBasicMaterial color="#8adef8" toneMapped={false} />
+        <meshBasicMaterial color={tint(color, 0.85)} toneMapped={false} />
       </instancedMesh>
 
       {/* Two small milestones on the front edge: approve and iterate. */}

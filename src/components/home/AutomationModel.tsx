@@ -576,6 +576,9 @@ export function AutomationModel({
   const activity = useRef({ hovered: -1, route: -1, selected: 0, started: -10, auto: false, runs: 0 });
   const flowPhase = useRef(new Float32Array(EDGES.length));
   const heat = useRef(new Float32Array(NODES.length));
+  const turntable = useRef<THREE.Group>(null);
+  /** Seconds since the model last became visible (drives the entrance spin). */
+  const shown = useRef(0);
 
   useFrame((_, delta) => {
     if (!playing && !dirty.current) return;
@@ -589,6 +592,22 @@ export function AutomationModel({
     const dt = Math.min(delta, 0.05);
     if (playing) time.current += dt;
     const t = time.current;
+    const table = turntable.current;
+    if (table) {
+      // Stage shrinks hidden models to ~0, so a tiny world scale means hidden:
+      // reset, and the next time it is selected it spins in again.
+      table.getWorldScale(point);
+      shown.current = point.x < 0.05 ? 0 : shown.current + Math.min(delta, 0.05);
+      const settle = Math.min(1, shown.current / 1.6);
+      const ease = 1 - Math.pow(1 - settle, 3);
+      table.rotation.y = (1 - ease) * -1.9 + Math.sin(t * 0.3) * 0.32;
+      table.rotation.x = Math.sin(t * 0.45) * 0.05;
+      table.position.y = (1 - ease) * -0.4 + Math.sin(t * 0.8) * 0.03;
+      if (settle < 1) {
+        dirty.current = true;
+        invalidate();
+      }
+    }
     const act = activity.current;
     // When nobody is interacting, a run starts by itself from an input node,
     // so the links between nodes keep animating hop by hop.
@@ -717,6 +736,8 @@ export function AutomationModel({
       position={[-0.32, 0.02, 0]}
       scale={modelScale}
     >
+      {/* Turntable: spins in at an angle when shown, then sways on its own. */}
+      <group ref={turntable}>
       <lineSegments geometry={r.grid}>
         <lineBasicMaterial
           vertexColors
@@ -876,6 +897,7 @@ export function AutomationModel({
           )}
         </group>
       ))}
+      </group>
     </group>
   );
 }
