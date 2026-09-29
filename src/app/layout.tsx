@@ -47,13 +47,15 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
+      data-theme="dark"
       className={`${inter.variable} antialiased`}
     >
       <head>
-        {/* apply saved theme before paint to avoid a flash */}
+        {/* Dark by default; light only when the visitor chose it. Applied
+            before paint to avoid a flash. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem("theme");document.documentElement.dataset.theme=t==="dark"?"dark":"light"}catch(e){}`,
+            __html: `try{var t=localStorage.getItem("theme");document.documentElement.dataset.theme=t==="light"?"light":"dark"}catch(e){}`,
           }}
         />
       </head>

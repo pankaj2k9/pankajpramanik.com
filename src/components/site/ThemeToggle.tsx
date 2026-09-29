@@ -21,7 +21,7 @@ export default function ThemeToggle() {
     subscribeTheme,
     () =>
       document.documentElement.dataset.theme === "light" ? "light" : "dark",
-    () => "light" as const,
+    () => "dark" as const,
   );
 
   function toggle() {

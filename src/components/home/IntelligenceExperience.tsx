@@ -7,10 +7,12 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import { heroNiches, heroServices } from "@/lib/services";
 import HeroIcon from "./HeroIcons";
+import MobileOrbit from "./MobileOrbit";
 import type { NodeAnchors } from "./NeuralScene";
 
 /** Distance (px) from a card's edge to the centre of its sphere. */
@@ -31,7 +33,10 @@ const DOCKS: [number, number][] = [
 ];
 
 /** Each card's dock point, in the canvas's normalised device coordinates. */
-function measureAnchors(canvas: HTMLElement, cards: HTMLElement[]): NodeAnchors {
+function measureAnchors(
+  canvas: HTMLElement,
+  cards: HTMLElement[],
+): NodeAnchors {
   const c = canvas.getBoundingClientRect();
   return cards.map((card, i) => {
     const r = card.getBoundingClientRect();
@@ -42,7 +47,10 @@ function measureAnchors(canvas: HTMLElement, cards: HTMLElement[]): NodeAnchors 
     else if (fy === 1) py += NODE_GAP;
     else if (fx === 1) px += NODE_GAP;
     else if (fx === 0) px -= NODE_GAP;
-    return [((px - c.left) / c.width) * 2 - 1, -(((py - c.top) / c.height) * 2 - 1)];
+    return [
+      ((px - c.left) / c.width) * 2 - 1,
+      -(((py - c.top) / c.height) * 2 - 1),
+    ];
   });
 }
 
@@ -67,6 +75,22 @@ const CLIENTS = [
   ["SK", "#c7a6ef"],
   ["DL", "#8fd3c3"],
 ] as const;
+
+/** Devices that get the WebGL brain; everything else gets the SVG orbit. */
+const SCENE_QUERY =
+  "(min-width: 800px) and (pointer: fine) and (prefers-reduced-motion: no-preference)";
+
+function subscribeScene(onChange: () => void) {
+  const media = matchMedia(SCENE_QUERY);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+function canShowScene() {
+  const connection = (
+    navigator as Navigator & { connection?: { saveData?: boolean } }
+  ).connection;
+  return matchMedia(SCENE_QUERY).matches && !connection?.saveData;
+}
 
 export default function IntelligenceExperience() {
   const [selected, setSelected] = useState(2);
@@ -117,12 +141,19 @@ export default function IntelligenceExperience() {
     };
   }, []);
   const markReady = useCallback(() => setReady(true), []);
+  // null on the server: the static blob shows until the client decides.
+  const sceneCapable = useSyncExternalStore(
+    subscribeScene,
+    canShowScene,
+    () => null,
+  );
+  const lite = sceneCapable === false;
   const service = heroServices[selected];
   return (
     <div
       className="intelligence-experience"
       ref={root}
-      data-scene={enabled && ready ? "ready" : undefined}
+      data-scene={lite ? "orbit" : enabled && ready ? "ready" : undefined}
     >
       <div className="scene-orbit orbit-one" aria-hidden />
       <div className="scene-orbit orbit-two" aria-hidden />
@@ -138,6 +169,13 @@ export default function IntelligenceExperience() {
         ))}
       </div>
       <div className="neural-canvas" aria-hidden="true" ref={canvasBox}>
+        {lite && (
+          <MobileOrbit
+            selected={selected}
+            onSelect={setSelected}
+            playing={visible && !paused}
+          />
+        )}
         {enabled && (
           <SceneBoundary>
             <NeuralScene
@@ -214,7 +252,11 @@ export default function IntelligenceExperience() {
               {n.label}
             </Link>
           ))}
-          <Link href="/services" className="niche-more" aria-label="All services">
+          <Link
+            href="/services"
+            className="niche-more"
+            aria-label="All services"
+          >
             +
           </Link>
         </nav>
@@ -222,7 +264,7 @@ export default function IntelligenceExperience() {
           <span>
             <i aria-hidden /> Select a niche to explore
           </span>
-          {enabled && (
+          {(enabled || lite) && (
             <button onClick={() => setPaused(!paused)} aria-pressed={paused}>
               {paused ? "Play motion" : "Pause motion"}
               <span aria-hidden>{paused ? " ▷" : " Ⅱ"}</span>
