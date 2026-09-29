@@ -31,6 +31,35 @@ const EDGES = [
   [6, 7],
   [7, 4],
 ] as const;
+/**
+ * For a click on each node: how many hops downstream every node and route is
+ * (-1 = not reached). Breadth-first over the directed routes, so the feedback
+ * loop is followed once and never cycles.
+ */
+const CASCADES = NODES.map((_, start) => {
+  const nodeDepth = NODES.map(() => -1);
+  const edgeDepth = EDGES.map(() => -1);
+  nodeDepth[start] = 0;
+  const queue = [start];
+  while (queue.length) {
+    const from = queue.shift()!;
+    EDGES.forEach(([a, b], e) => {
+      if (a !== from || edgeDepth[e] !== -1) return;
+      edgeDepth[e] = nodeDepth[from];
+      if (nodeDepth[b] === -1) {
+        nodeDepth[b] = nodeDepth[from] + 1;
+        queue.push(b);
+      }
+    });
+  }
+  return { nodeDepth, edgeDepth };
+});
+/** Seconds per hop of a click cascade. */
+const HOP = 0.55;
+/** Nodes nothing flows into: where an automatic run starts. */
+const SOURCES = NODES.map((_, i) => i).filter((i) => !EDGES.some(([, b]) => b === i));
+/** Idle seconds after a cascade before the next automatic run. */
+const IDLE_RUN = 2.5;
 const UP = new THREE.Vector3(0, 1, 0);
 const point = new THREE.Vector3();
 const tangent = new THREE.Vector3();
@@ -271,7 +300,29 @@ function useWorkflowResources() {
       );
       return {
         curve,
-        geometry: new THREE.TubeGeometry(curve, 32, 0.009, 5, false),
+        geometry: new THREE.TubeGeometry(curve, 48, 0.011, 6, false),
+        // Wider invisible tube, so a thin route is easy to hover.
+        hit: new THREE.TubeGeometry(curve, 16, 0.07, 5, false),
+        // Light dashes stream along the tube (uv.x runs from start to end).
+        flow: new THREE.ShaderMaterial({
+          transparent: true,
+          depthWrite: false,
+          toneMapped: false,
+          uniforms: {
+            uTime: { value: 0 },
+            uColor: { value: new THREE.Color(TONES[NODES[to].tone]) },
+            uOpacity: { value: 0.85 },
+            uBoost: { value: 0 },
+          },
+          vertexShader: `varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+          fragmentShader: `varying vec2 vUv; uniform float uTime; uniform vec3 uColor; uniform float uOpacity; uniform float uBoost;
+            void main(){
+              float dash = smoothstep(0.55, 1.0, fract(vUv.x * 5.0 - uTime));
+              vec3 c = mix(uColor, vec3(1.0), dash * (0.55 + 0.45 * uBoost));
+              float a = uOpacity * (0.45 + 0.55 * dash + 0.35 * uBoost);
+              gl_FragColor = vec4(c, min(a, 1.0));
+            }`,
+        }),
         arrowPosition,
         arrowRotation,
         tone: NODES[to].tone,
@@ -333,6 +384,7 @@ function useWorkflowResources() {
         r.silver,
         r.glass,
         r.shadow,
+        ...r.routes.map((p) => p.flow),
         ...r.accents,
         ...r.lights,
         ...r.halos,
@@ -342,7 +394,7 @@ function useWorkflowResources() {
         r.trim,
         r.grid,
         ...Object.values(r.icons).flat(),
-        ...r.routes.map((p) => p.geometry),
+        ...r.routes.flatMap((p) => [p.geometry, p.hit]),
       ].forEach((g) => g.dispose());
     },
     [resources],
@@ -509,33 +561,88 @@ export function AutomationModel({
   const r = useWorkflowResources();
   const invalidate = useThree((state) => state.invalidate);
   const viewportWidth = useThree((state) => state.viewport.width);
-  // Keep platforms inside the service cards as the desktop column narrows.
-  const modelScale = Math.min(0.92, viewportWidth * 0.12);
+  // Keep platforms well inside the service cards as the desktop column narrows.
+  const modelScale = Math.min(0.74, viewportWidth * 0.095);
   const time = useRef(0);
   const dirty = useRef(true);
   const nodes = useRef<(THREE.Group | null)[]>([]);
   const symbols = useRef<(THREE.Group | null)[]>([]);
   const trims = useRef<(THREE.Mesh | null)[]>([]);
   const packets = useRef<THREE.InstancedMesh>(null);
+  const triggers = useRef<THREE.InstancedMesh>(null);
+  const routeMeshes = useRef<(THREE.Mesh | null)[]>([]);
+  const arrowMeshes = useRef<(THREE.Mesh | null)[]>([]);
   const ripple = useRef<THREE.Mesh>(null);
-  const activity = useRef({ hovered: -1, selected: 0, started: -10 });
+  const activity = useRef({ hovered: -1, route: -1, selected: 0, started: -10, auto: false, runs: 0 });
+  const flowPhase = useRef(new Float32Array(EDGES.length));
   const heat = useRef(new Float32Array(NODES.length));
 
   useFrame((_, delta) => {
     if (!playing && !dirty.current) return;
     dirty.current = false;
-    if (playing) time.current += Math.min(delta, 0.05);
+    // A cascade animates on its own clock, so it also plays while paused.
+    if (!playing && time.current - activity.current.started < HOP * 6) {
+      time.current += Math.min(delta, 0.05);
+      dirty.current = true;
+      invalidate();
+    }
+    const dt = Math.min(delta, 0.05);
+    if (playing) time.current += dt;
     const t = time.current;
-    const since = t - activity.current.started;
+    const act = activity.current;
+    // When nobody is interacting, a run starts by itself from an input node,
+    // so the links between nodes keep animating hop by hop.
+    const runLength = (c: (typeof CASCADES)[number]) => HOP * (Math.max(...c.nodeDepth) + 1.5);
+    if (
+      playing &&
+      act.hovered < 0 &&
+      act.route < 0 &&
+      t - act.started > runLength(CASCADES[act.selected]) + IDLE_RUN
+    ) {
+      act.selected = SOURCES[act.runs++ % SOURCES.length];
+      act.started = t;
+      act.auto = true;
+    }
+    const since = t - act.started;
     heat.current.fill(0);
+    const cascade = CASCADES[act.selected];
+    const cascadeLive = since >= 0 && since < runLength(cascade);
+    // Focus: the hovered node, else a clicked node while its cascade runs.
+    // Automatic runs animate without dimming the rest.
+    const focus = act.hovered >= 0 ? act.hovered : cascadeLive && !act.auto ? act.selected : -1;
     r.routes.forEach(({ curve }, i) => {
+      const [from, to] = EDGES[i];
+      const linked = focus === from || focus === to || act.route === i;
+      const inCascade = cascadeLive && cascade.edgeDepth[i] !== -1;
+      const firing = inCascade && since >= cascade.edgeDepth[i] * HOP && since < (cascade.edgeDepth[i] + 1) * HOP;
+      const dimming = focus >= 0 || act.route >= 0;
+      // Linked routes brighten, the rest step back while something is focused.
+      const opacity = !dimming ? 0.85 : linked || (inCascade && !act.auto) ? 1 : 0.2;
+      // The link itself streams light: faster and brighter when linked or firing.
+      const flowSpeed = firing ? 2.4 : linked ? 1.6 : 0.55;
+      flowPhase.current[i] += dt * flowSpeed;
+      const route = routeMeshes.current[i];
+      if (route) {
+        const u = (route.material as THREE.ShaderMaterial).uniforms;
+        u.uTime.value = flowPhase.current[i];
+        u.uOpacity.value += (opacity - u.uOpacity.value) * 0.2;
+        u.uBoost.value += ((firing || linked ? 1 : 0) - u.uBoost.value) * 0.15;
+      }
+      const arrow = arrowMeshes.current[i];
+      if (arrow) {
+        const m = arrow.material as THREE.MeshBasicMaterial;
+        m.opacity += (opacity - m.opacity) * 0.2;
+        arrow.scale.setScalar(1 + (firing ? 0.6 : linked ? 0.3 : 0));
+      }
+      const speed = linked ? 0.42 : 0.19;
       for (let p = 0; p < 2; p++) {
-        const u = (t * 0.19 + i * 0.137 + p * 0.5) % 1;
+        const u = (t * speed + i * 0.137 + p * 0.5) % 1;
         curve.getPoint(u, point);
         curveTangent(curve, u, tangent);
         packet.position.copy(point);
         packet.quaternion.setFromUnitVectors(UP, tangent.normalize());
-        packet.scale.set(0.022, 0.065, 0.022);
+        const size = focus < 0 || linked ? 1 : 0.55;
+        packet.scale.set(0.022 * size, 0.065 * size, 0.022 * size);
         packet.updateMatrix();
         packets.current?.setMatrixAt(i * 2 + p, packet.matrix);
         heat.current[EDGES[i][1]] = Math.max(
@@ -545,11 +652,31 @@ export function AutomationModel({
       }
     });
     if (packets.current) packets.current.instanceMatrix.needsUpdate = true;
+    // Click cascade: a bright trigger runs each downstream route in hop order.
+    r.routes.forEach(({ curve }, i) => {
+      const depth = cascade.edgeDepth[i];
+      const u = (since - depth * HOP) / HOP;
+      const visible = cascadeLive && depth !== -1 && u >= 0 && u <= 1;
+      if (visible) {
+        curve.getPoint(u, point);
+        packet.position.copy(point);
+        packet.quaternion.identity();
+        packet.scale.setScalar(0.05);
+      } else packet.scale.setScalar(0);
+      packet.updateMatrix();
+      triggers.current?.setMatrixAt(i, packet.matrix);
+    });
+    if (triggers.current) triggers.current.instanceMatrix.needsUpdate = true;
     NODES.forEach((n, i) => {
-      const active =
-        activity.current.hovered === i ||
-        (activity.current.selected === i && since < 1.6);
-      const lift = active ? 0.065 : 0;
+      // A node is reached by the cascade when its hop comes up.
+      const reachedAt = cascade.nodeDepth[i] * HOP;
+      const reached =
+        cascadeLive && cascade.nodeDepth[i] !== -1 && since >= reachedAt && since < reachedAt + HOP * 1.4;
+      const neighbour =
+        (focus >= 0 && focus !== i && EDGES.some(([a, b]) => (a === focus && b === i) || (b === focus && a === i))) ||
+        (act.route >= 0 && (EDGES[act.route][0] === i || EDGES[act.route][1] === i));
+      const active = activity.current.hovered === i || reached;
+      const lift = active ? 0.065 : neighbour ? 0.03 : 0;
       const node = nodes.current[i];
       if (node)
         node.position.y =
@@ -562,7 +689,7 @@ export function AutomationModel({
       const trim = trims.current[i];
       if (trim)
         trim.scale.setScalar(
-          1 + heat.current[i] * 0.025 + (active ? 0.035 : 0),
+          1 + heat.current[i] * 0.025 + (active ? 0.035 : neighbour ? 0.02 : 0),
         );
     });
     if (ripple.current) {
@@ -578,6 +705,7 @@ export function AutomationModel({
     dirty.current = true;
     activity.current.selected = index;
     activity.current.started = time.current;
+    activity.current.auto = false;
     invalidate();
     // Bubble to Stage to retain its existing click pulse and drag behavior.
   }
@@ -610,13 +738,39 @@ export function AutomationModel({
       ))}
       {r.routes.map((route, i) => (
         <group key={i}>
-          <mesh geometry={route.geometry} material={r.lights[route.tone]} />
           <mesh
+            ref={(el) => {
+              routeMeshes.current[i] = el;
+            }}
+            geometry={route.geometry}
+            material={route.flow}
+          />
+          {/* invisible, wider hover target for the thin route */}
+          <mesh
+            geometry={route.hit}
+            onPointerOver={(e) => {
+              e.stopPropagation();
+              dirty.current = true;
+              activity.current.route = i;
+              invalidate();
+            }}
+            onPointerOut={() => {
+              dirty.current = true;
+              activity.current.route = -1;
+              invalidate();
+            }}
+          >
+            <meshBasicMaterial transparent opacity={0} depthWrite={false} colorWrite={false} />
+          </mesh>
+          <mesh
+            ref={(el) => {
+              arrowMeshes.current[i] = el;
+            }}
             position={route.arrowPosition}
             quaternion={route.arrowRotation}
-            material={r.lights[route.tone]}
           >
             <coneGeometry args={[0.035, 0.105, 3]} />
+            <meshBasicMaterial color={TONES[route.tone]} transparent opacity={0.85} toneMapped={false} />
           </mesh>
         </group>
       ))}
@@ -627,6 +781,14 @@ export function AutomationModel({
       >
         <sphereGeometry args={[1, 8, 6]} />
         <meshBasicMaterial color="#75dfff" toneMapped={false} />
+      </instancedMesh>
+      <instancedMesh
+        ref={triggers}
+        args={[undefined, undefined, EDGES.length]}
+        frustumCulled={false}
+      >
+        <sphereGeometry args={[1, 16, 12]} />
+        <meshBasicMaterial color="#e4f8ff" toneMapped={false} />
       </instancedMesh>
       {NODES.map((n, i) => (
         <group

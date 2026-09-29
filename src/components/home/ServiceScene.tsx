@@ -454,7 +454,7 @@ function Signals({
         </group>
       ))}
       {/* orbit ring around the model */}
-      <group ref={orbit} visible={selected !== 3}>
+      <group ref={orbit} visible={selected !== 2 && selected !== 3}>
         <mesh>
           <torusGeometry args={[2.75, 0.009, 8, 160]} />
           <meshBasicMaterial ref={orbitMaterial} color="#9fb3cf" transparent opacity={0.35} />
