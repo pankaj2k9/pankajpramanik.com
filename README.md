@@ -1,6 +1,8 @@
-# Pankaj Pramanik — AI, Data & Automation
+# Pankaj Pramanik - AI, Data & Automation
 
-A Next.js 16 portfolio, services site, blog, and private content dashboard. Existing WordPress content and redirects are preserved in PostgreSQL. The homepage uses a procedural React Three Fiber / Three.js scene inspired by the supplied cool-blue visual references.
+A Next.js 16 portfolio, services site, blog, booking system, and private admin dashboard. Existing WordPress content and redirects are preserved in PostgreSQL. The homepage uses a React Three Fiber / Three.js brain scene on desktop and an interactive SVG orbit on phones and touch devices. The site opens in dark mode; a visitor who switches to light mode keeps that choice.
+
+The admin also hosts a separate outreach agent (a background worker that finds and scores remote Data/AI roles and drafts outreach for manual approval). See [Outreach agent](#outreach-agent).
 
 ## Quick start
 
@@ -32,10 +34,14 @@ Local database: `localhost:5433`. Optional Redis: `localhost:6380`. Docker crede
 | http://localhost:3000/portfolio | Projects with service/technology filters, search, and expandable case studies |
 | http://localhost:3000/contact | Contact form, email, and WhatsApp |
 | http://localhost:3000/contact?service=automation | Prefills the inquiry subject for automation; also accepts `data` and `intelligence` |
+| http://localhost:3000/booking | Public meeting booking: pick a meeting type, date, and time in the visitor's timezone |
+| http://localhost:3000/booking/&lt;token&gt; | Private page to view, reschedule, or cancel one booking (link sent by email, noindex) |
 | http://localhost:3000/admin | **Private dashboard**, redirects to login when signed out |
 | http://localhost:3000/admin/login | Administrator sign-in |
 | http://localhost:3000/admin/projects | Manage projects, covers, case studies, and SEO |
 | http://localhost:3000/admin/messages | Contact inbox |
+| http://localhost:3000/admin/booking | Booking dashboard: bookings, calendar, availability, meeting types, blocked time, settings (Google Calendar) |
+| http://localhost:3000/admin/outreach | Outreach agent runs, opportunities, and drafts awaiting approval |
 | http://localhost:3000/blog | Existing articles and category filters |
 | http://localhost:3000/experience | Existing experience, education, and certifications |
 | http://localhost:3000/skills | Existing technology groups |
@@ -43,7 +49,7 @@ Local database: `localhost:5433`. Optional Redis: `localhost:6380`. Docker crede
 | http://localhost:3000/robots.txt | Crawl rules excluding admin/API |
 | http://localhost:3000/opengraph-image | Generated sharing image |
 
-`/projects` redirects to `/portfolio`; `/projects/<slug>` redirects to `/portfolio/<slug>`; `/dashboard` redirects to `/admin`. WordPress-era post URLs, `/about-me`, `/resume`, and `/latest-from-the-blog` retain permanent redirects. Deep links into the dashboard return to the requested path after sign-in, and work on refresh.
+`/book` and `/schedule` redirect to `/booking`. `/projects` redirects to `/portfolio`; `/projects/<slug>` redirects to `/portfolio/<slug>`; `/dashboard` redirects to `/admin`. WordPress-era post URLs, `/about-me`, `/resume`, and `/latest-from-the-blog` retain permanent redirects. Deep links into the dashboard return to the requested path after sign-in, and work on refresh.
 
 If port 3000 is occupied, `npm run dev -- --port 3001` uses http://localhost:3001 instead. Update `AUTH_URL`, `NEXT_PUBLIC_SITE_URL`, and browser-test `TEST_BASE_URL` to match.
 
@@ -64,6 +70,12 @@ Copy `.env.example`, then set your own values. Do not commit `.env`, database UR
 | `CONTACT_EMAIL` | Destination inbox for contact notifications |
 | `CONTACT_FROM_EMAIL` | Sender address on a domain verified with Resend |
 | `PORT`, `HOSTNAME` | Production start overrides; default port 3000, loopback unless a hostname is provided |
+| `STORAGE_DIR` | Media root; defaults to `./storage`, production mounts `/app/storage` |
+| `BOOKING_FROM_EMAIL` | Sender for booking emails; defaults to `CONTACT_FROM_EMAIL` |
+| `BOOKING_ENCRYPTION_KEY` | Encrypts stored Google OAuth tokens; defaults to `AUTH_SECRET` |
+| `CRON_SECRET` | Bearer token for `/api/cron/booking-reminders` and `/api/cron/outreach` |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Optional Google Calendar connection (free/busy, events, Meet links) |
+| `OPENAI_*`, `TAVILY_API_KEY`, `HUNTER_API_KEY`, `OUTREACH_*`, `LANGGRAPH_CHECKPOINT_URL` | Outreach agent only; documented in `.env.example`. Sending stays off unless `OUTREACH_ENABLED="true"` |
 
 The WhatsApp number **+8801716121009**, its link **https://wa.me/8801716121009**, email, social profiles, portrait, and CV path are centralized in `src/lib/site.ts`.
 
@@ -73,14 +85,14 @@ The WhatsApp number **+8801716121009**, its link **https://wa.me/8801716121009**
 npm run db:migrate:deploy  # Apply checked-in migrations to an existing database
 npm run db:migrate        # Create/apply migrations during schema development
 npm run db:seed           # Import migrated content and create the initial admin
-npm run content:export    # Local DB → prisma/content/snapshot.json (commit to deploy)
-npm run content:import    # Snapshot → DATABASE_URL (runs automatically in production)
+npm run content:export    # Local DB -> prisma/content/snapshot.json (commit to deploy)
+npm run content:import    # Snapshot -> DATABASE_URL (runs automatically in production)
 npm run db:studio         # Inspect data using Prisma Studio
 ```
 
 ### Media storage
 
-All media lives in `storage/uploads/` (served at `/uploads/*` by `src/app/uploads/[...path]/route.ts`) — not in `public/`. Admin cover-image and editor **Upload** buttons save to `storage/uploads/YYYY/MM/DD/`. Commit `storage/` so git holds every file; in production it is the bind-mounted `/opt/pankajpramanik/storage`, which deploys merge into without overwriting or deleting. See `deploy/OVH.md` § 7.
+All media lives in `storage/uploads/` (served at `/uploads/*` by `src/app/uploads/[...path]/route.ts`) - not in `public/`. Admin cover-image and editor **Upload** buttons save to `storage/uploads/YYYY/MM/DD/`. Commit `storage/` so git holds every file; in production it is the bind-mounted `/opt/pankajpramanik/storage`, which deploys merge into without overwriting or deleting. See `deploy/OVH.md` § 7.
 
 The additive `20260915090000_project_case_studies` migration adds `problem`, `approach`, `outcome`, and `evidenceUrl` to projects. It keeps existing records. Apply migrations before running the new production version. `npm run build` regenerates the Prisma client.
 
@@ -118,6 +130,22 @@ npm run start
 
 For Docker production, retain the existing `Dockerfile`, `docker-entrypoint.sh`, and `docker-compose.prod.yml`. The entrypoint applies migrations and the image already includes assets. See [the deployment guide](deploy/OVH.md) for the existing shared Caddy/OVH setup and backups. This change does not deploy or publish the website.
 
+## Booking system
+
+Visitors book at `/booking`. The page reads the visitor's timezone from the browser, and every time on the page and in emails is shown in that zone. They can change it by hand. Available slots come from the weekly hours, blocked periods, buffers, minimum notice, and daily limits set in `/admin/booking`, minus any busy time in the connected Google Calendar. A database lock makes two bookings of the same slot impossible: one succeeds, the other gets a "slot was just booked" message.
+
+Each booking gets a private manage link (`/booking/<token>`) to reschedule or cancel. A reschedule marks the old booking `RESCHEDULED` and creates a linked new one.
+
+**Google Calendar (optional).** Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, then connect in `/admin/booking/settings`. The OAuth redirect URI is `<site>/api/admin/booking/google/callback`. When connected, the app checks free/busy, creates an event per booking in the visitor's timezone, and creates a unique Google Meet link for Google Meet meeting types. Google then sends the visitor the invitation, and the app skips its own confirmation email.
+
+**Without Google.** Bookings still work, and confirmations go through Resend with an `.ics` attachment. Google Meet meeting types have no per-booking link. To give visitors a link anyway, paste a fixed `https://meet.google.com/...` link into the meeting type's **Location detail**; it is used whenever Google cannot create one. A made-up Meet code does not work: Google only accepts codes it created.
+
+**Emails and reminders.** Confirmation, reschedule, cancellation, and admin emails are queued in the `BookingNotification` table and sent through Resend. Reminders are sent by `GET /api/cron/booking-reminders` with `Authorization: Bearer $CRON_SECRET`; call it every 5 minutes.
+
+## Outreach agent
+
+A separate worker (`npm run outreach:worker`; the `agent-worker` service in `docker-compose.prod.yml`) finds remote Data/AI roles, scores them, looks up a contact, and drafts an email with a tailored CV. Nothing is sent without approval in `/admin/outreach`, and sending is refused unless `OUTREACH_ENABLED="true"`. A daily run can be started with `GET /api/cron/outreach` and the same `CRON_SECRET`. Design, limits, and provider choices: [docs/outreach-agent-architecture.md](docs/outreach-agent-architecture.md).
+
 ## Contact behavior
 
 The API validates inputs, uses a honeypot and time check, rate-limits requests, and stores valid messages in PostgreSQL before attempting email delivery. Email delivery failure does not discard a saved message. A database failure returns a recoverable error so the visitor can retry or use WhatsApp/email. Keep `RESEND_API_KEY` blank for local testing to avoid sending real notifications. Actual Resend delivery requires configured and verified provider credentials.
@@ -125,9 +153,11 @@ The API validates inputs, uses a honeypot and time check, rate-limits requests, 
 ## Design, accessibility, and performance
 
 - Main headings, content, links, and service controls render as accessible HTML outside the canvas.
-- Three.js loads after the initial paint only on fine-pointer screens at least 800px wide, with reduced motion disabled and data-saver mode off.
-- Mobile, reduced-motion, unavailable WebGL2, context-loss, and scene-error cases retain the lightweight CSS visual and HTML service controls.
-- The procedural scene downloads no 3D models, textures, HDRs, or postprocessing libraries. Pixel ratio is capped at 1.5. Rendering pauses outside the viewport, when the tab is hidden, and through the visible pause control.
+- Three.js loads after the initial paint only on fine-pointer screens at least 800px wide, with reduced motion disabled and data-saver mode off. It loads one compressed model, `public/models/neural-brain.glb` (meshopt, generated by `npm run models:brain`); the CSP allows `'wasm-unsafe-eval'` for its decoder.
+- Phones, touch devices, narrow screens, and data-saver mode get `MobileOrbit`: an SVG orbit of the six services around a glowing core. Tap a node to select a service (synced with the cards below), drag sideways to spin it. It uses no WebGL and follows the same pause control.
+- Unavailable WebGL2, context loss, and scene errors fall back to a static CSS visual; all service controls stay in HTML.
+- Pixel ratio is capped at 1.5. Rendering pauses outside the viewport, when the tab is hidden, and through the visible pause control.
+- Dark mode is the default for every visitor. The theme toggle stores `light` or `dark` in `localStorage` (`theme`), and an inline script applies it before paint.
 - Native scroll and IntersectionObserver reveals replace GSAP/Lenis and the custom pointer runtime. Reduced-motion preferences disable animation. Music stays available as explicit opt-in with `preload="none"`.
 - Images use `next/image` where appropriate; decorative service SVGs have explicit dimensions. Fonts are self-hosted by `next/font` after build-time download. Layout space is reserved for the hero and media.
 - Page metadata includes canonical URLs, page-specific social cards, titles, and descriptions. Existing Person, Service, BlogPosting, and SoftwareSourceCode structured data is retained. Admin and login pages emit noindex metadata and an `X-Robots-Tag`; admin URLs are excluded from the sitemap.
@@ -151,7 +181,11 @@ npx lighthouse http://localhost:3000 --output=html --output=json \
   --output-path=reports/lighthouse-mobile --chrome-flags="--headless"
 ```
 
-Lighthouse measures a local lab run. LCP, CLS, and interaction checks here are diagnostic; real-user Core Web Vitals, especially INP, need field data after deployment. See [verification results](docs/verification.md) for the checks performed and their limits.
+Lighthouse measures a local lab run. LCP, CLS, and interaction checks here are diagnostic; real-user Core Web Vitals, especially INP, need field data after deployment.
+
+### CI
+
+`.github/workflows/ci-cd.yml` runs lint, typecheck, migrations, seed, and build (**CI**), then Playwright against the production build with a throwaway Postgres (**E2E tests**), then builds and deploys the Docker image. The E2E job installs Playwright Chromium without `--with-deps` and caches it: the runner image already has the system libraries, and `apt-get` on the runner mirror can hang for 20+ minutes.
 
 ## Troubleshooting
 
@@ -164,7 +198,9 @@ Lighthouse measures a local lab run. LCP, CLS, and interaction checks here are d
 | Redirects lose the session after deployment | Check the HTTPS origin, secure cookie behavior, and forwarded host/protocol headers at the trusted proxy |
 | Production assets 404 | Use `npm run start` or the Docker image, which include standalone static/public assets |
 | Google font download fails at build time | Allow the build machine to reach Google's font endpoints, or replace the font imports with local licensed WOFF2 files |
-| No 3D on mobile or reduced motion | This is intentional; the static visual and all service interactions remain available |
+| No 3D brain on mobile or reduced motion | Intentional; phones and touch devices get the SVG orbit, reduced motion gets it without animation |
+| Booking email says the Meet link will follow | Google is not connected or could not create the Meet link. Check `/admin/booking/settings` for the connection and its last error, or set a fixed Meet link on the meeting type |
+| Booking reminders not sent | Call `/api/cron/booking-reminders` every 5 minutes with `Authorization: Bearer $CRON_SECRET` |
 | Image URL rejected | Use `/uploads/...`, `/services-art/...`, or an allowed HTTPS host. Update both `next.config.ts` and `src/lib/validation.ts` when adding a trusted host |
 | Email does not arrive | Check `/admin/messages`, the Resend key, destination, verified sender, and server logs |
 | Dashboard save fails | Values remain in the form. Check database connectivity; duplicate slugs/names and deleted records have explicit feedback |
