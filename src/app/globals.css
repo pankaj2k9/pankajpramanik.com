@@ -1063,6 +1063,13 @@ footer .text-faint {
   bottom: 12%;
   z-index: 2;
 }
+/* Drag turns the 3D model (NeuralScene Stage). */
+.neural-canvas canvas {
+  cursor: grab;
+}
+.neural-canvas canvas:active {
+  cursor: grabbing;
+}
 .neural-fallback {
   position: absolute;
   width: 40%;

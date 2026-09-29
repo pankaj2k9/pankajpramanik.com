@@ -20,15 +20,15 @@ const TILT = -8; // degrees
 const STEP = (Math.PI * 2) / heroServices.length;
 /** Angle that puts a node at the front (bottom of the ellipse). */
 const FRONT = Math.PI / 2;
-const DRIFT = 0.00012; // radians per ms while idle
+const DRIFT = 0.00024; // radians per ms while idle
 const IDLE_MS = 3500;
 
-/** Glow colours per tone; teal's card colour is near-black, so it gets mint. */
+/** Glow colours per tone. "teal" (Automation) matches its card's navy icon. */
 const TONE: Record<string, string> = {
   blue: "#2f5fe8",
   violet: "#5b3df0",
   coral: "#f0452e",
-  teal: "#13a88a",
+  teal: "#1c2436",
   orange: "#f26a1b",
   indigo: "#3548d6",
 };
@@ -61,13 +61,16 @@ export default function MobileOrbit({
     base: FRONT - selected * STEP,
     target: null as number | null,
     velocity: 0,
-    lastInput: 0,
+    // No input yet, so the idle drift starts as soon as the page loads.
+    lastInput: -Infinity,
     dragging: false,
   });
   const selectedRef = useRef(selected);
 
   // A new selection (from a node or from the cards below) turns to the front.
+  // The first run is the initial selection, already at the front.
   useEffect(() => {
+    if (selectedRef.current === selected) return;
     selectedRef.current = selected;
     const m = motion.current;
     m.target = m.base + delta(m.base, FRONT - selected * STEP);
@@ -100,7 +103,9 @@ export default function MobileOrbit({
         }
       }
       for (let i = 0; i < heroServices.length; i++) {
-        const { x, y, depth } = position(m.base, i);
+        const { x, y: orbitY, depth } = position(m.base, i);
+        // Each node bobs gently on its own phase, so the scene never sits still.
+        const y = orbitY + (reduced ? 0 : Math.sin(now / 700 + i * 1.3) * 3);
         const scale = 0.72 + depth * 0.38;
         nodes.current[i]?.setAttribute(
           "transform",

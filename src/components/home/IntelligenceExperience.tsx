@@ -94,6 +94,7 @@ function canShowScene() {
 
 export default function IntelligenceExperience() {
   const [selected, setSelected] = useState(2);
+  const [hovered, setHovered] = useState<number | null>(null);
   const [enabled, setEnabled] = useState(false);
   const [visible, setVisible] = useState(true);
   const [paused, setPaused] = useState(false);
@@ -180,6 +181,7 @@ export default function IntelligenceExperience() {
           <SceneBoundary>
             <NeuralScene
               selected={selected}
+              hovered={hovered}
               region={service.region}
               onSelect={setSelected}
               playing={visible && !paused}
@@ -201,6 +203,10 @@ export default function IntelligenceExperience() {
             className={`scene-node node-${i} tone-${s.tone}`}
             aria-pressed={selected === i}
             onClick={() => setSelected(i)}
+            onPointerEnter={() => setHovered(i)}
+            onPointerLeave={() => setHovered((h) => (h === i ? null : h))}
+            onFocus={() => setHovered(i)}
+            onBlur={() => setHovered((h) => (h === i ? null : h))}
           >
             <span className="node-icon">
               <HeroIcon name={s.id} size={24} />
