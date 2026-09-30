@@ -293,17 +293,19 @@ function Signals({
     for (let c = 0; c < curves.length; c++) {
       const active = c === selected;
       const lit = active || c === focus;
-      // Only the selected (or hovered) path animates; the others ease almost
-      // to a stop. Each path keeps its own clock so speed changes never jump.
+      // The selected (or hovered) path animates at full speed; the others keep
+      // moving slowly. Each path keeps its own clock so speed changes never jump.
       m.live[c] += ((lit ? 1 : 0) - m.live[c]) * 0.08;
       const live = m.live[c];
-      m.wobble[c] += dt * (0.05 + live);
-      m.spin[c] += dt * (0.02 + live * (active ? 1.1 : 0.6));
+      // Unselected paths still sway a little, so the scene never looks frozen.
+      const sway = 0.3 + live * 0.7;
+      m.wobble[c] += dt * (0.25 + live * 0.8);
+      m.spin[c] += dt * (0.12 + live * (active ? 1.0 : 0.5));
       // Lines lean toward the pointer, the lit ones more.
       const pull = 0.06 + live * 0.84;
       curves[c].v1.set(
-        mids[c].x + px * pull + Math.sin(m.wobble[c] * 1.3 + c) * 0.05 * live,
-        mids[c].y + py * pull * 0.8 + Math.cos(m.wobble[c] * 1.1 + c) * 0.05 * live,
+        mids[c].x + px * pull + Math.sin(m.wobble[c] * 1.3 + c) * 0.05 * sway,
+        mids[c].y + py * pull * 0.8 + Math.cos(m.wobble[c] * 1.1 + c) * 0.05 * sway,
         mids[c].z,
       );
       const line = lineRefs.current[c] as THREE.Points | null;
@@ -324,7 +326,7 @@ function Signals({
         const target = c === focus ? 1.45 : active ? 1.25 : 1;
         const k = node.scale.x + (target - node.scale.x) * 0.18;
         node.scale.setScalar(k);
-        node.rotation.set(Math.sin(m.wobble[c] * 0.7 + c) * 0.4 * live, m.spin[c], 0);
+        node.rotation.set(Math.sin(m.wobble[c] * 0.7 + c) * 0.4 * sway, m.spin[c], 0);
       }
       const glow = glowMaterials[c].uniforms.uStrength;
       glow.value += ((active ? 0.55 : c === focus ? 0.45 : 0.18) - glow.value) * 0.12;
@@ -344,8 +346,8 @@ function Signals({
       const col = pts.geometry.attributes.color as THREE.BufferAttribute;
       for (let c = 0; c < curves.length; c++) {
         const active = c === selected;
-        // Unselected paths crawl at about 5% speed.
-        const speed = active ? 0.16 + burstLeft * 0.5 : c === focus ? 0.12 : 0.008;
+        // Unselected paths keep flowing, at about a quarter of the selected speed.
+        const speed = active ? 0.16 + burstLeft * 0.5 : c === focus ? 0.12 : 0.04;
         m.flow[c] += dt * speed;
         for (let i = 0; i < PARTICLES_PER_PATH; i++) {
           const k = c * PARTICLES_PER_PATH + i;
@@ -354,7 +356,7 @@ function Signals({
           curves[c].getPoint(u, scratchPoint);
           pos.setXYZ(k, scratchPoint.x, scratchPoint.y, scratchPoint.z);
           const fade = Math.sin(u * Math.PI);
-          const gain = active ? 1.3 + burstLeft : c === focus ? 1 : 0.4;
+          const gain = active ? 1.3 + burstLeft : c === focus ? 1 : 0.6;
           scratchColor.set(NODE_COLORS[c]).multiplyScalar(gain * fade);
           col.setXYZ(k, scratchColor.r, scratchColor.g, scratchColor.b);
         }

@@ -158,11 +158,11 @@ The API validates inputs, uses a honeypot and time check, rate-limits requests, 
 - Three.js loads after the initial paint only on fine-pointer screens at least 800px wide, with reduced motion disabled and data-saver mode off. `ServiceScene` (`src/components/home/ServiceScene.tsx`) shows the model for the selected card and spins the next one in when the selection changes. Every model is built from three.js primitives, so no model file is downloaded:
   - Data: a database stack with records spiralling into it.
   - AI / ML: a layered neural network with signals firing through it.
-  - AI Agents (`AgentModel.tsx`): an agent that thinks, acts on one of two context panels, then confirms. A click restarts the routine at the act step.
+  - AI Agents (`AgentModel.tsx`): an agent that thinks, acts on one of two context panels, then confirms, with thought particles spiralling around it. Hovering the agent brightens its eyes and speeds it up; hovering a panel makes the agent look at it and use it; a click throws the particles outward and restarts the routine at the act step.
   - Automation (`AutomationModel.tsx`): an isometric workflow of eight nodes with a feedback loop. Clicking a node sends a cascade downstream through its routes.
   - Data Analytics: a live 3D bar chart with a trend line.
   - LLMOps / MLOps: a build-deploy-monitor infinity loop.
-- Drag rotates the model with momentum, clicking it sends a pulse, and node lines bend toward the pointer. Hovering or focusing a card animates its signal path, like the selected card. Card data lives in `heroServices` (`src/lib/services.ts`); the other models are in `src/components/home/HeroModels.tsx`.
+- Drag rotates the model with momentum, clicking it sends a pulse, and node lines bend toward the pointer. Hovering or focusing a card animates its signal path, like the selected card. Unselected paths keep flowing and swaying at a slower speed. Card data lives in `heroServices` (`src/lib/services.ts`); the other models are in `src/components/home/HeroModels.tsx`.
 - `public/models/neural-brain.glb` and `npm run models:brain` are left over from the earlier brain hero; the current scene does not load them.
 - Phones, touch devices, narrow screens, and data-saver mode get `MobileOrbit`: an SVG orbit of the six services around a glowing core. It drifts from page load and each node bobs gently. Tap a node to select a service (synced with the cards below), drag sideways to spin it. It uses no WebGL and follows the same pause control.
 - Unavailable WebGL2, context loss, and scene errors fall back to a static CSS visual; all service controls stay in HTML.
