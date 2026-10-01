@@ -12,6 +12,7 @@ import { PrismaClient, ContentFormat, ContentStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import fs from "node:fs";
 import path from "node:path";
+import { applySeo } from "../scripts/content/seo";
 
 // Use local configuration when present; CI can supply variables directly.
 try { process.loadEnvFile(); } catch (error) {
@@ -325,6 +326,8 @@ async function main() {
   await seedEducationAndCerts();
   await seedTestimonials();
   await seedPages();
+  // Curated search titles/descriptions replace the WordPress-era values.
+  await applySeo(prisma);
   console.log("Seed complete.");
 }
 

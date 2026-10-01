@@ -89,8 +89,13 @@ npm run db:migrate        # Create/apply migrations during schema development
 npm run db:seed           # Import migrated content and create the initial admin
 npm run content:export    # Local DB -> prisma/content/snapshot.json (commit to deploy)
 npm run content:import    # Snapshot -> DATABASE_URL (runs automatically in production)
+npm run content:seo       # Apply prisma/content/seo.json (search titles/descriptions) to DATABASE_URL
 npm run db:studio         # Inspect data using Prisma Studio
 ```
+
+### SEO titles and descriptions
+
+Search titles and meta descriptions for posts, projects, and service pages live in `prisma/content/seo.json`, keyed by slug. `npm run db:seed` applies them last, so they replace the WordPress-era values. To change them on an existing database, edit the file, then run `npm run content:seo` and `npm run content:export`, and commit both files; the deploy imports the snapshot into production. The script warns when a title or description falls outside the recommended length. Titles over 40 characters are shown without the ` | Pankaj Kumar Pramanik` suffix, so keep titles at 41-60 characters, or 36 or fewer. Keep descriptions at 120-158 characters. Values edited in the admin dashboard are overwritten the next time `content:seo` runs for that slug.
 
 ### Media storage
 

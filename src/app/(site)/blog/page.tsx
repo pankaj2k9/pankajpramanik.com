@@ -15,8 +15,8 @@ import Counter from "@/components/site/Counter";
 export const revalidate = 300;
 
 export const metadata = pageMetadata(
-  "Journal - Writing on AI, data & engineering",
-  "Articles on AI engineering, LLM/RAG systems, MLOps, data engineering, and full-stack development.",
+  "AI & Data Engineering Blog",
+  "Articles and tutorials on AI engineering, LLM and RAG systems, MLOps, data engineering, cloud and full-stack development, with practical code and examples.",
   "/blog",
 );
 

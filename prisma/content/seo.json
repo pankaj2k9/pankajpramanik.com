@@ -1,0 +1,297 @@
+{
+  "$comment": "Curated search titles and meta descriptions, applied by `npm run content:seo` and at the end of `npm run db:seed`. Keys are slugs. Titles over 40 characters are shown without the site-name suffix, so keep them 41-60 characters, or 36 or fewer. Descriptions: 120-158 characters. Only describe what the page actually contains.",
+  "posts": {
+    "5-ways-to-instantly-improve-your-angular-codebase": {
+      "title": "5 Ways to Instantly Improve Your Angular Codebase",
+      "description": "Five practical ways to make an Angular codebase easier to read and maintain: file naming rules, feature, core and shared modules, and private services."
+    },
+    "ai-powered-apps-revolutionizing-industries": {
+      "title": "AI-Powered Apps: How OpenAI Is Changing Industries",
+      "description": "How OpenAI's GPT and Codex models power apps for content generation, translation, text prediction, text-to-speech and code generation across industries."
+    },
+    "ai-powered-apps-with-openai": {
+      "title": "Building AI-Powered Apps with OpenAI: GPT-3 & Codex",
+      "description": "How to integrate OpenAI models into applications, with real examples from Viable, Fable Studio and Algolia, and what GPT-3 and Codex each do well."
+    },
+    "aws-lambda-with-node-js": {
+      "title": "AWS Lambda with Node.js: A Serverless Guide",
+      "description": "Build and deploy an AWS Lambda function with Node.js: what serverless means, account and IAM user setup, local development, serverless.yml and deployment."
+    },
+    "best-practices-in-docker-container-security": {
+      "title": "Docker Container Security: Challenges & Best Practices",
+      "description": "Why Docker containers are hard to secure, safer default environments, how to monitor containers, and best practices for container security in production."
+    },
+    "cloud-app-development-strategies": {
+      "title": "Cloud App Development: Trends & Best Practices",
+      "description": "Cloud app development strategies: emerging trends, cloud-native approaches, best practices for cloud-based applications, and designing for scalability."
+    },
+    "custom-machine-learning-models": {
+      "title": "Custom Machine Learning Models with Transfer Learning",
+      "description": "Build custom machine learning models with transfer learning, TensorFlow Lite Model Maker and TensorFlow Hub, and configure them in IBM OpenPages."
+    },
+    "data-driven-decision-making": {
+      "title": "Data-Driven Decision Making: Benefits & Key Steps",
+      "description": "What data-driven decision making is, its benefits from less bias to better strategy and efficiency, and the steps to put it into practice in your business."
+    },
+    "data-science-case-studies": {
+      "title": "Data Science Case Studies: Real-World Examples",
+      "description": "Real-world data science case studies: Walmart personalisation, predictive maintenance in manufacturing, healthcare diagnostics and Uber logistics."
+    },
+    "database-management-and-integration-in-software-engineering": {
+      "title": "Database Integration in Software Engineering: A Guide",
+      "description": "Database integration techniques explained: ETL, data warehousing, master data management, data virtualisation and API-based consolidation of data."
+    },
+    "deep-learning-techniques": {
+      "title": "Top 10 Deep Learning Techniques and Real Applications",
+      "description": "What deep learning is, where it is used in customer service, healthcare and finance, and the top 10 techniques, from CNNs and LSTMs onwards, explained."
+    },
+    "ethical-risks-of-artificial-intelligence": {
+      "title": "The Ethical Risks of Artificial Intelligence in Business",
+      "description": "The ethical risks AI poses for businesses, including bias, fairness and transparency, with case studies and why you need an AI ethics committee."
+    },
+    "freelance-python-data-scientist": {
+      "title": "Freelance Python Data Scientist: Skills & Career Guide",
+      "description": "Why demand for freelance Python data scientists is growing, the skills you need in Python, analysis, visualisation and ML, and how to build a career."
+    },
+    "graphql-server-with-node-js": {
+      "title": "Build a GraphQL Server with Next.js and Node.js",
+      "description": "Build a GraphQL API inside Next.js API routes with Node.js: basic setup, CORS, Postgres with Knex, resolvers, and DataLoader to avoid N+1 queries."
+    },
+    "how-to-structure-large-flask-applications": {
+      "title": "How to Structure Large Flask Applications, Step by Step",
+      "description": "Step by step guide to structuring a large Flask application: preparing the system, laying out the app directory, and organising code with blueprints."
+    },
+    "how-typescript-can-be-used-with-node-and-express": {
+      "title": "Using TypeScript with Node.js and Express",
+      "description": "Why TypeScript improves productivity and maintenance in Node.js, and how to set up an Express project with TypeScript for type-safe, less error-prone code."
+    },
+    "innovations-in-artificial-intelligence": {
+      "title": "15 Latest Innovations in Artificial Intelligence",
+      "description": "15 recent AI innovations, from intelligent process automation and healthcare to IoT, finance, automobiles, virtual assistants and AI processors."
+    },
+    "kubernetes-observability": {
+      "title": "Kubernetes Observability: Metrics with Metricbeat",
+      "description": "Collect host, Docker, Kubernetes and application metrics with Metricbeat, use pod annotations for autodiscovery, and monitor apps with Elastic APM."
+    },
+    "mobile-application-architecture": {
+      "title": "Mobile App Architecture: React Native vs. Native",
+      "description": "How React Native architecture maps to native iOS and Android concepts: components, actions and store as view model, remote server and async storage."
+    },
+    "potential-of-big-data-solutions": {
+      "title": "Big Data Solutions: Storage, Processing & Analytics",
+      "description": "A guide to big data solutions: how data storage, processing, analytics and visualisation fit together, and the challenges to plan for along the way."
+    },
+    "react-testing-library": {
+      "title": "Unit Testing Gatsby with Jest, TypeScript & RTL",
+      "description": "Set up Jest and React Testing Library for test-driven development in a Gatsby project written in TypeScript, from Babel configuration to passing tests."
+    },
+    "real-time-web-apps-with-trpc": {
+      "title": "Build Real-Time Web Apps with tRPC and Next.js",
+      "description": "Build a real-time web application with tRPC, Next.js, TypeScript and Prisma ORM: project setup, the tRPC server and backend, and database configuration."
+    },
+    "remote-python-developer": {
+      "title": "Django Model Design: Relationships & Proxy Models",
+      "description": "Design better Django models: follow Django's model conventions, encapsulate logic through model relationships, and use proxy models where they fit."
+    },
+    "remote-react-app-developer": {
+      "title": "A Reusable React Modal: An Underrated Design Pattern",
+      "description": "Build a flexible React modal with Bootstrap, then a composition pattern for title, content and buttons that keeps components reusable and easy to change."
+    },
+    "remote-typescript-developer": {
+      "title": "GraphQL API with TypeScript and PostgreSQL: Setup Guide",
+      "description": "Set up a GraphQL API with TypeScript and PostgreSQL: why this stack, folder structure, dependencies, Webpack configuration and a Hello World example."
+    },
+    "user-friendly-web-application-security": {
+      "title": "Web Application Security That Stays User-Friendly",
+      "description": "Web application security strategies that protect users without hurting usability: encryption, data-driven threat detection and regular security audits."
+    },
+    "web-applications-with-cloudfront": {
+      "title": "CloudFront Edge Functions: Best Practices",
+      "description": "Use CloudFront edge functions to cut latency, add advanced HTTP logic, improve security, and route and load-balance requests at the edge of AWS's network."
+    }
+  },
+  "projects": {
+    "ai-automation-engineer-n8n-gohighlevel-ai-automation-engineer": {
+      "title": "AI Automation Engineer: n8n, GoHighLevel & Voice AI",
+      "description": "n8n workflow systems connecting Retell AI voice agents, GPT-4 and Claude with GoHighLevel, Twilio and Make.com, automating 1,000+ sales calls a month."
+    },
+    "front-end-developer-at-podscribe": {
+      "title": "Front-End Developer at Podscribe: React & Redux",
+      "description": "Front-end development at Podscribe: scalable, responsive web apps with React, Redux and TypeScript, deployed with DevOps teams on AWS EC2, S3 and CloudFront."
+    },
+    "angular-app-development": {
+      "title": "Angular Industrial Monitoring Apps at BlueSurge",
+      "description": "Angular and TypeScript modules for industrial monitoring at BlueSurge Technologies: generator monitoring, an asset dashboard and an alarm console."
+    },
+    "full-stack-developer-at-anekonnect-incorporated": {
+      "title": "Full Stack Developer at Anekonnect: React & Node.js",
+      "description": "Full stack work at Anekonnect Incorporated: React, React Native and Next.js apps with Node.js REST services, Redux middleware and Ant Design, in Agile teams."
+    },
+    "full-stack-developer-at-bydesign": {
+      "title": "React Native Automotive Mobile Apps at ByDesign",
+      "description": "Enterprise React Native apps for the automotive industry at ByDesign: REST APIs, push notifications and microservices, shipped to Google Play and App Store."
+    },
+    "full-stack-developer-at-nivan-tech": {
+      "title": "Full Stack Developer at Nivan Tech: Node.js & Angular",
+      "description": "Redesigned services at Nivan Tech with Node.js, Express, NGINX, MongoDB and MySQL, built Angular front ends, and optimised Node.js microservices."
+    },
+    "full-stack-engineer-at-breaker-nation": {
+      "title": "React Native Mobile Developer at Breaker Nation",
+      "description": "Large-scale automotive React Native apps for iOS and Android at Breaker Nation: rebuilt navigation, push notifications, and 44% fewer user input errors."
+    },
+    "full-stack-engineer-at-prime-lab": {
+      "title": "Full Stack Engineer at PrimeLab: Next.js, Node & AWS",
+      "description": "Full stack work at PrimeLab: React, React Native and Next.js single-page apps, Node.js REST APIs following MVC, and deployment on AWS cloud infrastructure."
+    },
+    "blockchain-developer-at-vircadia": {
+      "title": "Blockchain & WebGL 3D Developer at Vircadia",
+      "description": "Solidity smart contracts and Ethereum DApps with Web3.js at Vircadia, plus WebGL engine work on virtual texturing and multiresolution mesh rendering."
+    },
+    "journeymesh-multi-agent-ai-travel-planner-langgraph-mcp-llmops": {
+      "title": "JourneyMesh: Multi-Agent AI Travel Planner (LangGraph)",
+      "description": "Multi-agent AI travel planner: LangGraph supervisor, MCP tools, guardrails, 10-dimension evaluation and human-in-the-loop review. FastAPI, React, PostgreSQL."
+    },
+    "uber-data-engineering-etl-project": {
+      "title": "Uber Data Engineering ETL Pipeline on Google Cloud",
+      "description": "End-to-end ETL pipeline on Google Cloud for NYC taxi trip data: Mage.ai orchestration, Cloud Storage, a BigQuery fact/dimension model and Looker Studio."
+    },
+    "full-stack-developer-at-naked-media": {
+      "title": "Full Stack Developer at Naked Media: React & Kafka",
+      "description": "Full stack work at Naked Media: React, Gatsby.js and Node.js apps, a Kafka message queue prototype with Spring, SOA design and UML documentation."
+    },
+    "full-stack-engineer-at-crewfare-com": {
+      "title": "Serverless Full Stack Engineer at CrewFare",
+      "description": "Serverless Node.js and React apps on AWS at CrewFare, serving 100,000+ users, using Lambda, RDS, S3 and CloudFront, with a faster async/await architecture."
+    },
+    "full-stack-developer-at-spotter-labs": {
+      "title": "Full Stack Developer at Spotter Labs: Django & React",
+      "description": "Full stack work at Spotter Labs: Python/Django back ends and React single-page apps, REST APIs with Node.js, and deployment on AWS cloud infrastructure."
+    },
+    "medical-rag-chatbot-langchain-pinecone-flask": {
+      "title": "Medical RAG Chatbot with LangChain, Pinecone & Flask",
+      "description": "CareSage, a medical RAG chatbot that answers from PDF documents: sentence-transformer embeddings in Pinecone, a LangChain pipeline and a Flask chat UI."
+    },
+    "moviemate-tf-idf-cosine-similarity-movie-recommender": {
+      "title": "MovieMate: TF-IDF Movie Recommender in Streamlit",
+      "description": "Content-based movie recommender on the TMDB 5000 dataset: TF-IDF and cosine similarity over genres, cast, crew and keywords, in a Streamlit web app."
+    },
+    "react-app-development": {
+      "title": "React, GraphQL & Relay Sports Platform at Sportunity",
+      "description": "Full stack features for the Sportunity sports platform built with React, Node.js, GraphQL and Relay, plus bug fixing and performance optimisation."
+    },
+    "bird-disease-prediction-end-to-end-mlops-deep-learning": {
+      "title": "Bird Disease Prediction: End-to-End MLOps with a CNN",
+      "description": "End-to-end MLOps project classifying bird diseases from images: data ingestion, CNN transfer learning, evaluation, versioned models and Docker deployment."
+    },
+    "blockchain-developer-at-xr-foundation": {
+      "title": "Blockchain & 3D WebGL Engineer at XR Foundation",
+      "description": "Blockchain deployment automation and immersive 3D web experiences at XR Foundation, using Ethereum, Web3.js, smart contracts, Three.js and Babylon.js."
+    },
+    "end-to-end-mlops-classification-aws-fastapi-ci-cd": {
+      "title": "End-to-End MLOps on AWS with FastAPI & GitHub Actions",
+      "description": "Visa approval classifier from training to monitoring: XGBoost and CatBoost, FastAPI in Docker on EC2 via ECR, GitHub Actions CI/CD, Evidently AI drift."
+    }
+  },
+  "pages": {
+    "about-me": {
+      "title": "About Pankaj Kumar Pramanik",
+      "description": "Archived About page from the earlier site. See the current About page for Pankaj Kumar Pramanik's background in AI, data engineering and automation."
+    },
+    "ai-chatbot-agent-designer": {
+      "title": "Custom AI Chatbot & Agent Development Services",
+      "description": "Custom AI chatbots and agents built with LLMs, RAG, memory, APIs and automation workflows for customer support, lead handling and internal tools."
+    },
+    "aws-serverless-app-development": {
+      "title": "AWS Serverless App Development with Lambda & SAM",
+      "description": "AWS serverless app development with Lambda functions, event sources, APIs and databases defined through AWS SAM, so the focus stays on application code."
+    },
+    "deep-learning-solutions": {
+      "title": "Deep Learning Development: Vision, NLP & Prediction",
+      "description": "Custom deep learning for prediction, classification, computer vision and NLP: neural networks trained, tuned and deployed as production-ready AI systems."
+    },
+    "hire-ai-data-pipeline-engineer": {
+      "title": "AI-Powered Data Pipeline Engineering Services",
+      "description": "AI-powered data pipelines combining ETL/ELT, machine learning enrichment, embeddings, vector search and workflow automation for scalable business data."
+    },
+    "hire-ai-langchain-expert": {
+      "title": "LangChain Development Services: Agents & RAG Apps",
+      "description": "Production LangChain applications, AI agents and retrieval workflows that connect LLMs with your APIs, databases, vector stores and business logic."
+    },
+    "hire-cloud-devops-engineer-ai": {
+      "title": "Cloud & DevOps Engineering for AI Applications",
+      "description": "Cloud and DevOps for AI: containerisation, CI/CD, model deployment, observability, vector database hosting and secure APIs for production AI products."
+    },
+    "hire-data-analytics-visualization-expert": {
+      "title": "Data Analytics & Visualization Services: BI Dashboards",
+      "description": "Data analytics and visualization: data modelling, BI dashboards, forecasting and AI-generated reporting for real-time monitoring and better decisions."
+    },
+    "hire-n8n-workflow-developer": {
+      "title": "n8n Workflow Automation Development Services",
+      "description": "Custom n8n workflow automation connecting apps, APIs, CRMs, AI tools and internal systems, with workflow design, custom scripting and deployment."
+    },
+    "hire-the-perfect-mlops-developer": {
+      "title": "MLOps Services: Deploy, Monitor & Scale ML Models",
+      "description": "MLOps services for model deployment and serving, CI/CD for machine learning, containerisation, monitoring and versioning, from training to production."
+    },
+    "llm-rag-developer-hire": {
+      "title": "LLM & RAG Application Development Services",
+      "description": "LLM and RAG applications: AI assistants, knowledge chatbots, document Q&A and internal search built with embeddings, vector databases and orchestration."
+    },
+    "natural-language-processing-excellence": {
+      "title": "NLP Development Services: Text, Documents & Chat",
+      "description": "Custom NLP for chatbots, document extraction, text analytics, classification and entity recognition, built with modern language models and deployed."
+    },
+    "prompt-engineer-hire": {
+      "title": "Prompt Engineering Services for LLMs & AI Agents",
+      "description": "Prompt engineering for LLMs, chatbots, RAG systems and agents: structured prompting, tool use, memory design and guardrails for reliable AI behaviour."
+    },
+    "ai-automation": {
+      "title": "AI Automation Services: n8n, GoHighLevel & Voice AI",
+      "description": "AI workflow automation with n8n, GoHighLevel, Retell AI voice agents, HubSpot, Zapier and Make.com, connecting your tools into self-running systems."
+    },
+    "ai-based-software-development": {
+      "title": "AI-Based Software Development: AI-Native Products",
+      "description": "AI-native full-stack software with LLM and ML features designed in from the start: Next.js, FastAPI, PostgreSQL, vector search and cloud deployment."
+    },
+    "data-science-and-machine-learning": {
+      "title": "Data Science & Machine Learning Development Services",
+      "description": "End-to-end data science and machine learning: ETL pipelines, ML models, NLP, BI dashboards and MLOps deployment, turning raw data into decisions."
+    },
+    "data-structure-and-algorithm-problem-solving": {
+      "title": "Algorithms, Data Structures & System Design Services",
+      "description": "Problem solving for real-world applications: algorithms, data structures, system design and backend logic that turn requirements into reliable software."
+    },
+    "agentic-ai-development": {
+      "title": "Agentic AI Development: AI Agents & Multi-Agent Systems",
+      "description": "Production agentic AI: tool-using agents, multi-agent orchestration, memory and human-in-the-loop workflows built with LangGraph, MCP, OpenAI and Claude."
+    },
+    "privacy-policy": {
+      "title": "Privacy Policy",
+      "description": "How pankajpramanik.com collects, uses and protects the personal data you share through the contact form and blog comments."
+    },
+    "ai-voice-assistant-developer": {
+      "title": "AI Voice Assistant & Voice Agent Development",
+      "description": "Custom AI voice agents for support, lead qualification, appointment booking and intake, built with Retell AI, Vapi, Voiceflow, Twilio and 3CX."
+    },
+    "chatting-app-development": {
+      "title": "Chat App Development: Real-Time Messaging Apps",
+      "description": "Real-time chat app development: instant messaging, media sharing, voice and video calls, and user-centred design, built by a full stack web developer."
+    },
+    "data-engineering-excellence": {
+      "title": "Data Engineering Services: Pipelines, ETL & Warehouses",
+      "description": "Data engineering services: data pipelines, ETL/ELT workflows, storage systems, cloud infrastructure and analytics enablement for AI-ready data."
+    },
+    "vector-database-integration-expert": {
+      "title": "Vector Database Integration for Semantic Search & RAG",
+      "description": "Vector database integration for semantic search and RAG: embeddings, indexing strategies, backend APIs and LLM workflows for fast, relevant retrieval."
+    },
+    "forward-deployed-engineer": {
+      "title": "Forward-Deployed AI Engineer (FDE) Services",
+      "description": "Forward-deployed AI engineering: embedded with your team to scope, prototype, integrate and deploy LLM and ML systems on real production data."
+    },
+    "llmops": {
+      "title": "LLMOps Services: Evaluation, Observability & Guardrails",
+      "description": "LLMOps for production LLM apps: evaluation pipelines, prompt versioning, tracing and observability, guardrails, caching and cost control."
+    }
+  }
+}

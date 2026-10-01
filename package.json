@@ -21,6 +21,7 @@
     "test:e2e": "playwright test",
     "content:export": "tsx scripts/content/export.ts",
     "content:import": "tsx scripts/content/import.ts",
+    "content:seo": "tsx scripts/content/apply-seo.ts",
     "content:bundle": "esbuild scripts/content/import.ts --bundle --platform=node --target=node22 --format=cjs --external:@prisma/client --outfile=dist/content-import.cjs",
     "models:brain": "node scripts/models/generate-brain.mjs",
     "photo": "node scripts/set-photo.mjs",

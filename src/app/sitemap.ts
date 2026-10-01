@@ -59,7 +59,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl("/blog"), lastModified: blogUpdated, changeFrequency: "weekly", priority: 0.9 },
     { url: absoluteUrl("/contact"), changeFrequency: "yearly", priority: 0.6 },
     { url: absoluteUrl("/booking"), changeFrequency: "monthly", priority: 0.7 },
-    { url: absoluteUrl("/privacy-policy"), changeFrequency: "yearly", priority: 0.3 },
+    // /privacy-policy is noindex, so it stays out: a sitemap must only list indexable URLs.
   ];
 
   return [
