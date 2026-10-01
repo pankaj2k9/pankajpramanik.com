@@ -18,6 +18,7 @@ export const metadata = pageMetadata(
   "AI & Data Engineering Blog",
   "Articles and tutorials on AI engineering, LLM and RAG systems, MLOps, data engineering, cloud and full-stack development, with practical code and examples.",
   "/blog",
+  { section: "Blog" },
 );
 
 const STEPS = [

@@ -21,6 +21,7 @@ export const metadata = pageMetadata(
   "Work Experience & Education",
   "8+ years of professional experience - AI engineering, LLM/RAG systems, MLOps, 3D graphics, and full-stack development across global teams.",
   "/experience",
+  { section: "Experience" },
 );
 
 export default async function ExperiencePage() {

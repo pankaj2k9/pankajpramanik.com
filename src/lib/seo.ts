@@ -2,42 +2,64 @@ import type { Metadata } from "next";
 import type { Education } from "@prisma/client";
 import { absoluteUrl, site } from "./site";
 
-type PageImage = { url: string; alt: string; width?: number; height?: number };
+/**
+ * Link-preview image for a page: a 1200x630 branded card with the page's own
+ * title (src/app/og/route.tsx), optionally beside its JPEG/PNG cover.
+ */
+function previewImage(title: string, section?: string, cover?: string | null) {
+  const query = new URLSearchParams({ title });
+  if (section) query.set("section", section);
+  if (cover) query.set("cover", cover);
+  return {
+    url: absoluteUrl(`/og?${query}`),
+    width: 1200,
+    height: 630,
+    type: "image/png",
+    alt: section ? `${section}: ${title}` : title,
+  };
+}
 
-const DEFAULT_IMAGE: PageImage = {
-  url: "/opengraph-image",
-  width: 1200,
-  height: 630,
-  alt: site.title,
-};
+/** Longest title shown in full by Google (about 600px) and WhatsApp/LinkedIn previews. */
+export const TITLE_MAX = 63;
+
+/** Page title with the brand appended when it fits, e.g. "LLMOps | Pankaj Pramanik". */
+export function brandedTitle(title: string): string {
+  if (title.includes("Pankaj")) return title;
+  const branded = `${title} | ${site.brand}`;
+  return branded.length <= TITLE_MAX ? branded : title;
+}
 
 /**
  * Metadata for an indexable page: title, description, canonical URL, Open
- * Graph and X card, all pointing at the production domain. `title` goes
- * through the root title template unless `absoluteTitle` is set; social
- * titles always carry the site name.
+ * Graph and X card, all pointing at the production domain. The title gets
+ * " | Pankaj Pramanik" when the result still fits a search result or chat
+ * preview (TITLE_MAX); longer titles, and titles that already name Pankaj,
+ * stay as they are.
  */
 export function pageMetadata(
   title: string,
   description: string,
   path: string,
   options: {
-    absoluteTitle?: boolean;
     type?: "website" | "article" | "profile";
-    image?: PageImage | null;
+    /** Small label above the title on the preview card, e.g. "Service". */
+    section?: string;
+    /** Page cover from /uploads, shown beside the title when JPEG or PNG. */
+    cover?: string | null;
+    /** Headline for the preview card when it should differ from the page title. */
+    previewTitle?: string;
     publishedTime?: string;
     modifiedTime?: string;
   } = {},
 ): Metadata {
-  const { absoluteTitle = false, type = "website", publishedTime, modifiedTime } = options;
-  const socialTitle = absoluteTitle ? title : `${title} | ${site.name}`;
-  const image = options.image
-    ? { ...options.image, url: absoluteUrl(options.image.url) }
-    : { ...DEFAULT_IMAGE, url: absoluteUrl(DEFAULT_IMAGE.url) };
+  const { type = "website", publishedTime, modifiedTime } = options;
+  const fullTitle = brandedTitle(title);
+  // The card already carries the site name, so it shows the bare page title.
+  const image = previewImage(options.previewTitle ?? title, options.section, options.cover);
   const url = absoluteUrl(path);
 
   return {
-    title: absoluteTitle ? { absolute: title } : title,
+    title: { absolute: fullTitle },
     description,
     alternates: { canonical: url },
     // Set per indexable page rather than in the root layout, so 404 and error
@@ -50,7 +72,7 @@ export function pageMetadata(
     openGraph: {
       type,
       locale: "en_US",
-      title: socialTitle,
+      title: fullTitle,
       description,
       url,
       siteName: site.name,
@@ -59,7 +81,7 @@ export function pageMetadata(
     },
     twitter: {
       card: "summary_large_image",
-      title: socialTitle,
+      title: fullTitle,
       description,
       images: [{ url: image.url, alt: image.alt }],
     },

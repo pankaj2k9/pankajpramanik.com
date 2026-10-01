@@ -1,5 +1,7 @@
 export const site = {
   name: "Pankaj Kumar Pramanik",
+  /** Brand appended to page titles; matches the pankajpramanik.com domain. */
+  brand: "Pankaj Pramanik",
   title: "Pankaj Kumar Pramanik - AI & Data Engineer",
   description:
     "AI and data engineering by Pankaj Kumar Pramanik. Build useful AI applications, reliable data pipelines, and connected automation for your business.",

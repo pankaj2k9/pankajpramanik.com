@@ -16,6 +16,7 @@ export const metadata = pageMetadata(
   "AI, Data & Automation Services",
   "Practical AI engineering, document retrieval, data pipelines, MLOps, and workflow automation. Find the right service and discuss a clear project scope.",
   "/services",
+  { section: "Services" },
 );
 
 const STEPS = [

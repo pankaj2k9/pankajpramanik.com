@@ -21,6 +21,7 @@ export const metadata = pageMetadata(
   "Skills & Tech Stack",
   "Technical skills across Generative AI, LLM/RAG systems, data science, MLOps, frontend, backend, and cloud - Python, LangChain, Next.js, AWS, and more.",
   "/skills",
+  { section: "Skills" },
 );
 
 const TONES = ["blue", "peach", "mint", "orange", "violet"];

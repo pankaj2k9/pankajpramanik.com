@@ -42,7 +42,7 @@ export async function generateMetadata({
   if (!page || page.kind !== "SERVICE") return {};
   const title = page.seoTitle || page.label || page.title;
   return pageMetadata(title, metaDescription(page.seoDescription || page.summary), `/services/${page.slug}`, {
-    absoluteTitle: title.length > 40,
+    section: "Service",
   });
 }
 

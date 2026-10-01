@@ -51,9 +51,9 @@ export async function generateMetadata({
   const description = metaDescription(post.seoDescription ?? post.excerpt);
 
   return pageMetadata(title, description, `/blog/${post.slug}`, {
-    absoluteTitle: title.length > 40,
     type: "article",
-    image: post.coverImage ? { url: post.coverImage, alt: post.title } : null,
+    section: "Article",
+    cover: post.coverImage,
     publishedTime: post.publishedAt?.toISOString(),
     modifiedTime: post.updatedAt.toISOString(),
   });

@@ -5,7 +5,9 @@ import { site } from "@/lib/site";
 import { jsonLdScript } from "@/lib/utils";
 
 export const metadata = pageMetadata(site.title, site.description, "/", {
-  absoluteTitle: true,
+  // The card already names Pankaj, so it carries the hero line instead.
+  previewTitle: "Your data. Real intelligence. In action.",
+  section: "AI · Data · Automation",
 });
 export const revalidate = 300;
 

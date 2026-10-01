@@ -43,10 +43,8 @@ export async function generateMetadata({
   const title = project.seoTitle ?? `${project.title} - Project`;
   const description = metaDescription(project.seoDescription ?? project.description);
   return pageMetadata(title, description, `/portfolio/${project.slug}`, {
-    absoluteTitle: title.length > 40,
-    image: project.coverImage
-      ? { url: project.coverImage, alt: `${project.title} - project preview` }
-      : null,
+    section: "Project",
+    cover: project.coverImage,
   });
 }
 

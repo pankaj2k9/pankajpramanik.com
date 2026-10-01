@@ -1,5 +1,5 @@
 {
-  "$comment": "Curated search titles and meta descriptions, applied by `npm run content:seo` and at the end of `npm run db:seed`. Keys are slugs. Titles over 40 characters are shown without the site-name suffix, so keep them 41-60 characters, or 36 or fewer. Descriptions: 120-158 characters. Only describe what the page actually contains.",
+  "$comment": "Curated search titles and meta descriptions, applied by `npm run content:seo` and at the end of `npm run db:seed`. Keys are slugs. Titles of 45 characters or fewer get \" | Pankaj Pramanik\" appended; longer ones are shown alone. Keep titles to 60 characters at most. Descriptions: 120-158 characters. Only describe what the page actually contains.",
   "posts": {
     "5-ways-to-instantly-improve-your-angular-codebase": {
       "title": "5 Ways to Instantly Improve Your Angular Codebase",
@@ -198,71 +198,71 @@
       "description": "Archived About page from the earlier site. See the current About page for Pankaj Kumar Pramanik's background in AI, data engineering and automation."
     },
     "ai-chatbot-agent-designer": {
-      "title": "Custom AI Chatbot & Agent Development Services",
+      "title": "AI Chatbot & Agent Development",
       "description": "Custom AI chatbots and agents built with LLMs, RAG, memory, APIs and automation workflows for customer support, lead handling and internal tools."
     },
     "aws-serverless-app-development": {
-      "title": "AWS Serverless App Development with Lambda & SAM",
+      "title": "AWS Serverless Development: Lambda & SAM",
       "description": "AWS serverless app development with Lambda functions, event sources, APIs and databases defined through AWS SAM, so the focus stays on application code."
     },
     "deep-learning-solutions": {
-      "title": "Deep Learning Development: Vision, NLP & Prediction",
+      "title": "Deep Learning: Vision, NLP & Prediction",
       "description": "Custom deep learning for prediction, classification, computer vision and NLP: neural networks trained, tuned and deployed as production-ready AI systems."
     },
     "hire-ai-data-pipeline-engineer": {
-      "title": "AI-Powered Data Pipeline Engineering Services",
+      "title": "AI-Powered Data Pipeline Engineering",
       "description": "AI-powered data pipelines combining ETL/ELT, machine learning enrichment, embeddings, vector search and workflow automation for scalable business data."
     },
     "hire-ai-langchain-expert": {
-      "title": "LangChain Development Services: Agents & RAG Apps",
+      "title": "LangChain Development: Agents & RAG Apps",
       "description": "Production LangChain applications, AI agents and retrieval workflows that connect LLMs with your APIs, databases, vector stores and business logic."
     },
     "hire-cloud-devops-engineer-ai": {
-      "title": "Cloud & DevOps Engineering for AI Applications",
+      "title": "Cloud & DevOps Engineering for AI",
       "description": "Cloud and DevOps for AI: containerisation, CI/CD, model deployment, observability, vector database hosting and secure APIs for production AI products."
     },
     "hire-data-analytics-visualization-expert": {
-      "title": "Data Analytics & Visualization Services: BI Dashboards",
+      "title": "Data Analytics & BI Dashboard Services",
       "description": "Data analytics and visualization: data modelling, BI dashboards, forecasting and AI-generated reporting for real-time monitoring and better decisions."
     },
     "hire-n8n-workflow-developer": {
-      "title": "n8n Workflow Automation Development Services",
+      "title": "n8n Workflow Automation Development",
       "description": "Custom n8n workflow automation connecting apps, APIs, CRMs, AI tools and internal systems, with workflow design, custom scripting and deployment."
     },
     "hire-the-perfect-mlops-developer": {
-      "title": "MLOps Services: Deploy, Monitor & Scale ML Models",
+      "title": "MLOps Services: Deploy & Monitor Models",
       "description": "MLOps services for model deployment and serving, CI/CD for machine learning, containerisation, monitoring and versioning, from training to production."
     },
     "llm-rag-developer-hire": {
-      "title": "LLM & RAG Application Development Services",
+      "title": "LLM & RAG Application Development",
       "description": "LLM and RAG applications: AI assistants, knowledge chatbots, document Q&A and internal search built with embeddings, vector databases and orchestration."
     },
     "natural-language-processing-excellence": {
-      "title": "NLP Development Services: Text, Documents & Chat",
+      "title": "NLP Development: Text, Documents & Chat",
       "description": "Custom NLP for chatbots, document extraction, text analytics, classification and entity recognition, built with modern language models and deployed."
     },
     "prompt-engineer-hire": {
-      "title": "Prompt Engineering Services for LLMs & AI Agents",
+      "title": "Prompt Engineering for LLMs & AI Agents",
       "description": "Prompt engineering for LLMs, chatbots, RAG systems and agents: structured prompting, tool use, memory design and guardrails for reliable AI behaviour."
     },
     "ai-automation": {
-      "title": "AI Automation Services: n8n, GoHighLevel & Voice AI",
+      "title": "AI Automation: n8n, GoHighLevel & Voice AI",
       "description": "AI workflow automation with n8n, GoHighLevel, Retell AI voice agents, HubSpot, Zapier and Make.com, connecting your tools into self-running systems."
     },
     "ai-based-software-development": {
-      "title": "AI-Based Software Development: AI-Native Products",
+      "title": "AI-Based Software Development",
       "description": "AI-native full-stack software with LLM and ML features designed in from the start: Next.js, FastAPI, PostgreSQL, vector search and cloud deployment."
     },
     "data-science-and-machine-learning": {
-      "title": "Data Science & Machine Learning Development Services",
+      "title": "Data Science & Machine Learning Services",
       "description": "End-to-end data science and machine learning: ETL pipelines, ML models, NLP, BI dashboards and MLOps deployment, turning raw data into decisions."
     },
     "data-structure-and-algorithm-problem-solving": {
-      "title": "Algorithms, Data Structures & System Design Services",
+      "title": "Algorithms, Data Structures & System Design",
       "description": "Problem solving for real-world applications: algorithms, data structures, system design and backend logic that turn requirements into reliable software."
     },
     "agentic-ai-development": {
-      "title": "Agentic AI Development: AI Agents & Multi-Agent Systems",
+      "title": "Agentic AI Development & Multi-Agent Systems",
       "description": "Production agentic AI: tool-using agents, multi-agent orchestration, memory and human-in-the-loop workflows built with LangGraph, MCP, OpenAI and Claude."
     },
     "privacy-policy": {
@@ -274,23 +274,23 @@
       "description": "Custom AI voice agents for support, lead qualification, appointment booking and intake, built with Retell AI, Vapi, Voiceflow, Twilio and 3CX."
     },
     "chatting-app-development": {
-      "title": "Chat App Development: Real-Time Messaging Apps",
+      "title": "Real-Time Chat App Development",
       "description": "Real-time chat app development: instant messaging, media sharing, voice and video calls, and user-centred design, built by a full stack web developer."
     },
     "data-engineering-excellence": {
-      "title": "Data Engineering Services: Pipelines, ETL & Warehouses",
+      "title": "Data Engineering: Pipelines, ETL & Warehouses",
       "description": "Data engineering services: data pipelines, ETL/ELT workflows, storage systems, cloud infrastructure and analytics enablement for AI-ready data."
     },
     "vector-database-integration-expert": {
-      "title": "Vector Database Integration for Semantic Search & RAG",
+      "title": "Vector Database Integration for RAG",
       "description": "Vector database integration for semantic search and RAG: embeddings, indexing strategies, backend APIs and LLM workflows for fast, relevant retrieval."
     },
     "forward-deployed-engineer": {
-      "title": "Forward-Deployed AI Engineer (FDE) Services",
+      "title": "Forward-Deployed AI Engineer (FDE)",
       "description": "Forward-deployed AI engineering: embedded with your team to scope, prototype, integrate and deploy LLM and ML systems on real production data."
     },
     "llmops": {
-      "title": "LLMOps Services: Evaluation, Observability & Guardrails",
+      "title": "LLMOps: Evaluation, Observability & Safety",
       "description": "LLMOps for production LLM apps: evaluation pipelines, prompt versioning, tracing and observability, guardrails, caching and cost control."
     }
   }

@@ -16,6 +16,7 @@ export const metadata = pageMetadata(
   "Projects & Case Studies",
   "Explore AI applications, data engineering, MLOps, and full-stack projects. Filter by category or technology and inspect each project's approach and evidence.",
   "/portfolio",
+  { section: "Portfolio" },
 );
 
 const STEPS = [

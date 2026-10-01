@@ -18,12 +18,12 @@ type SeoFile = {
 const SEO_FILE = path.join(process.cwd(), "prisma", "content", "seo.json");
 
 /**
- * Titles over 40 characters skip the " | Pankaj Kumar Pramanik" suffix (see
- * the detail pages' generateMetadata), so 37-40 would render at 61-64.
+ * Titles up to 45 characters get " | Pankaj Pramanik" appended (brandedTitle
+ * in src/lib/seo.ts); longer ones are shown alone, so must still fit.
  */
 function lengthWarnings(kind: string, slug: string, { title, description }: Entry) {
   const warnings: string[] = [];
-  if (title.length > 60 || (title.length > 36 && title.length <= 40)) {
+  if (title.length > 60) {
     warnings.push(`title is ${title.length} characters`);
   }
   if (description.length < 120 || description.length > 158) {

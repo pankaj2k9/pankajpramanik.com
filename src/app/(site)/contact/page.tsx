@@ -12,6 +12,7 @@ export const metadata = pageMetadata(
   "Contact - Let's Build Something Useful",
   "Discuss your AI application, data pipeline, or automation project with Pankaj Kumar Pramanik. Send a project brief, email, or connect on WhatsApp.",
   "/contact",
+  { section: "Contact" },
 );
 
 const STEPS = [

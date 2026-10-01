@@ -49,7 +49,7 @@ Local database: `localhost:5433`. Optional Redis: `localhost:6380`. Docker crede
 | http://localhost:3000/skills | Existing technology groups |
 | http://localhost:3000/sitemap.xml | Published public URLs |
 | http://localhost:3000/robots.txt | Crawl rules excluding admin/API |
-| http://localhost:3000/opengraph-image | Generated sharing image |
+| http://localhost:3000/og?title=Hello&section=Service | Link-preview card (1200×630 PNG) used by every page's `og:image` |
 
 `/book` and `/schedule` redirect to `/booking`. `/projects` redirects to `/portfolio`; `/projects/<slug>` redirects to `/portfolio/<slug>`; `/dashboard` redirects to `/admin`. WordPress-era post URLs, `/about-me`, `/resume`, and `/latest-from-the-blog` retain permanent redirects. Deep links into the dashboard return to the requested path after sign-in, and work on refresh.
 
@@ -95,7 +95,7 @@ npm run db:studio         # Inspect data using Prisma Studio
 
 ### SEO titles and descriptions
 
-Search titles and meta descriptions for posts, projects, and service pages live in `prisma/content/seo.json`, keyed by slug. `npm run db:seed` applies them last, so they replace the WordPress-era values. To change them on an existing database, edit the file, then run `npm run content:seo` and `npm run content:export`, and commit both files; the deploy imports the snapshot into production. The script warns when a title or description falls outside the recommended length. Titles over 40 characters are shown without the ` | Pankaj Kumar Pramanik` suffix, so keep titles at 41-60 characters, or 36 or fewer. Keep descriptions at 120-158 characters. Values edited in the admin dashboard are overwritten the next time `content:seo` runs for that slug.
+Search titles and meta descriptions for posts, projects, and service pages live in `prisma/content/seo.json`, keyed by slug. `npm run db:seed` applies them last, so they replace the WordPress-era values. To change them on an existing database, edit the file, then run `npm run content:seo` and `npm run content:export`, and commit both files; the deploy imports the snapshot into production. The script warns when a title or description falls outside the recommended length. Titles of 45 characters or fewer get ` | Pankaj Pramanik` appended (in search results and link previews); longer titles are shown alone, so nothing is cut off. Keep titles to 60 characters at most. Keep descriptions at 120-158 characters. Values edited in the admin dashboard are overwritten the next time `content:seo` runs for that slug.
 
 ### Media storage
 
@@ -175,7 +175,7 @@ The API validates inputs, uses a honeypot and time check, rate-limits requests, 
 - Dark mode is the default for every visitor. The theme toggle stores `light` or `dark` in `localStorage` (`theme`), and an inline script applies it before paint.
 - Native scroll and IntersectionObserver reveals replace GSAP/Lenis and the custom pointer runtime. Reduced-motion preferences disable animation. Music stays available as explicit opt-in with `preload="none"`.
 - Images use `next/image` where appropriate; decorative service SVGs have explicit dimensions. Fonts are self-hosted by `next/font` after build-time download. Layout space is reserved for the hero and media.
-- Page metadata includes canonical URLs, page-specific social cards, titles, and descriptions. Existing Person, Service, BlogPosting, and SoftwareSourceCode structured data is retained. Admin and login pages emit noindex metadata and an `X-Robots-Tag`; admin URLs are excluded from the sitemap.
+- Page metadata includes canonical URLs, titles, and descriptions. Every page also sends `og:title`, `og:description`, `og:url`, `og:image` (with size, type, and alt text), and the matching `twitter:*` tags, so WhatsApp, LinkedIn, Facebook, X, and Slack show a proper link preview. The image is a branded 1200×630 card from `src/app/og/route.tsx` showing the page's title and section (Service, Project, Article). A JPEG or PNG cover is shown beside the title; WebP and AVIF covers are left out because preview crawlers often cannot read them. Set the page in `pageMetadata` (`src/lib/seo.ts`) with the `section`, `cover`, and `previewTitle` options. Social apps cache previews; after changing one, refresh it with the Facebook Sharing Debugger or LinkedIn Post Inspector. Existing Person, Service, BlogPosting, and SoftwareSourceCode structured data is retained. Admin and login pages emit noindex metadata and an `X-Robots-Tag`; admin URLs are excluded from the sitemap.
 
 ## Browser and performance checks
 

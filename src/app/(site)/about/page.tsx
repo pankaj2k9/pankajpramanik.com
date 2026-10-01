@@ -35,7 +35,7 @@ export const metadata = pageMetadata(
   "About Pankaj Kumar Pramanik - AI & Data Engineer",
   DESCRIPTION,
   "/about",
-  { absoluteTitle: true },
+  { section: "About" },
 );
 
 const STEPS = [

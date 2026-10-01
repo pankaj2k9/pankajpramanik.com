@@ -13,6 +13,7 @@ export const metadata = pageMetadata(
   "Book a Meeting",
   "Schedule a call with Pankaj Kumar Pramanik about AI engineering, data pipelines, automation or a technical discussion. Pick a time in your own timezone.",
   "/booking",
+  { section: "Book a meeting" },
 );
 
 const STEPS = [
